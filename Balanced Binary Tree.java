@@ -3,32 +3,27 @@
  * TreeNode(int x) { val = x; } }
  */
 public class Solution {
-	public boolean isBalanced(TreeNode root) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		int height[] = new int[1];
-		return subtree(root, height);
-	}
-
-	boolean subtree(TreeNode subroot, int height[]) {
-		if (subroot == null) {
-			height[0] = 1;
-			return true;
-		}
-		boolean b_left = true;
-		boolean b_right = true;
-		int i_left[] = new int[1];
-		i_left[0] = 0;
-		int i_right[] = new int[1];
-		i_right[0] = 0;
-		if (subroot.left != null)
-			b_left = subtree(subroot.left, i_left);
-		if (subroot.right != null)
-			b_right = subtree(subroot.right, i_right);
-		if (b_left && b_right && Math.abs(i_left[0] - i_right[0]) <= 1) {
-			height[0] = Math.max(i_left[0], i_right[0]) + 1;
-			return true;
-		} else
-			return false;
-	}
+    public boolean isBalanced(TreeNode root) {
+        // Start typing your Java solution below
+        // DO NOT write main() function
+        boolean[] flag=new boolean[1];
+        isB(root,flag);
+        return flag[0];
+    }
+    
+    public int isB(TreeNode node, boolean[] flag){
+        if(node==null){
+            flag[0]=true;
+            return 0;
+        }
+        boolean[] f1=new boolean[1];
+        int h1=isB(node.left,f1);
+        boolean[] f2=new boolean[1];
+        int h2=isB(node.right,f2);
+        if(f1[0]&&f2[0]){
+            flag[0]=(Math.abs(h1-h2)<=1);
+        }else flag[0]=false;
+        
+        return 1+Math.max(h1,h2);
+    }
 }
