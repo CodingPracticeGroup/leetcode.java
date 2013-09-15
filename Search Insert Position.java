@@ -2,25 +2,27 @@ public class Solution {
 	public int searchInsert(int[] A, int target) {
 		// Start typing your Java solution below
 		// DO NOT write main() function
-		return search(A, target, 0, A.length);
-	}
+		if (A == null)
+			return 0;
+		int len = A.length;
+		if (len == 0)
+			return 0;
 
-	int search(int[] A, int target, int start, int end) {
-		if (end - start == 1) {
-			if (target <= A[start])
-				return start;
-			else
-				return end;
-		} else if (end - start == 0) {
-			return start;
+		int l = 0;
+		int r = len - 1;
+		int m = 0;
+
+		while (l <= r) {
+			m = (l + r) / 2;
+			if (A[m] > target) {
+				r = m - 1;
+			} else if (A[m] < target) {
+				l = m + 1;
+			} else {
+				return m;
+			}
 		}
-		int mid = (start + end) / 2;
-		if (target == A[mid]) {
-			return mid;
-		} else if (target < A[mid]) {
-			return search(A, target, start, mid);
-		} else {
-			return search(A, target, mid, end);
-		}
+
+		return r + 1;
 	}
 }
