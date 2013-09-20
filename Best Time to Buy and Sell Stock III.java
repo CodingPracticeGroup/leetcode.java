@@ -1,35 +1,26 @@
 public class Solution {
-	public int maxProfit(int[] prices) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		if (prices == null || prices.length == 0) {
-			return 0;
-		}
-
-		int len = prices.length;
-		int z_i[] = new int[len];
-		int i_n[] = new int[len];
-
-		int min = prices[0];
-		z_i[0] = 0;
-		for (int i = 1; i < len; i++) {
-			min = Math.min(prices[i], min);
-			z_i[i] = Math.max(z_i[i - 1], prices[i] - min);
-
-		}
-
-		int max = prices[len - 1];
-		i_n[len - 1] = 0;
-		for (int i = len - 2; i >= 0; i--) {
-			max = Math.max(prices[i], max);
-			i_n[i] = Math.max(max - prices[i], i_n[i + 1]);
-		}
-
-		int max_profit = Integer.MIN_VALUE;
-		for (int i = 0; i < len; i++) {
-			max_profit = Math.max(max_profit, z_i[i] + i_n[i]);
-		}
-
-		return max_profit;
-	}
+    public int maxProfit(int[] prices) {
+        // Start typing your Java solution below
+        // DO NOT write main() function
+        if(prices==null) return 0;
+        int len=prices.length;
+        if(len<=1) return 0;
+        int[] max_pro_ord = new int[len];
+        int min=0;
+        for(int i=1;i<len;i++){
+            if(prices[i]<prices[min]) min=i;
+            max_pro_ord[i]=Math.max(max_pro_ord[i-1],prices[i]-prices[min]);
+        }
+        int[] max_pro_rev = new int[len];
+        int max=len-1;
+        for(int i=len-2;i>=0;i--){
+            if(prices[i]>prices[max]) max=i;
+            max_pro_rev[i]=Math.max(max_pro_rev[i+1],prices[max]-prices[i]);
+        }
+        int result=0;
+        for(int i=0;i<len;i++){
+            result=Math.max(result,max_pro_ord[i]+max_pro_rev[i]);
+        }
+        return result;
+    }
 }
