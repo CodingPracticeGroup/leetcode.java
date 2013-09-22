@@ -3,43 +3,48 @@
  * left, right, next; TreeLinkNode(int x) { val = x; } }
  */
 public class Solution {
-	public void connect(TreeLinkNode root) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		TreeLinkNode row_left = root;
-		while (row_left != null) {
-			TreeLinkNode row_in = row_left;
-			while (row_in != null && row_in.left == null && row_in.right == null)
-				row_in = row_in.next;
-			if (row_in != null) {
-				if (row_in.left != null)
-					row_left = row_in.left;
-				else if (row_in.right != null)
-					row_left = row_in.right;
-				else {
-					row_left = null;
-				}
-				// found row_left for next layer finally
-				while (row_in != null) {
-					if (row_in.left != null && row_in.right != null)
-						row_in.left.next = row_in.right;
-					TreeLinkNode row_in_last = row_in;
-					do {
-						row_in = row_in.next;
-					} while (row_in != null && row_in.left == null && row_in.right == null);
-					if (row_in != null)
-						if (row_in_last.right != null && row_in.left != null)
-							row_in_last.right.next = row_in.left;
-						else if (row_in_last.right != null && row_in.right != null)
-							row_in_last.right.next = row_in.right;
-						else if (row_in_last.left != null && row_in.left != null)
-							row_in_last.left.next = row_in.left;
-						else if (row_in_last.left != null && row_in.right != null)
-							row_in_last.left.next = row_in.right;
-				}
-			} else {
-				row_left = null;
-			}
-		}
-	}
+    public void connect(TreeLinkNode root) {
+        // Start typing your Java solution below
+        // DO NOT write main() function
+        if(root==null) return;
+        root.next=null;
+        TreeLinkNode first=root;
+        TreeLinkNode firstcd=null;
+        TreeLinkNode nextcd=null;
+        TreeLinkNode temp;
+        
+        while(first!=null){
+            temp=first;
+            firstcd=null;
+            //find first child
+            while(temp!=null){
+                if(temp.left!=null){
+                    firstcd=temp.left; break;
+                }
+                if(temp.right!=null){
+                    firstcd=temp.right; break;
+                }
+                temp=temp.next;
+            }
+            first=firstcd;
+            
+            while(firstcd!=null&&temp!=null){
+                nextcd=null;
+                while(temp!=null){
+                    //find nextchild
+                    if(firstcd==temp.right) {temp=temp.next;continue;}
+                    if(temp.left!=null&&temp.left!=firstcd){
+                        nextcd=temp.left; break;
+                    }
+                    if(temp.right!=null&&temp.right!=firstcd){
+                        nextcd=temp.right; break;
+                    }
+                    temp=temp.next;
+                }
+                firstcd.next=nextcd;
+                firstcd=nextcd;
+            }
+        }
+        return;
+    }
 }
