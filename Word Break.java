@@ -1,26 +1,26 @@
 public class Solution {
-	public boolean wordBreak(String s, Set<String> dict) {
-		// Note: The Solution object is instantiated only once and is reused by each test case.
-		int len = s.length();
-		boolean dp[][] = new boolean[len][len + 1];
-		for (int i = 0; i < len; i++) {
-			for (int j = i + 1; j <= len; j++) {
-				if (dict.contains(s.substring(i, j))) {
-					dp[i][j] = true;
-				} else {
-					dp[i][j] = false;
-				}
-			}
-		}
-		for (int i = 0; i < len; i++) {
-			if (dp[0][i] == true) {
-				for (int j = i + 1; j <= len; j++) {
-					if (dp[i][j] == true) {
-						dp[0][j] = true;
-					}
-				}
-			}
-		}
-		return dp[0][len];
-	}
+    public boolean wordBreak(String s, Set<String> dict) {
+        // Note: The Solution object is instantiated only once and is reused by each test case.
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        for(int i=0;i<n;i++){
+            for(int j=i;j<n;j++){
+                if(dict.contains(s.substring(i,j+1))){
+                    dp[i][j]=1;
+                }
+            }
+        }
+        for(int i=0;i<n;i++){
+            if(dp[0][i]==1){
+                if(i==n-1) return true;
+                for(int j=i;j<n;j++){
+                    if(dp[i+1][j]==1){
+                        dp[0][j]=1;
+                    }
+                }
+            }
+        }
+        if(dp[0][n-1]==1) return true;
+        else return false;
+    }
 }
