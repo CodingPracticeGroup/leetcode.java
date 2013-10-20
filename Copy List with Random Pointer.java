@@ -9,37 +9,39 @@
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
         // Note: The Solution object is instantiated only once and is reused by each test case.
-        if(head==null) return null;
-        RandomListNode temp=head;
-        RandomListNode newnode;
-        RandomListNode newhead=new RandomListNode(head.label);
-        temp=temp.next;
-        newhead.next=head.next;
-        head.next=newhead;
-        
-        while(temp!=null){
-            newnode=new RandomListNode(temp.label);
-            newnode.next=temp.next;
-            temp.next=newnode;
-            temp=temp.next.next;
+        if (head==null)
+            return null;
+        RandomListNode copy;
+        RandomListNode orig = head;
+        while (orig!=null) {
+            copy = new RandomListNode(orig.label);
+            copy.next = orig.next;
+            copy.random = orig.random;
+            //
+            orig.next = copy;
+            //
+            orig = copy.next;
         }
-        temp=head;
-        while(temp!=null){
-            if(temp.random!=null) temp.next.random=temp.random.next;
-            else temp.next.random=null;
-            temp=temp.next.next;
+        orig = head;
+        while (orig!=null) {
+            copy = orig.next;
+            if (copy.random != null)
+                copy.random = copy.random.next;
+            orig = copy.next;
         }
-        
-        temp=head;
-        RandomListNode newtemp=newhead;
-        while(temp!=null&&newtemp!=null){
-            temp.next=temp.next.next;
-            if(newtemp.next!=null) newtemp.next=newtemp.next.next;
-            else newtemp.next=null;
-            temp=temp.next;
-            newtemp=newtemp.next;
+        orig = head;
+        copy = head.next;
+        RandomListNode ret = copy;
+        while (orig!=null) {
+            RandomListNode orig_next = copy.next;
+            if (copy.next != null){
+                RandomListNode copy_next = copy.next.next;
+                copy.next = copy_next;
+                copy = copy_next;
+            }
+            orig.next = orig_next;
+            orig = orig_next;
         }
-        
-        return newhead;
+        return ret;
     }
 }
