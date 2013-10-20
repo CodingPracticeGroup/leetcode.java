@@ -23,12 +23,9 @@ public class Solution {
         while(i<str.length()){
             temp=str.charAt(i)-'0';
             if(temp<0||temp>9) break;
-            if(sign==-1){
-                if((Integer.MIN_VALUE+temp)/10+result>0)
-                {
-                    return Integer.MIN_VALUE;
-                }
-            }else if(result>=(Integer.MAX_VALUE-temp)/10){
+            if((sign==-1)&&(Integer.MIN_VALUE+temp)/10+result>0){
+                return Integer.MIN_VALUE;
+            }else if(sign==1&&result>(Integer.MAX_VALUE-temp)/10){
               result=Integer.MAX_VALUE;
               break;
             } 
