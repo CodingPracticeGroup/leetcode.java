@@ -1,47 +1,49 @@
 /**
  * Definition for singly-linked list with a random pointer.
- * class RandomListNode {
- *     int label;
- *     RandomListNode next, random;
- *     RandomListNode(int x) { this.label = x; }
- * };
  */
+class RandomListNode {
+	int label;
+	RandomListNode next, random;
+
+	RandomListNode(int x) {
+		this.label = x;
+	}
+};
+
 public class Solution {
-    public RandomListNode copyRandomList(RandomListNode head) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        if (head==null)
-            return null;
-        RandomListNode copy;
-        RandomListNode orig = head;
-        while (orig!=null) {
-            copy = new RandomListNode(orig.label);
-            copy.next = orig.next;
-            copy.random = orig.random;
-            //
-            orig.next = copy;
-            //
-            orig = copy.next;
-        }
-        orig = head;
-        while (orig!=null) {
-            copy = orig.next;
-            if (copy.random != null)
-                copy.random = copy.random.next;
-            orig = copy.next;
-        }
-        orig = head;
-        copy = head.next;
-        RandomListNode ret = copy;
-        while (orig!=null) {
-            RandomListNode orig_next = copy.next;
-            if (copy.next != null){
-                RandomListNode copy_next = copy.next.next;
-                copy.next = copy_next;
-                copy = copy_next;
-            }
-            orig.next = orig_next;
-            orig = orig_next;
-        }
-        return ret;
-    }
+	public RandomListNode copyRandomList(RandomListNode head) {
+		if (head == null) {
+			return null;
+		}
+		// copy
+		RandomListNode p = head;
+		while (p != null) {
+			RandomListNode q = new RandomListNode(p.label);
+			q.next = p.next;
+			p.next = q;
+			//
+			p = q.next;
+		}
+		// set random
+		p = head;
+		while (p != null) {
+			p.next.random = p.random == null ? null : p.random.next;
+			//
+			p = p.next.next;
+		}
+		// mitosis
+		RandomListNode r = head.next;
+		RandomListNode q = r;
+		p = head;
+		while (p != null) {
+			p.next = q.next;
+			p = q.next;
+
+			if (p != null) {
+				q.next = p.next;
+				q = p.next;
+			}
+		}
+		return r;
+	}
 }
