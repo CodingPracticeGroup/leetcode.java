@@ -1,35 +1,41 @@
 public class Solution {
 	public int canCompleteCircuit(int[] gas, int[] cost) {
-		// Note: The Solution object is instantiated only once and is reused by each test case.
-		int total = gas.length;
-		int gas_sum = 0;
-		int cost_sum = 0;
-		for (int i = 0; i < total; i++) {
-			gas_sum += gas[i];
-			cost_sum += cost[i];
+		int len = gas.length;
+
+		int sumgas = 0;
+		int sumcost = 0;
+		for (int i = 0; i < len; i++) {
+			sumgas += gas[i];
+			sumcost += cost[i];
 		}
-		if (cost_sum > gas_sum) {
+		if (sumgas < sumcost) {
 			return -1;
 		}
-		int current = 0;
-		for (; current < total;) {
-			gas_sum = 0;
-			cost_sum = 0;
-			boolean pass = true;
-			int i;
-			for (i = current; i < total; i++) {
-				gas_sum += gas[i];
-				cost_sum += cost[i];
-				if (cost_sum > gas_sum) {
-					current = i + 1;
-					pass = false;
-					break;
+
+		int tank = 0;
+		int ret = -1;
+		for (int i = 0; i < len; i++) {
+			tank += gas[i];
+			tank -= cost[i];
+			if (tank < 0) {
+				ret = -1;
+				tank = 0;
+			} else {
+				if (ret == -1) {
+					ret = i;
 				}
 			}
-			if (pass) {
-				return current;
-			}
 		}
-		return current;
+		return ret;
 	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int[] gas = new int[] { 2, 4 };
+		int[] cost = new int[] { 3, 4 };
+		new Solution().canCompleteCircuit(gas, cost);
+	}
+
 }
