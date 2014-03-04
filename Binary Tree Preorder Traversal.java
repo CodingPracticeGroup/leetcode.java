@@ -15,22 +15,16 @@ class TreeNode {
 }
 
 public class Solution {
-	public ArrayList<Integer> preorderTraversal(TreeNode root) {
-		ArrayList<Integer> ret = new ArrayList<Integer>();
-
-		if (root != null) {
-			ArrayDeque<TreeNode> preorder = new ArrayDeque<TreeNode>();// stack
-			preorder.push(root);
-			while (!preorder.isEmpty()) {
-				TreeNode node = preorder.pop();
-				ret.add(node.val);
-				if (node.right != null)
-					preorder.push(node.right);
-				if (node.left != null)
-					preorder.push(node.left);
-			}
-		}
-
-		return ret;
-	}
+    public ArrayList<Integer> preorderTraversal(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        stack.push(root);
+        while(!stack.empty()){
+            TreeNode node = stack.pop();
+            if(node!=null) result.add(node.val); else continue;
+            if(node.right!=null) stack.push(node.right);
+            if(node.left!=null) stack.push(node.left);
+        }
+        return result;
+    }
 }
