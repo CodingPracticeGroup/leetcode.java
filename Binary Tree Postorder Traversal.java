@@ -37,4 +37,18 @@ public class Solution {
 
 		return ret;
 	}
+	public ArrayList<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        if(null==root) return result;
+        stack.push(root);
+        while(!stack.empty()){
+            TreeNode node = stack.peek();
+            //if(node!=null) result.add(node.val); else continue;
+            if(node.right==null&&node.left==null){TreeNode temp=stack.pop();result.add(temp.val);}
+            if(node.right!=null) {stack.push(node.right);node.right=null;}
+            if(node.left!=null) {stack.push(node.left);node.left=null;}
+        }
+        return result;
+    }
 }
