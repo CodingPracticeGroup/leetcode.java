@@ -2,7 +2,7 @@
  * Definition for binary tree
  */
 class TreeNode {
-	int val;
+	int val; // may be negative
 	TreeNode left;
 	TreeNode right;
 
