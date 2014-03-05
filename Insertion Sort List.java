@@ -13,31 +13,23 @@ class ListNode {
 
 public class Solution {
 	public ListNode insertionSortList(ListNode head) {
-		if (head == null || head.next == null) {
-			return head;
-		}
-		ListNode p = head;
-		while (p.next != null) {
-			if (p.next.val < p.val) {
-				// delete
-				ListNode n = p.next;
-				p.next = n.next;
-				// insert
-				if (n.val < head.val) {
-					n.next = head;
-					head = n;
-				} else {
-					ListNode t = head;
-					while (t.next.val < n.val) {
-						t = t.next;
-					}
-					n.next = t.next;
-					t.next = n;
-				}
-			} else {
-				p = p.next;
-			}
-		}
-		return head;
-	}
+        if(head==null) return null;
+        ListNode pointer1=head.next;
+        ListNode pointer2;
+        while(pointer1!=null){
+            int temp=pointer1.val;
+            pointer2=head;
+            while(pointer2!=pointer1){
+                if(temp<pointer2.val){
+                    int swap = pointer2.val;
+                    pointer2.val=temp;
+                    temp=swap;
+                }
+                pointer2=pointer2.next;
+            }
+            pointer1.val=temp;
+            pointer1=pointer1.next;
+        }
+        return head;
+    }
 }
