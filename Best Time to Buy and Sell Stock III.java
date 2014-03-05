@@ -1,26 +1,44 @@
 public class Solution {
-    public int maxProfit(int[] prices) {
-        // Start typing your Java solution below
-        // DO NOT write main() function
-        if(prices==null) return 0;
-        int len=prices.length;
-        if(len<=1) return 0;
-        int[] max_pro_ord = new int[len];
-        int min=0;
-        for(int i=1;i<len;i++){
-            if(prices[i]<prices[min]) min=i;
-            max_pro_ord[i]=Math.max(max_pro_ord[i-1],prices[i]-prices[min]);
-        }
-        int[] max_pro_rev = new int[len];
-        int max=len-1;
-        for(int i=len-2;i>=0;i--){
-            if(prices[i]>prices[max]) max=i;
-            max_pro_rev[i]=Math.max(max_pro_rev[i+1],prices[max]-prices[i]);
-        }
-        int result=0;
-        for(int i=0;i<len;i++){
-            result=Math.max(result,max_pro_ord[i]+max_pro_rev[i]);
-        }
-        return result;
-    }
+	public int maxProfit(int[] prices) {
+		// Start typing your Java solution below
+		// DO NOT write main() function
+		if (prices == null || prices.length == 0) {
+			return 0;
+		}
+
+		int dp0i[] = new int[prices.length]; // max profit in [0, i)
+		dp0i[0] = 0;
+		int priceLastMin = prices[0];
+		for (int i = 1; i < prices.length; i++) {
+			if (priceLastMin > prices[i]) {
+				priceLastMin = prices[i];
+			}
+			dp0i[i] = Math.max(dp0i[i - 1], prices[i] - priceLastMin);
+		}
+
+		int dpin[] = new int[prices.length]; // max profit in [i, n)
+		dpin[prices.length - 1] = 0;
+		int priceLastMax = prices[prices.length - 1];
+		for (int i = prices.length - 2; i >= 0; i--) {
+			if (prices[i] > priceLastMax) {
+				priceLastMax = prices[i];
+			}
+			dpin[i] = Math.max(dpin[i + 1], priceLastMax - prices[i]);
+		}
+
+		int profitMax = 0;
+		for (int i = 0; i < prices.length; i++) {
+			profitMax = Math.max(profitMax, dp0i[i] + dpin[i]);
+		}
+		return profitMax;
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		int[] test = new int[] { 1, 2, 4 };
+		new Solution().maxProfit(test);
+	}
+
 }
