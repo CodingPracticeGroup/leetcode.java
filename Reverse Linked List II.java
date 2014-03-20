@@ -1,38 +1,48 @@
+/**
+ * Definition for singly-linked list.
+ */
+class ListNode {
+	int val;
+	ListNode next;
+
+	ListNode(int x) {
+		val = x;
+		next = null;
+	}
+}
+
 public class Solution {
 	public ListNode reverseBetween(ListNode head, int m, int n) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		if (m == n)
-			return head;
-		if (1 == m) {
-			ListNode p1 = null;
-			ListNode p2 = head;
-			for (int i = 1; i <= n; i++) {
-				ListNode tmp = p2.next;
-				p2.next = p1;
-				p1 = p2;
-				p2 = tmp;
-			}
-			head.next = p2;
-			return p1;
-		}
+		ListNode new_head = new ListNode(0);
+		new_head.next = head;
 
-		ListNode p1 = head;
-		ListNode p2 = head.next;
-		for (int i = 2; i < m; i++) {
-			p1 = p1.next;
-			p2 = p2.next;
+		ListNode master_start = null, master_end = null, develop_start = null, develop_end = null;
+		ListNode iterator = new_head, iterator_pre = null;
+		for (int i = 0; i <= n; i++) {
+			if (i == m - 1) {
+				master_start = iterator;
+			}
+			if (i == m) {
+				develop_end = iterator;
+			}
+			if (i == n) {
+				develop_start = iterator;
+			}
+			if (m < i && i <= n) {
+				ListNode tmp = iterator;
+				iterator = iterator.next;
+				tmp.next = iterator_pre;
+				iterator_pre = tmp;
+			} else {
+				iterator_pre = iterator;
+				iterator = iterator.next;
+			}
 		}
-		ListNode p3 = p2;
-		ListNode p4 = p1;
-		for (int i = m; i <= n; i++) {
-			ListNode tmp = p2.next;
-			p2.next = p1;
-			p1 = p2;
-			p2 = tmp;
-		}
-		p3.next = p2;
-		p4.next = p1;
-		return head;
+		master_end = iterator; // n+1
+
+		master_start.next = develop_start;
+		develop_end.next = master_end;
+
+		return new_head.next;
 	}
 }
