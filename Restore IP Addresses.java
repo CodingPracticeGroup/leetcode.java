@@ -1,48 +1,39 @@
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 
 public class Solution {
 	public ArrayList<String> restoreIpAddresses(String s) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		return new ArrayList<String>(putDot(s, 3));
+
+		ArrayList<String> ret = new ArrayList<String>();
+		if (s.length() <= 12 && 4 <= s.length()) {
+			recursion(s, 3, ret, new String());
+		}
+		return ret;
 	}
 
-	HashSet<String> putDot(String s, int n) {
-		HashSet<String> r = new HashSet<String>();
-		int len = s.length();
-		if (n == 1) {
-			for (int i = 1; i <= Math.min(3, len - 1); i++) {
-				String part1 = s.substring(0, i);
-				String part2 = s.substring(i, len);
-				if (part2.length() <= 3 && valid(part1) && valid(part2)) {
-					r.add(part1 + '.' + part2);
-				}
-			}
-			return r;
+	private void recursion(String s, int n, ArrayList<String> ret, String track) {
+		if (n == 0 && isValid(s)) {
+			String tmp = track + s;
+			ret.add(tmp);
+			return;
 		}
-
-		for (int i = 1; i <= Math.min(3, len - n); i++) {
-			String part1 = s.substring(0, i);
-			String parts = s.substring(i, len);
-			if (valid(part1)) {
-				HashSet<String> rr = putDot(parts, n - 1);
-				for (Iterator<String> it = rr.iterator(); it.hasNext();) {
-					String part2 = it.next();
-					r.add(part1 + '.' + part2);
-				}
+		for (int i = 1; i < s.length() && i <= 3; i++) {
+			String sub = s.substring(0, i);
+			if (isValid(sub)) {
+				String tmp = track + sub + '.';
+				recursion(s.substring(i, s.length()), n - 1, ret, tmp);
 			}
 		}
-		return r;
 	}
 
-	boolean valid(String s) {
-		int v = Integer.valueOf(s);
-		if (!(0 <= v && v < 256))
+	private boolean isValid(String s) {
+		Integer i = Integer.valueOf(s);
+		if (i < 0 || i > 255) {
 			return false;
-		if (s.length() > 1 && s.charAt(0) == '0')
+		}
+		String ss = String.valueOf(i);
+		if (!ss.equals(s)) {
 			return false;
+		}
 		return true;
 	}
 }
