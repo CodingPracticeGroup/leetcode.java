@@ -1,31 +1,41 @@
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
 /**
  * Definition for binary tree
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
  */
+class TreeNode {
+	int val;
+	TreeNode left;
+	TreeNode right;
+
+	TreeNode(int x) {
+		val = x;
+	}
+}
+
 public class Solution {
-    public ArrayList<Integer> inorderTraversal(TreeNode root) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        ArrayList<Integer> result = new ArrayList<Integer> ();
-        if(root==null) return result;
-        Stack<TreeNode> stack = new Stack<TreeNode>();
-        TreeNode temp=root;
-        TreeNode right;
-        while(!stack.isEmpty()||temp!=null){
-            while(temp!=null){
-                stack.push(temp);
-                temp=temp.left;
-            } 
-            temp=stack.pop();
-            //self
-            result.add(temp.val);
-            //right
-            temp=temp.right;
-        }
-        return result;
-    }
+
+	// pre-order and in-order are the same. post-order is different
+	public ArrayList<Integer> inorderTraversal(TreeNode root) {
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+
+		// stack is not track. stack is used to mark first/second visit
+		// ArrayDeque cannot hold null, but LinkedList can
+		ArrayDeque<TreeNode> stack = new ArrayDeque<TreeNode>();
+		TreeNode pointer = root;
+		while (!stack.isEmpty() || pointer != null) {
+			if (pointer != null) {
+				stack.push(pointer);// first time visit node
+				pointer = pointer.left; // go left
+			} else if (!stack.isEmpty()) {
+				TreeNode tn = stack.pop(); // second time visit node
+				ret.add(tn.val); // in-order
+				pointer = tn.right; // go right
+			}
+		}
+
+		return ret;
+	}
+
 }
