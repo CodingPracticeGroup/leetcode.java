@@ -1,19 +1,12 @@
 public class Solution {
 	public int numTrees(int n) {
-		return numSubTrees(1, n);
-	}
-
-	// it seems that we always need (min, max) in the recursion function for bst
-	private int numSubTrees(int min, int max) {
-		if (min > max) {
-			return 1;
+		int dp[] = new int[n + 1]; // dp[i] -> len i
+		dp[0] = 1;
+		for (int i = 1; i <= n; i++) { // len i
+			for (int left = 0; left <= i - 1; left++) { // i -1 = i-root
+				dp[i] += dp[left] * dp[i - 1 - left]; // right len = (i- root) -left
+			}
 		}
-		int sum = 0;
-		for (int i = min; i <= max; i++) {
-			int left = numSubTrees(min, i - 1);
-			int right = numSubTrees(i + 1, max);
-			sum += left * right;
-		}
-		return sum;
+		return dp[n];
 	}
 }
