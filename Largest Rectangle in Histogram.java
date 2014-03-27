@@ -10,7 +10,7 @@ public class Solution {
 		 * as 'left index' and 'right index' respectively. We traverse all bars from left to right, maintain a stack of bars. Every bar is
 		 * pushed to stack once. A bar is popped from stack when a bar of smaller height is seen. (so the bars in stack are ascendant) When
 		 * a bar is popped, we calculate the area with the popped bar as smallest bar 'x'. How do we get left and right indexes of the
-		 * popped bar – the current index tells us the 'right index' and index of previous item in stack (peek()) is the 'left index'.
+		 * popped bar - the current index tells us the 'right index' and index of previous item in stack (peek()) is the 'left index'.
 		 */
 		if (height.length == 0) {
 			return 0;
