@@ -1,42 +1,27 @@
+import java.util.ArrayDeque;
+
 public class Solution {
     public String simplifyPath(String path) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        if(path==null) return null;
-        int len=path.length();
-        if(len==0) return path;
-        
-        String result="";
-        
-        Stack<String> folds = new Stack<String>();
-        
-        int cur=0;
-        int end=0;
-        
-        while(cur<len){
-            while(cur<len&&path.charAt(cur)=='/') cur++;
-            
-            if(cur==len) break;
-            
-            end=cur;
-            while(end<len&&path.charAt(end)!='/') end++;
-            
-            String temp=path.substring(cur,end);
-            
-            if(temp.equals("..")){
-                if(!folds.isEmpty()) folds.pop();
-            }else if(!temp.equals(".")){
-                folds.push(temp);
+        ArrayDeque<String> stack = new ArrayDeque<String>();
+        String[] words = path.split("/");
+        for (int i=0; i<words.length; i++) {
+            if (words[i].equals("") || words[i].equals(".")){
+                // nothing
+            } else if (words[i].equals("..")) {
+                if (!stack.isEmpty())
+                    stack.pop();
+            } else {
+                stack.push(words[i]);
             }
-            cur=end;
         }
-        
-        if(folds.isEmpty()) return "/";
-        
-        while(!folds.isEmpty()){
-            result=folds.pop()+result;
-            result="/"+result;
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.insert(0 , stack.pop()+"/");
         }
-        
-        return result;
+        if (sb.length()>0){
+            sb.deleteCharAt(sb.length()-1);
+        }
+        sb.insert(0 , "/");
+        return sb.toString();
     }
 }
