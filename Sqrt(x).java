@@ -1,15 +1,22 @@
 public class Solution {
 	public int sqrt(int x) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		if (x == 0)
-			return 0;
-		double r = 1;
-		while (true) {
-			double other = x / r;
-			if (Math.abs(other - r) < 0.01)
-				return (int) ((Math.min(r, other) + Math.max(r, other)) / 2);
-			r = (r + other) / 2;
+		int left = 1;
+		int right = x;
+		int mid = (left + right) / 2;
+		while (mid != left && mid != right) {
+			if (x / mid > mid) { // cannot use mid*mid because it could be greater than
+				left = mid;
+			} else if (x / mid < mid) {
+				right = mid;
+			} else {
+				return mid;
+			}
+			mid = (left + right) / 2;
 		}
+		return mid;
+	}
+
+	public static void main(String[] args) {
+		new Solution().sqrt(2147395599);
 	}
 }
