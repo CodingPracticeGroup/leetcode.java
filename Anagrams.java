@@ -1,29 +1,34 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class Solution {
-    public ArrayList<String> anagrams(String[] strs) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        if(strs==null) return null;
-		ArrayList<String> result = new ArrayList<String>();
-		HashMap<String,ArrayList<String>> hm= new HashMap<String,ArrayList<String>>();
-		for(int i=0;i<strs.length;i++){
-			char[] temp=strs[i].toCharArray();
-			Arrays.sort(temp);
-			String sorted = new String(temp);
-			if(hm.containsKey(sorted)){
-				hm.get(sorted).add(strs[i]);
-			}else{
-				ArrayList<String> tempal= new ArrayList<String>();
-				tempal.add(strs[i]);
-				hm.put(sorted, tempal);
+	public ArrayList<String> anagrams(String[] strs) {
+		ArrayList<String> ret = new ArrayList<String>();
+		HashMap<String, String> memory = new HashMap<String, String>();
+		for (String s : strs) {
+			char[] ca = s.toCharArray();
+			Arrays.sort(ca);
+			String sorted = new String(ca);
+			if (memory.containsKey(sorted)) {
+				if (memory.get(sorted) != null) {
+					ret.add(memory.get(sorted));
+					memory.put(sorted, null);
+				}
+				ret.add(s);
+			} else {
+				memory.put(sorted, s);
 			}
 		}
-		
-		for(String str:hm.keySet()){
-			if(hm.get(str).size()>1){
-			    for(String strtemp:hm.get(str)){
-				    result.add(strtemp);
-			    }
-			}
-		}
-		return result;
-    }
+		return ret;
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		String[] strs = new String[] { "tea", "and", "ate", "eat", "dan" };
+		new Solution().anagrams(strs);
+	}
+
 }
