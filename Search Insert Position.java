@@ -1,12 +1,17 @@
-import java.util.Arrays;
-
 public class Solution {
 	public int searchInsert(int[] A, int target) {
-		int ret = Arrays.binarySearch(A, target);
-		if (ret >= 0) {
-			return ret;
-		} else {
-			return -ret - 1; // (-(insertion point) - 1) = ret
+		int left = 0; // inclusive
+		int right = A.length - 1; // inclusive
+		while (left <= right) {
+			int mid = (left + right) / 2;
+			if (target < A[mid]) {
+				right = mid - 1;
+			} else if (A[mid] < target) {
+				left = mid + 1;
+			} else {
+				return mid;
+			}
 		}
+		return left; // insert position
 	}
 }
