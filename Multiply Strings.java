@@ -1,36 +1,33 @@
 public class Solution {
-    public String multiply(String num1, String num2) {
-        // Start typing your Java solution below
-        // DO NOT write main() function
-        if(null==num1) return num2;
-        if(null==num2) return num1;
-        int len1=num1.length();
-        int len2=num2.length();
-        if(0==len1) return num2;
-        if(0==len2) return num1;
-        int[] num = new int[len1+len2];
-        
-        String result="";
-        
-        for(int i=0;i<len1;i++){
-            int d=0;
-            int a=num1.charAt(len1-1-i)-'0';
-            for(int j=0;j<len2;j++){
-                int b=num2.charAt(len2-1-j)-'0';
-                int temp=num[i+j]+a*b+d;
-                d=temp/10;
-                num[i+j]=temp%10;
-            }
-            num[len2+i]+=d;
-        }
-        
-        int i=num.length-1;
-        while(i>0 && num[i]==0) i--;
-        
-        while(i>=0)
-        	result+=(char)('0'+num[i--]);
-        
-        return result;
-    }
+	public String multiply(String num1, String num2) {
+		String num1r = new StringBuilder(num1).reverse().toString();
+		String num2r = new StringBuilder(num2).reverse().toString();
 
+		int sum[] = new int[num1.length() + num2.length()];
+		for (int i = 0; i < num1r.length(); i++) {
+			for (int j = 0; j < num2r.length(); j++) {
+				sum[i + j] += (num1r.charAt(i) - '0') * (num2r.charAt(j) - '0'); // multiply insight
+			}
+		}
+		for (int i = 0; i < sum.length; i++) {
+			if (i + 1 < sum.length) {
+				sum[i + 1] += sum[i] / 10;
+			}
+			sum[i] = sum[i] % 10;
+		}
+
+		int firstLoc = sum.length - 1;
+		while (firstLoc > 0 && sum[firstLoc] == 0) {
+			firstLoc--;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = firstLoc; i >= 0; i--) {
+			sb.append(sum[i]);
+		}
+		return sb.toString();
+	}
+
+	public static void main(String[] args) {
+		new Solution().multiply("9133", "0");
+	}
 }
