@@ -2,55 +2,56 @@ import java.util.Arrays;
 
 public class Solution {
 	public boolean search(int[] A, int target) {
-		return recursion(A, 0, A.length - 1, target);
+		// Start typing your Java solution below
+		// DO NOT write main() function
+		return searchRange(A, target, 0, A.length);
 	}
 
-	private boolean recursion(int[] A, int start, int end, int target) {
-		if (start > end) {
+	boolean searchRange(int[] A, int target, int start, int end) {
+		if (end <= start)
 			return false;
+		if (end - start == 1) {
+			if (A[start] == target) {
+				return true;
+			} else {
+				return false;
+			}
 		}
-
-		int mid = (start + end) / 2;
-		if (A[mid] == target) {
+		if (end - start == 2) {
+			if (A[start] == target || A[start + 1] == target) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		//
+		int mid = start + (end - start) / 2;
+		if (A[mid] == target)
 			return true;
+		if (A[start] == A[mid] && A[mid] == A[end - 1]) {
+			return searchRange(A, target, start, mid) || searchRange(A, target, mid, end);
+		} else if (A[mid] == A[end - 1]) {
+			return searchRange(A, target, start, mid);
+		} else if (A[start] == A[mid]) {
+			return searchRange(A, target, mid, end);
 		}
-
-		if (A[start] == A[mid] && A[mid] == A[end]) { // 3
-			return recursion(A, start + 1, mid - 1, target) || recursion(A, mid + 1, end - 1, target);
-		} else if (A[start] == A[mid]) { // 2
-			return recursion(A, mid + 1, end, target);
-		} else if (A[mid] == A[end]) { // 2
-			return recursion(A, start, mid - 1, target);
-		}
-
-		if (A[start] < A[mid]) {
-			if (A[start] <= target && target <= A[mid]) {
-				return wrapper(A, start, mid + 1, target);
-			} else {
-				return recursion(A, mid + 1, end, target);
+		if (A[start] < A[mid]) { // 2 search here
+			if (A[start] <= target && target < A[mid]) { // 2 search
+				int bs = Arrays.binarySearch(A, start, mid, target);
+				if (bs >= 0)
+					return true;
+			} else { // repeat
+				return searchRange(A, target, mid, end);
 			}
-		} else if (A[mid] < A[end]) {
-			if (A[mid] <= target && target <= A[end]) {
-				return wrapper(A, mid, end + 1, target);
-			} else {
-				return recursion(A, start, mid - 1, target);
+		} else if (A[mid] < A[end - 1]) { // 2 search here
+			if (A[mid] < target && target <= A[end - 1]) { // 2 search
+				int bs = Arrays.binarySearch(A, mid, end, target);
+				if (bs >= 0)
+					return true;
+			} else { // repeat
+				return searchRange(A, target, start, mid);
 			}
 		}
-
 		return false;
-	}
-
-	private boolean wrapper(int[] A, int start, int end, int target) {
-		int ret = Arrays.binarySearch(A, start, end, target);
-		if (ret >= 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public static void main(String[] args) {
-		int[] A = { 1, 1 };
-		new Solution().search(A, 0);
 	}
 }
