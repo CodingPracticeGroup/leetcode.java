@@ -1,30 +1,30 @@
-import java.util.ArrayList;
-
 public class Solution {
-	public String countAndSay(int n) {
-		ArrayList<Integer> ret = new ArrayList<Integer>();
-		ret.add(1);
-		for (int i = 2; i <= n; i++) {
-			ArrayList<Integer> work = new ArrayList<Integer>();
-			int rangeLeft = 0;
-			int rangeRight = 1;
-			while (rangeRight <= ret.size()) {
-				while (rangeRight < ret.size() && ret.get(rangeRight) == ret.get(rangeLeft)) {
-					rangeRight++;
-				}
-
-				work.add(rangeRight - rangeLeft);
-				work.add(ret.get(rangeLeft));
-
-				rangeLeft = rangeRight;
-				rangeRight = rangeLeft + 1;
-			}
-			ret = work;
-		}
-		StringBuilder sb = new StringBuilder();
-		for (Integer i : ret) {
-			sb.append(i);
-		}
-		return sb.toString();
-	}
+    public String countAndSay(int n) {
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        result.add(1);
+        while(n>1){
+            ArrayList<Integer> temp = new ArrayList<Integer>();
+            int previous=result.get(0);
+            int count=0;
+            for(int i=0;i<result.size();i++){
+                if(result.get(i)!=previous){
+                    temp.add(count);
+                    temp.add(previous);
+                    count=1;
+                    previous=result.get(i);
+                }else{
+                    count++;
+                }
+            }
+            temp.add(count);
+            temp.add(previous);
+            result=temp;
+            n--;
+        }
+        StringBuilder sb = new StringBuilder();
+        for(Integer i:result){
+            sb.append(i);
+        }
+        return sb.toString();
+    }
 }
