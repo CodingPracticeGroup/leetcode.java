@@ -1,46 +1,34 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> threeSum(int[] num) {
-		Arrays.sort(num);
-		HashSet<ArrayList<Integer>> ret = new HashSet<ArrayList<Integer>>();
-		for (int i = 0; i < num.length; i++) {
-			ArrayList<ArrayList<Integer>> two = twoSum(num, i + 1, num.length, 0 - num[i]);
-			for (ArrayList<Integer> al : two) {
-				ArrayList<Integer> three = new ArrayList<Integer>();
-				three.add(num[i]);
-				three.addAll(al);
-				ret.add(three);
-			}
-		}
-		return new ArrayList<ArrayList<Integer>>(ret);
-	}
-
-	private ArrayList<ArrayList<Integer>> twoSum(int[] num, int start, int end, int target) {
-		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
-		int i = start;
-		int j = end - 1;
-		while (i < j) {
-			if (num[i] + num[j] < target) {
-				i++;
-			} else if (target < num[i] + num[j]) {
-				j--;
-			} else {
-				ArrayList<Integer> two = new ArrayList<Integer>();
-				two.add(num[i]);
-				two.add(num[j]);
-				ret.add(two);
-				i++;
-				j--;
-			}
-		}
-		return ret;
-	}
-
-	public static void main(String[] args) {
-		int[] num = new int[] { 0, 0, 0 };
-		new Solution().threeSum(num);
-	}
+    public ArrayList<ArrayList<Integer>> threeSum(int[] num) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+        if(null==num) return result;
+        int len=num.length;
+        if(len<3) return result;
+        
+        Arrays.sort(num);
+        
+        for(int i=0;i<len-2;i++){
+            //remove duplicates
+            if(i>0&&num[i]==num[i-1]) continue;
+            //two sum
+            int head=i+1;
+            int tail=len-1;
+            while(head<tail){
+                if(num[head]+num[tail]+num[i]==0){
+                    ArrayList<Integer> temp = new ArrayList<Integer>();
+                    temp.add(num[head]);temp.add(num[tail]);temp.add(num[i]);
+                    Collections.sort(temp);
+                    result.add(temp);
+                    do{head++;}while(head<tail&&num[head]==num[head-1]); 
+                    do{tail--;}while(head<tail&&num[tail]==num[tail+1]); 
+                }else if(num[head]+num[tail]+num[i]<0){
+                    head++;
+                }else{
+                    tail--;
+                }
+            }
+        }
+        
+        return result;
+    }
 }
