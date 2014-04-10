@@ -1,71 +1,47 @@
-import java.util.ArrayList;
-
 public class Solution {
-	public ArrayList<String> fullJustify(String[] words, int L) {
-		ArrayList<String> ret = new ArrayList<String>();
-		StringBuilder sb = null;
-
-		int rowStart = 0;
-		int rowEnd = 1;
-		int rowLen = words[rowStart].length();
-		while (rowEnd <= words.length) {
-			sb = new StringBuilder();
-			// find rowEnd
-			while (rowEnd < words.length && rowLen + words[rowEnd].length() + 1 <= L) {
-				rowLen += words[rowEnd].length() + 1;
-				rowEnd++;
-			}
-			// distribute words in row
-			if (rowEnd - rowStart == 1 || rowEnd == words.length) { // put from the left: incomplete row
-				for (int i = rowStart; i < rowEnd; i++) {
-					sb.append(words[i]);
-					if (i != rowEnd - 1)
-						sb.append(' ');
-				}
-				int restSpaceCount = L - sb.length();
-				for (int i = 0; i < restSpaceCount; i++) {
-					sb.append(' ');
-				}
-			} else { // put from the right
-				int spaceCount = L;
-				for (int i = rowStart; i < rowEnd; i++) {
-					spaceCount -= words[i].length();
-				}
-				int rightSpaceCount = spaceCount / (rowEnd - rowStart - 1);
-				int leftSpaceCountDelta = spaceCount - rightSpaceCount * (rowEnd - rowStart - 1);
-				for (int i = rowEnd - 1; i > rowStart + leftSpaceCountDelta; i--) {
-					sb.insert(0, words[i]);
-					for (int j = 0; j < rightSpaceCount; j++) {
-						sb.insert(0, ' ');
-					}
-				}
-				for (int i = rowStart + leftSpaceCountDelta; i > rowStart; i--) {
-					sb.insert(0, words[i]);
-					for (int j = 0; j < rightSpaceCount; j++) {
-						sb.insert(0, ' ');
-					}
-					sb.insert(0, ' ');
-				}
-				sb.insert(0, words[rowStart]);
-			}
-			ret.add(sb.toString());
-			// loop
-			if (rowEnd == words.length) {
-				break;
-			} else {
-				rowStart = rowEnd;
-				rowEnd++;
-				rowLen = words[rowStart].length();
-			}
-		}
-
-		return ret;
-	}
-
-	public static void main(String[] args) {
-		String words[] = { "Don't", "go", "around", "saying", "the", "world", "owes", "you", "a", "living;", "the",
-				"world", "owes", "you", "nothing;", "it", "was", "here", "first." };
-
-		new Solution().fullJustify(words, 30);
-	}
+    public ArrayList<String> fullJustify(String[] words, int L) {
+        ArrayList<String> result = new ArrayList<String>();
+        StringBuilder  sb = null;
+        int num=words.length;
+        int index=0;
+        while(index<num){
+            sb = new StringBuilder();
+            int end = index;
+            int lenofWords = 0;
+            //greedy add words
+            while((end<num) && ((lenofWords+words[end].length())<=L) ){
+                lenofWords+=words[end++].length()+1;
+            }
+            int numofWords = end - index;
+            if(numofWords>1){
+                int space = L-(lenofWords-numofWords);
+                int meanSpace = end==num?1:space/(numofWords-1);
+                int moreSpace = end==num?0:space%(numofWords-1);
+                //construct one line of result
+                for(int i=index;i<end-1;i++){
+                    sb.append(words[i]);
+                    for(int j=0;j<meanSpace;j++){
+                        sb.append(" ");
+                    }
+                    if(moreSpace-->0) sb.append(" ");
+                }
+                sb.append(words[end-1]);
+                if(end==num){
+                    for(int j=0;j<L-lenofWords+1;j++){
+                        sb.append(" ");
+                    }
+                }
+                //add one line
+                result.add(sb.toString());
+            }else{
+                sb.append(words[index]);
+                for(int i=0;i<(L-words[index].length());i++){
+                    sb.append(" ");
+                }
+                result.add(sb.toString());
+            }
+            index=end;
+        }
+        return result;
+    }
 }
