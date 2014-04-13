@@ -1,38 +1,34 @@
 public class Solution {
     public int atoi(String str) {
-        // Start typing your Java solution below
-        // DO NOT write main() function
+        if(null==str) return 0;
         str=str.trim();
-        if(str.length()<=0) return 0;
-        int sign=1;
-        int i=0;
-        if(str.charAt(0)=='-'){
-            sign=-1;
-            i++;
-        }else if(str.charAt(0)=='+'){
-            i++;
-        }
+        int len=str.length();
+        if(len==0) return 0;
         
-        if(!Character.isDigit(str.charAt(i))){
-            return 0;
+        int index=0;
+        boolean positive=true;
+        if(str.charAt(index)=='-'){
+            positive=false; index++;
         }
-        
+        else if(str.charAt(index)=='+'){
+            positive=true; index++;
+        }
         int result=0;
-        int temp=0;
-        
-        while(i<str.length()){
-            temp=str.charAt(i)-'0';
-            if(temp<0||temp>9) break;
-            if((sign==-1)&&(Integer.MIN_VALUE+temp)/10+result>0){
+        while(index<len){
+            if(!Character.isDigit(str.charAt(index))){break;}
+            int temp= str.charAt(index)-'0';
+            //check large number
+            if(positive&&result>(Integer.MAX_VALUE-temp)/10){
+                return Integer.MAX_VALUE;
+            }
+            if(!positive&&((-1)*result<(Integer.MIN_VALUE+temp)/10)){
                 return Integer.MIN_VALUE;
-            }else if(sign==1&&result>(Integer.MAX_VALUE-temp)/10){
-              result=Integer.MAX_VALUE;
-              break;
-            } 
+            }
+            //basic case
             result=result*10+temp;
-            i++;
+            index++;
         }
-        
-        return sign*result;
+        if(positive) return result;
+        return (-1)*result;
     }
 }
