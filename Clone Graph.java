@@ -1,40 +1,28 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Definition for undirected graph.
+ * class UndirectedGraphNode {
+ *     int label;
+ *     ArrayList<UndirectedGraphNode> neighbors;
+ *     UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
+ * };
  */
-class UndirectedGraphNode {
-	int label;
-	ArrayList<UndirectedGraphNode> neighbors;
-
-	UndirectedGraphNode(int x) {
-		label = x;
-		neighbors = new ArrayList<UndirectedGraphNode>();
-	}
-};
-
 public class Solution {
-	public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
-		if (node == null)
-			return null;
-		// Note: The Solution object is instantiated only once and is reused by each test case.
-		HashMap<UndirectedGraphNode, UndirectedGraphNode> visited = new HashMap<UndirectedGraphNode, UndirectedGraphNode>();
-		visited.put(node, new UndirectedGraphNode(node.label));
-		dfs(visited.get(node), node, visited);
-		return visited.get(node);
-	}
-
-	private void dfs(UndirectedGraphNode des, UndirectedGraphNode src,
-			HashMap<UndirectedGraphNode, UndirectedGraphNode> visited) {
-		for (UndirectedGraphNode node : src.neighbors) {
-			if (!visited.containsKey(node)) {
-				visited.put(node, new UndirectedGraphNode(node.label));
-				dfs(visited.get(node), node, visited);
-			}
-		}
-		for (UndirectedGraphNode node : src.neighbors) {
-			des.neighbors.add(visited.get(node));
-		}
-	}
+    public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+        if(null==node) return null;
+        HashMap<UndirectedGraphNode,UndirectedGraphNode> visited = new HashMap<UndirectedGraphNode,UndirectedGraphNode>();
+        visited.put(node,new UndirectedGraphNode(node.label));
+        dfs(node,visited);
+        return visited.get(node);
+    }
+    
+    public void dfs(UndirectedGraphNode node, HashMap<UndirectedGraphNode,UndirectedGraphNode> visited){
+        UndirectedGraphNode newnode = visited.get(node);
+        for(UndirectedGraphNode neighbor:node.neighbors){
+            if(!visited.containsKey(neighbor)){
+                visited.put(neighbor,new UndirectedGraphNode(neighbor.label));
+                dfs(neighbor,visited);
+            }
+            newnode.neighbors.add(visited.get(neighbor));
+        }
+    }
 }
