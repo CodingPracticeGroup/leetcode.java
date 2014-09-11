@@ -16,6 +16,380 @@ import java.util.Comparator;
 
 public class Solution {
   /*
+   * Search for a Range
+   */
+
+  public int[] searchRange(int[] A, int target) {
+    int mid = -1;
+    int low = 0, high = A.length - 1;
+    while (low <= high) {
+      mid = (low + high) / 2;
+      if (A[mid] == target) {
+        break;
+      } else if (target < A[mid]) {
+        high = mid - 1;
+      } else if (A[mid] < target) {
+        low = mid + 1;
+      }
+    }
+    if (A[mid] != target) {
+      return new int[] {-1, -1};
+    }
+
+    int left = -1;
+    low = 0;
+    high = mid;
+    while (low <= high) {
+      left = (low + high) / 2;
+      if (A[left] == target) {
+        high = left - 1;
+      } else if (A[left] < target) {
+        low = left + 1;
+      }
+    }
+    if (A[left] != A[mid]) {
+      left = left + 1;
+    }
+
+    int right = -1;
+    low = mid;
+    high = A.length - 1;
+    while (low <= high) {
+      right = (low + high) / 2;
+      if (A[right] == target) {
+        low = right + 1;
+      } else if (target < A[right]) {
+        high = right - 1;
+      }
+    }
+    if (A[right] != A[mid]) {
+      right = right - 1;
+    }
+
+    return new int[] {left, right};
+  }
+
+  /*
+   * Search in Rotated Sorted Array
+   */
+
+  public int search(int[] A, int target) {
+    int low = 0, high = A.length - 1;
+    while (low <= high) {
+      int mid = (low + high) / 2;
+      if (A[mid] == target) {
+        return mid;
+      } else if (A[mid] <= A[high]) {
+        if (A[mid] <= target && target <= A[high]) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      } else if (A[low] <= A[mid]) {
+        if (A[low] <= target && target <= A[mid]) {
+          high = mid - 1;
+        } else {
+          low = mid + 1;
+        }
+      }
+    }
+    return -1;
+  }
+
+  /*
+   * Longest Valid Parentheses
+   */
+
+  public int longestValidParentheses(String s) {
+    // left to right
+    int ret = 0;
+    Deque<Character> stack = new ArrayDeque<Character>();
+    int pieceLen = 0;
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c == '(') {
+        stack.addFirst(c);
+        pieceLen++;
+      } else if (c == ')') {
+        if (!stack.isEmpty() && stack.peekFirst() == '(') {
+          stack.removeFirst();
+          pieceLen++;
+          if (stack.isEmpty())
+            ret = Math.max(ret, pieceLen);
+        } else {
+          pieceLen = 0;
+          stack.clear();
+        }
+      }
+    }
+    // right to left
+    int ret2 = 0;
+    stack.clear();
+    pieceLen = 0;
+    for (int i = s.length() - 1; i >= 0; i--) {
+      char c = s.charAt(i);
+      if (c == ')') {
+        stack.addFirst(c);
+        pieceLen++;
+      } else if (c == '(') {
+        if (!stack.isEmpty() && stack.peekFirst() == ')') {
+          stack.removeFirst();
+          pieceLen++;
+          if (stack.isEmpty())
+            ret2 = Math.max(ret2, pieceLen);
+        } else {
+          pieceLen = 0;
+          stack.clear();
+        }
+      }
+    }
+    //
+    return Math.max(ret, ret2);
+  }
+
+  /*
+   * Next Permutation
+   */
+
+  public void nextPermutation(int[] num) {
+    int i = num.length - 2;
+    while (i >= 0 && num[i] >= num[i + 1]) {
+      i--;
+    }
+    if (i < 0) {
+      for (int j = 0; j < num.length / 2; j++) {
+        swapInArray(num, j, (num.length - 1) - j);
+      }
+      return;
+    }
+
+    int j = i + 1;
+    for (int k = i + 1; k < num.length; k++) {
+      if (num[k] > num[i] && num[k] < num[j]) {
+        j = k;
+      }
+    }
+
+    swapInArray(num, i, j);
+
+    Arrays.sort(num, i + 1, num.length);
+  }
+
+  private void swapInArray(int[] num, int i, int j) {
+    int temp = num[i];
+    num[i] = num[j];
+    num[j] = temp;
+  }
+
+  /*
+   * Substring with Concatenation of All Words
+   */
+
+  public List<Integer> findSubstring(String S, String[] L) {
+    int len = L[0].length();
+
+    Map<String, Integer> pool = new HashMap<String, Integer>();
+
+    List<Integer> ret = new ArrayList<Integer>();
+    for (int i = 0; i <= S.length() - len * L.length; i++) {
+      resetPool(pool, L);
+      if (checkL(pool, S, i, len, L.length)) {
+        ret.add(i);
+      }
+    }
+    return ret;
+  }
+
+  private void resetPool(Map<String, Integer> pool, String[] L) {
+    for (String str : L) {
+      pool.put(str, 0);
+    }
+    for (String str : L) {
+      pool.put(str, pool.get(str) + 1);
+    }
+  }
+
+  private boolean checkL(Map<String, Integer> pool, String S, int idx, int len, int size) {
+    for (int i = 0; i < size; i++) {
+      String piece = S.substring(idx, idx + len);
+      Integer val = pool.get(piece);
+      if (val != null) {
+        if (val == 1) {
+          pool.remove(piece);
+        } else {
+          pool.put(piece, val - 1);
+        }
+      } else {
+        return false;
+      }
+      idx += len;
+    }
+    return true;
+  }
+
+  /*
+   * Divide Two Integers
+   */
+
+  public int divide(int dividend, int divisor) {
+    long ldividend = dividend;
+    long ldivisor = divisor;
+    ldividend = Math.abs(ldividend);
+    ldivisor = Math.abs(ldivisor);
+
+    int ret = 0;
+    while (ldividend >= ldivisor) {
+      int i = 0;
+      while (ldividend >= (ldivisor << i)) {
+        i++;
+      }
+
+      ldividend = ldividend - (ldivisor << (i - 1));
+      ret = ret + (1 << (i - 1));
+    }
+
+    if (dividend < 0 && divisor > 0 || dividend > 0 && divisor < 0)
+      return -ret;
+    else
+      return ret;
+  }
+
+  /*
+   * Implement strStr()
+   */
+
+  public String strStr(String haystack, String needle) {
+    if (haystack.equals(needle)) {
+      return haystack;
+    }
+    for (int i = 0; i < haystack.length() - needle.length(); i++) {
+      if (needle.equals(haystack.substring(i, i + needle.length()))) {
+        return haystack.substring(i);
+      }
+    }
+    return null;
+  }
+
+  /*
+   * Remove Element
+   */
+
+  public int removeElement(int[] A, int elem) {
+    int head = 0, tail = A.length - 1;
+    while (head <= tail) {
+      if (A[head] == elem) {
+        while (tail >= head && A[tail] == elem) {
+          tail--;
+        }
+        if (tail < head) {
+          return head;
+        } else {
+          A[head] = A[tail];
+          A[tail] = elem;
+        }
+      }
+      head++;
+    }
+    return head;
+  }
+
+  /*
+   * Remove Duplicates from Sorted Array
+   */
+
+  public int removeDuplicates(int[] A) {
+    if (A.length < 2) {
+      return A.length;
+    }
+    int insertPoint = 1;
+    while (insertPoint < A.length && A[insertPoint - 1] != A[insertPoint]) {
+      insertPoint++;
+    }
+    int scanPoint = insertPoint + 1;
+    while (scanPoint < A.length) {
+      if (A[insertPoint - 1] != A[scanPoint]) {
+        A[insertPoint++] = A[scanPoint++];
+      } else {
+        scanPoint++;
+      }
+    }
+    return insertPoint;
+  }
+
+  /*
+   * Reverse Nodes in k-Group
+   */
+
+  public ListNode reverseKGroup(ListNode head, int k) {
+    if (k < 2) {
+      return head;
+    }
+    ListNode ret = new ListNode(0);
+    ret.next = head;
+    ListNode prevHead = ret;
+    while (true) {
+      ListNode postTail = prevHead;
+      for (int i = 0; i <= k; i++) {
+        if (postTail != null) {
+          postTail = postTail.next;
+        } else {
+          return ret.next;
+        }
+      }
+      prevHead = reverseSegment(prevHead, postTail);
+    }
+  }
+
+  private ListNode reverseSegment(ListNode prevHead, ListNode postTail) {
+    ListNode ret = prevHead.next;
+    ListNode p1 = prevHead.next, p2 = p1.next, p3 = p2.next;
+    p1.next = postTail;
+    while (true) {
+      p2.next = p1;
+
+      p1 = p2;
+      p2 = p3;
+      if (p3 != postTail) {
+        p3 = p3.next;
+      } else {
+        break;
+      }
+    }
+    prevHead.next = p1;
+    return ret;
+  }
+
+  /*
+   * Swap Nodes in Pairs
+   */
+
+  public ListNode swapPairs(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+
+    ListNode preHead = new ListNode(0);
+    preHead.next = head;
+
+    ListNode p0 = preHead, p1 = p0.next, p2 = p1.next;
+    while (p2 != null) {
+      p1.next = p2.next;
+      p2.next = p1;
+      p0.next = p2;
+      //
+      p0 = p1;
+      p1 = p0.next;
+      if (p1 != null) {
+        p2 = p1.next;
+      } else {
+        p2 = null;
+      }
+    }
+
+    return preHead.next;
+  }
+
+  /*
    * Merge k Sorted Lists
    */
 
