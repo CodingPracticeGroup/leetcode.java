@@ -3,6 +3,7 @@ package leetcode;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,6 +16,278 @@ import java.util.Comparator;
 
 
 public class Solution {
+  /*
+   * First Missing Positive
+   */
+
+  public int firstMissingPositive(int[] A) {
+    int idx = 0;
+    while (idx < A.length) {
+      if (0 < A[idx] && A[idx] <= A.length) {
+        if (idx == A[idx] - 1) {
+          idx++;
+        } else {
+          if (A[idx] == A[A[idx] - 1]) {
+            A[idx] = 0;
+            idx++;
+          } else {
+            swapInArray(A, idx, A[idx] - 1);
+          }
+        }
+      } else {
+        A[idx] = 0;
+        idx++;
+      }
+    }
+    for (idx = 0; idx < A.length; idx++) {
+      if (A[idx] - 1 != idx) {
+        return idx + 1;
+      }
+    }
+    return idx + 1;
+  }
+
+  /*
+   * Combination Sum II
+   */
+
+  public List<List<Integer>> combinationSum2(int[] num, int target) {
+    HashSet<List<Integer>> ret = new HashSet<List<Integer>>();
+    ArrayList<Integer> track = new ArrayList<Integer>();
+    combinationSum2Recursion(num, target, track, ret);
+    return new ArrayList<List<Integer>>(ret);
+  }
+
+  private void combinationSum2Recursion(int[] num, int target, ArrayList<Integer> track,
+      HashSet<List<Integer>> ret) {
+    int sum = 0;
+    for (Integer e : track) {
+      sum += e;
+    }
+    if (sum > target) {
+      return;
+    }
+    for (int i = 0; i < num.length; i++) {
+      if (num[i] > 0) {
+        track.add(num[i]);
+        num[i] = -1;
+        //
+        if (sum + track.get(track.size() - 1) == target) {
+          @SuppressWarnings("unchecked")
+          ArrayList<Integer> sort = (ArrayList<Integer>) track.clone();
+          Collections.sort(sort);
+          ret.add(sort);
+        } else if (sum + track.get(track.size() - 1) < target) {
+          combinationSum2Recursion(num, target, track, ret);
+        }
+        //
+        num[i] = track.remove(track.size() - 1);
+      }
+    }
+  }
+
+  /*
+   * Combination Sum
+   */
+
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    Set<List<Integer>> ret = new HashSet<List<Integer>>();
+    ArrayList<Integer> track = new ArrayList<Integer>();
+    combinationSumRecursion(candidates, target, track, ret);
+    return new ArrayList<List<Integer>>(ret);
+  }
+
+  private void combinationSumRecursion(int[] candidates, int target, ArrayList<Integer> track,
+      Set<List<Integer>> ret) {
+    for (int i = 0; i < candidates.length; i++) {
+      track.add(candidates[i]);
+      int sum = 0;
+      for (Integer e : track) {
+        sum += e;
+      }
+      if (sum == target) {
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer> sort = (ArrayList<Integer>) track.clone();
+        Collections.sort(sort);
+        ret.add(sort);
+      } else if (sum < target) {
+        combinationSumRecursion(candidates, target, track, ret);
+      }
+      track.remove(track.size() - 1);
+    }
+  }
+
+  /*
+   * Count and Say
+   */
+
+  public String countAndSay(int n) {
+    String ret = "1";
+    for (int i = 1; i < n; i++) {
+      ret = countAndSayStr(ret);
+    }
+    return ret;
+  }
+
+  private String countAndSayStr(String s) {
+    StringBuilder sb = new StringBuilder();
+    int i = 0, j = 1;
+    while (j <= s.length()) {
+      while (j < s.length() && s.charAt(i) == s.charAt(j)) {
+        j++;
+      }
+      sb.append(j - i);
+      sb.append(s.charAt(i));
+      //
+      i = j;
+      j = i + 1;
+    }
+    return sb.toString();
+  }
+
+  /*
+   * Sudoku Solver
+   */
+
+  public void solveSudoku(char[][] board) {
+    solveSudokuRecursion(board, 0, 0);
+  }
+
+  private boolean solveSudokuRecursion(char[][] board, int startR, int startC) {
+    if (isValidSudoku(board, startR, startC) == false) {
+      return false;
+    }
+    for (int i = startR; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (board[i][j] == '.') {
+          for (char k = '1'; k <= '9'; k++) {
+            board[i][j] = k;
+            if (solveSudokuRecursion(board, i, j) == true) {
+              return true;
+            }
+          }
+          board[i][j] = '.';
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private boolean isValidSudoku(char[][] board, int r, int c) {
+    Map<Character, Integer> pool = new HashMap<Character, Integer>();
+    if (isValidSudokuRow(board, r, pool) == false) {
+      return false;
+    }
+    if (isValidSudokuCol(board, c, pool) == false) {
+      return false;
+    }
+    if (isValidSudokuSubBox(board, r / 3 * 3 + 1, c / 3 * 3 + 1, pool) == false) {
+      return false;
+    }
+    return true;
+  }
+
+  /*
+   * Valid Sudoku
+   */
+
+  public boolean isValidSudoku(char[][] board) {
+    Map<Character, Integer> pool = new HashMap<Character, Integer>();
+    for (int i = 0; i < 9; i++) {
+      if (isValidSudokuRow(board, i, pool) == false) {
+        return false;
+      }
+    }
+    for (int i = 0; i < 9; i++) {
+      if (isValidSudokuCol(board, i, pool) == false) {
+        return false;
+      }
+    }
+    for (int i = 1; i < 9; i += 3) {
+      for (int j = 1; j < 9; j += 3) {
+        if (isValidSudokuSubBox(board, i, j, pool) == false) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private void isValidSudokuResetPool(Map<Character, Integer> pool) {
+    for (char i = '1'; i <= '9'; i++) {
+      pool.put(i, 1);
+    }
+  }
+
+  private boolean isValidSudokuRow(char[][] board, int r, Map<Character, Integer> pool) {
+    isValidSudokuResetPool(pool);
+    for (int i = 0; i < 9; i++) {
+      if (board[r][i] != '.') {
+        if (pool.get(board[r][i]) == 1) {
+          pool.put(board[r][i], 0);
+        } else {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private boolean isValidSudokuCol(char[][] board, int c, Map<Character, Integer> pool) {
+    isValidSudokuResetPool(pool);
+    for (int i = 0; i < 9; i++) {
+      if (board[i][c] != '.') {
+        if (pool.get(board[i][c]) == 1) {
+          pool.put(board[i][c], 0);
+        } else {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  private boolean isValidSudokuSubBox(char[][] board, int r, int c, Map<Character, Integer> pool) {
+    isValidSudokuResetPool(pool);
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        if (board[(r - 1) + i][(c - 1) + j] != '.') {
+          if (pool.get(board[(r - 1) + i][(c - 1) + j]) == 1) {
+            pool.put(board[(r - 1) + i][(c - 1) + j], 0);
+          } else {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  /*
+   * Search Insert Position
+   */
+
+  public int searchInsert(int[] A, int target) {
+    int low = 0, high = A.length - 1, mid = -1;
+    while (low <= high) {
+      mid = (low + high) / 2;
+      if (A[mid] == target) {
+        return mid;
+      } else if (A[mid] < target) {
+        low = mid + 1;
+      } else if (A[mid] > target) {
+        high = mid - 1;
+      }
+    }
+    if (low == mid + 1) {
+      return low;
+    } else if (high == mid - 1) {
+      return mid;
+    }
+    return -1;
+  }
+
   /*
    * Search for a Range
    */
