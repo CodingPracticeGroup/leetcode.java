@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -16,6 +17,441 @@ import java.util.Comparator;
 
 
 public class Solution {
+  /*
+   * Jump Game
+   */
+
+  public boolean canJump(int[] A) {
+    int i = 0;
+    int j = i + A[0];
+    while (i < A.length - 1) {
+      int tmp = i;
+      for (int k = i; k < A.length && k <= j; k++) {
+        tmp = Math.max(tmp, k + A[k]);
+      }
+      if (tmp < A.length - 1 && tmp == j) {
+        return false;
+      }
+      i = j;
+      j = tmp;
+    }
+    return true;
+  }
+
+  /*
+   * Spiral Matrix
+   */
+
+  public List<Integer> spiralOrder(int[][] matrix) {
+    ArrayList<Integer> ret = new ArrayList<Integer>();
+    int rowcount = matrix.length;
+    if (rowcount == 0) {
+      return ret;
+    }
+    int colcount = matrix[0].length;
+    if (colcount == 0) {
+      return ret;
+    }
+    int roundmax = Math.min(rowcount / 2 + rowcount % 2, colcount / 2 + colcount % 2);
+    for (int i = 0; i < roundmax; i++) {
+      ret.addAll(oneRound(matrix, i, rowcount, colcount));
+    }
+    return ret;
+  }
+
+  private List<Integer> oneRound(int[][] matrix, int round, int rowcount, int colcount) {
+    ArrayList<Integer> ret = new ArrayList<Integer>();
+    for (int i = round; i <= colcount - round - 1; i++) {
+      ret.add(matrix[round][i]);
+    }
+    for (int i = round + 1; i <= rowcount - round - 1; i++) {
+      ret.add(matrix[i][colcount - round - 1]);
+    }
+    if (rowcount - round - 1 != round) {
+      for (int i = colcount - round - 2; i >= round; i--) {
+        ret.add(matrix[rowcount - round - 1][i]);
+      }
+    }
+    if (colcount - round - 1 != round) {
+      for (int i = rowcount - round - 2; i > round; i--) {
+        ret.add(matrix[i][round]);
+      }
+    }
+    return ret;
+  }
+
+  /*
+   * Maximum Subarray
+   */
+
+  public int maxSubArray(int[] A) {
+    int sum = 0;
+    int max = Integer.MIN_VALUE;
+    for (int i = 0; i < A.length; i++) {
+      sum += A[i];
+      max = Math.max(max, sum);
+      sum = Math.max(0, sum); // if sum<0, we dont keep it
+    }
+    return max;
+  }
+
+  /*
+   * N-Queens II
+   */
+
+  public int totalNQueens(int n) {
+    int[] ret = new int[] {0};
+    char[][] chess = new char[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        chess[i][j] = '.';
+      }
+    }
+    dfsNQ(chess, n, ret, 0, new HashSet<Integer>(), new HashSet<Integer>(), new HashSet<Integer>());
+    return ret[0];
+  }
+
+  private void dfsNQ(char[][] track, int n, int[] ret, int row, HashSet<Integer> colMemory,
+      HashSet<Integer> diagMemory, HashSet<Integer> diag2Memory) {
+    if (row == n) {
+      ret[0]++;
+      return;
+    }
+    for (int i = 0; i < n; i++) { // explore
+      track[row][i] = 'Q'; // forward
+      if (!colMemory.contains(i) && !diagMemory.contains(row - i) && !diag2Memory.contains(row + i)) {
+        colMemory.add(i);
+        diagMemory.add(row - i);
+        diag2Memory.add(row + i);
+        dfsNQ(track, n, ret, row + 1, colMemory, diagMemory, diag2Memory);
+        colMemory.remove(i);
+        diagMemory.remove(row - i);
+        diag2Memory.remove(row + i);
+      }
+      track[row][i] = '.'; // backward
+    }
+  }
+
+  /*
+   * N-Queens
+   */
+
+  public List<String[]> solveNQueens(int n) {
+    ArrayList<String[]> ret = new ArrayList<String[]>();
+    char[][] chess = new char[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        chess[i][j] = '.';
+      }
+    }
+    dfsNQ(chess, n, ret, 0, new HashSet<Integer>(), new HashSet<Integer>(), new HashSet<Integer>());
+    return ret;
+  }
+
+  private void dfsNQ(char[][] track, int n, List<String[]> ret, int row,
+      HashSet<Integer> colMemory, HashSet<Integer> diagMemory, HashSet<Integer> diag2Memory) {
+    if (row == n) {
+      String[] rows = new String[n];
+      for (int i = 0; i < n; i++) {
+        rows[i] = new String(track[i]);
+      }
+      ret.add(rows);
+      return;
+    }
+    for (int i = 0; i < n; i++) { // explore
+      track[row][i] = 'Q'; // forward
+      if (!colMemory.contains(i) && !diagMemory.contains(row - i) && !diag2Memory.contains(row + i)) {
+        colMemory.add(i);
+        diagMemory.add(row - i);
+        diag2Memory.add(row + i);
+        dfsNQ(track, n, ret, row + 1, colMemory, diagMemory, diag2Memory);
+        colMemory.remove(i);
+        diagMemory.remove(row - i);
+        diag2Memory.remove(row + i);
+      }
+      track[row][i] = '.'; // backward
+    }
+  }
+
+  /*
+   * Pow(x, n)
+   */
+
+  public double pow(double x, int n) {
+    if (n >= 0) {
+      return powP(x, n);
+    } else {
+      return 1 / powP(x, -n);
+    }
+  }
+
+  public double powP(double x, int n) {
+    if (n == 0) {
+      return 1;
+    }
+
+    int half = n / 2;
+    double xx = powP(x, half);
+    xx *= xx;
+
+    if (n % 2 == 1) {
+      xx *= x;
+    }
+
+    return xx;
+  }
+
+  /*
+   * Anagrams
+   */
+
+  public List<String> anagrams(String[] strs) {
+    ArrayList<String> ret = new ArrayList<String>();
+    HashMap<String, String> memory = new HashMap<String, String>(); // digest, original
+    for (int i = 0; i < strs.length; i++) {
+      String s = strs[i];
+      char[] ca = s.toCharArray();
+      Arrays.sort(ca);
+      String ss = new String(ca);
+      if (memory.containsKey(ss)) {
+        ret.add(s);
+        if (memory.get(ss) != null) {
+          ret.add(memory.get(ss));
+          memory.put(ss, null);
+        }
+      } else {
+        memory.put(ss, s);
+      }
+    }
+    return ret;
+  }
+
+  /*
+   * Rotate Image
+   */
+
+  public void rotate(int[][] matrix) {
+    flip1(matrix);
+    flip2(matrix);
+  }
+
+  private void flip1(int[][] matrix) { // \
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = i + 1; j < matrix.length; j++) {
+        int tmp = matrix[i][j];
+        matrix[i][j] = matrix[j][i];
+        matrix[j][i] = tmp;
+      }
+    }
+  }
+
+  private void flip2(int[][] matrix) { // |
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = matrix.length / 2; j < matrix.length; j++) {
+        int tmp = matrix[i][j];
+        matrix[i][j] = matrix[i][matrix.length - j - 1];
+        matrix[i][matrix.length - j - 1] = tmp;
+      }
+    }
+  }
+
+  /*
+   * Permutations II
+   */
+
+  public List<List<Integer>> permuteUnique(int[] num) {
+    Arrays.sort(num);
+    ArrayDeque<Integer> track = new ArrayDeque<Integer>();
+    ArrayList<Integer> num2 = new ArrayList<Integer>();
+    for (int i = 0; i < num.length; i++) {
+      num2.add(num[i]);
+    }
+    HashSet<List<Integer>> ret = new HashSet<List<Integer>>();
+    dfsTrack(track, ret, num2);
+    return new ArrayList<List<Integer>>(ret);
+  }
+
+  private void dfsTrack(ArrayDeque<Integer> track, HashSet<List<Integer>> ret,
+      ArrayList<Integer> num) {
+    if (num.isEmpty()) {
+      ret.add(new ArrayList<Integer>(track));
+    } else {
+      int last = num.get(0) - 1;
+      for (int i = 0; i < num.size(); i++) {
+        int n = num.get(i);
+        if (n != last) {
+          last = n;
+          track.push(n);
+          num.remove(i);
+          dfsTrack(track, ret, num);
+          num.add(i, track.pop());
+        }
+      }
+    }
+  }
+
+  /*
+   * Permutations
+   */
+
+  public List<List<Integer>> permute(int[] num) {
+    HashSet<Integer> numIdxSet = new HashSet<Integer>();
+    for (int i = 0; i < num.length; i++) {
+      numIdxSet.add(i);
+    }
+    return recusivePermute(numIdxSet, num);
+  }
+
+  private List<List<Integer>> recusivePermute(HashSet<Integer> numIdxSet, int[] num) {
+    if (numIdxSet.size() == 1) {
+      ArrayList<List<Integer>> ret = new ArrayList<List<Integer>>();
+      ArrayList<Integer> one = new ArrayList<Integer>();
+      one.add(num[numIdxSet.iterator().next()]);
+      ret.add(one);
+      return ret;
+    }
+    ArrayList<List<Integer>> ret = new ArrayList<List<Integer>>();
+    for (Iterator<Integer> it = numIdxSet.iterator(); it.hasNext();) {
+      int idx = it.next();
+      HashSet<Integer> numIdxSetSub = deepClone(numIdxSet);
+      numIdxSetSub.remove(idx);
+      List<List<Integer>> subRet = recusivePermute(numIdxSetSub, num);
+      for (Iterator<List<Integer>> it2 = subRet.iterator(); it2.hasNext();) {
+        List<Integer> sub = it2.next();
+        sub.add(num[idx]);
+        ret.add(sub);
+      }
+    }
+    return ret;
+  }
+
+  private HashSet<Integer> deepClone(HashSet<Integer> in) {
+    HashSet<Integer> ret = new HashSet<Integer>();
+    for (Iterator<Integer> it = in.iterator(); it.hasNext();) {
+      int i = it.next();
+      ret.add(new Integer(i));
+    }
+    return ret;
+  }
+
+  /*
+   * Jump Game II
+   */
+
+  public int jump(int[] A) {
+    int count = 0;
+    int idx = 0;
+    int jump = idx + A[0];
+    while (idx < A.length - 1) {
+      count++;
+
+      int tmp = 0;
+      for (int i = idx; i < A.length && i <= jump; i++) {
+        tmp = Math.max(tmp, i + A[i]);
+      }
+      idx = jump;
+      jump = tmp;
+    }
+    return count;
+  }
+
+  /*
+   * Wildcard Matching
+   */
+
+  public boolean isWildcardMatch(String s, String p) {
+    int i = 0;
+    int j = 0;
+    int star = -1;
+    int mark = -1;
+    while (i < s.length()) {
+      if (j < p.length() && (p.charAt(j) == '?' || p.charAt(j) == s.charAt(i))) {
+        ++i;
+        ++j;
+      } else if (j < p.length() && p.charAt(j) == '*') { // last *, override multiple *
+        star = j++;
+        mark = i;
+      } else if (star != -1) {
+        j = star + 1;
+        i = ++mark;
+      } else {
+        return false;
+      }
+    }
+    while (j < p.length() && p.charAt(j) == '*') {
+      ++j;
+    }
+    return j == p.length();
+  }
+
+  /*
+   * Multiply Strings
+   */
+
+  public String multiply(String num1, String num2) {
+    char[] num1array = new StringBuilder(num1).reverse().toString().toCharArray();
+    for (int i = 0; i < num1array.length; i++) {
+      num1array[i] -= '0';
+    }
+    char[] num2array = new StringBuilder(num2).reverse().toString().toCharArray();
+    for (int i = 0; i < num2array.length; i++) {
+      num2array[i] -= '0';
+    }
+    //
+    char[] ret = new char[num1array.length + num2array.length + 1];
+    for (int i = 0; i < num2array.length; i++) {
+      char carry = 0;
+      for (int j = 0; j < num1array.length; j++) {
+        int tmp = num1array[j] * num2array[i] + carry;
+        ret[i + j] += tmp % 10;
+        carry = (char) (tmp / 10);
+      }
+      if (carry > 0) {
+        ret[num1array.length + i] = carry;
+      }
+    }
+
+    char carry = 0;
+    for (int i = 0; i < ret.length; i++) {
+      ret[i] += carry;
+      carry = (char) (ret[i] / 10);
+      ret[i] %= 10;
+      ret[i] += '0';
+    }
+    //
+    String retStr = new StringBuilder(new String(ret)).reverse().toString();
+    for (int i = 0; i < retStr.length(); i++) {
+      if (retStr.charAt(i) != '0') {
+        return retStr.substring(i);
+      }
+    }
+    return "0";
+  }
+
+  /*
+   * Trapping Rain Water
+   */
+
+  public int trap(int[] A) {
+    int[] left2right = new int[A.length]; // trapped by left
+    int max = 0;
+    for (int i = 0; i < A.length; i++) {
+      max = Math.max(max, A[i]);
+      left2right[i] = max - A[i];
+    }
+    int[] right2left = new int[A.length]; // trapped by right
+    max = 0;
+    for (int i = A.length - 1; i >= 0; i--) {
+      max = Math.max(max, A[i]);
+      right2left[i] = max - A[i];
+    }
+    int sum = 0;
+    for (int i = 0; i < A.length; i++) {
+      sum += Math.min(left2right[i], right2left[i]);
+    }
+    return sum;
+  }
+
   /*
    * First Missing Positive
    */
@@ -1145,7 +1581,7 @@ public class Solution {
    * Regular Expression Matching
    */
 
-  public boolean isMatch(String s, String p) {
+  public boolean isRegularExpressionMatch(String s, String p) {
     char[] sArray = s.toCharArray();
     char[] pArray = p.toCharArray();
 
