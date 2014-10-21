@@ -18,6 +18,527 @@ import java.util.Comparator;
 
 public class Solution {
   /*
+   * Text Justification
+   */
+
+  public List<String> fullJustify(String[] words, int L) {
+    ArrayList<ArrayList<String>> tmp = putInLines(words, L);
+    return justifyLines(tmp, L);
+  }
+
+  private ArrayList<ArrayList<String>> putInLines(String[] words, int L) {
+    ArrayList<ArrayList<String>> tmp = new ArrayList<ArrayList<String>>();
+    ArrayList<String> row = new ArrayList<String>();
+    int rowLen = 0;
+    for (int i = 0; i < words.length; i++) {
+      int expectLen = rowLen == 0 ? rowLen + words[i].length() : rowLen + words[i].length() + 1;
+      if (expectLen <= L) {
+        row.add(words[i]);
+        rowLen = expectLen;
+      } else {
+        tmp.add(row);
+        row = new ArrayList<String>();
+        row.add(words[i]);
+        rowLen = words[i].length();
+      }
+    }
+    if (row.size() > 0) {
+      tmp.add(row);
+    }
+    return tmp;
+  }
+
+  private List<String> justifyLines(ArrayList<ArrayList<String>> tmp, int L) {
+    ArrayList<String> ret = new ArrayList<String>();
+
+    for (int ii = 0; ii < tmp.size() - 1; ii++) {
+      ArrayList<String> al = tmp.get(ii);
+      int spaceNum = al.size() - 1;
+      if (spaceNum == 0) {
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() < L - al.get(0).length()) {
+          sb.append(" ");
+        }
+        ret.add(al.get(0) + sb.toString());
+      } else {
+        int spaceSlot[] = new int[spaceNum];
+        for (int i = 0; i < spaceNum; i++) {
+          spaceSlot[i] = 1;
+        }
+        int wordsLen = 0;
+        for (String s : al) {
+          wordsLen += s.length();
+        }
+        int expectSpace = spaceNum;
+        int idx = -1;
+        while (wordsLen + expectSpace < L) {
+          spaceSlot[(++idx) % spaceNum]++;
+          expectSpace++;
+        }
+
+        idx = 0;
+        StringBuilder sb = new StringBuilder();
+        for (String s : al) {
+          sb.append(s);
+          if (idx < spaceNum) {
+            StringBuilder sb2 = new StringBuilder();
+            while (sb2.length() < spaceSlot[idx]) {
+              sb2.append(" ");
+            }
+            sb.append(sb2.toString());
+            idx++;
+          }
+        }
+        ret.add(sb.toString());
+      }
+    }
+
+    //
+    ArrayList<String> al = tmp.get(tmp.size() - 1);
+    int idx = 0;
+    StringBuilder sb = new StringBuilder();
+    for (String s : al) {
+      sb.append(s);
+      if (idx < al.size() - 1) {
+        sb.append(" ");
+        idx++;
+      }
+    }
+    while (sb.length() < L) {
+      sb.append(" ");
+    }
+    ret.add(sb.toString());
+
+    //
+    return ret;
+  }
+
+  /*
+   * Plus One
+   */
+
+  public int[] plusOne(int[] digits) {
+    reverseArray(digits);
+    int carry = 1;
+    for (int i = 0; i < digits.length; i++) {
+      int tmp = digits[i] + carry;
+      digits[i] = tmp % 10;
+      carry = tmp / 10;
+    }
+    reverseArray(digits);
+    if (carry == 0) {
+      return digits;
+    } else {
+      int[] ret = new int[digits.length + 1];
+      ret[0] = carry;
+      for (int i = 0; i < digits.length; i++) {
+        ret[i + 1] = digits[i];
+      }
+      return ret;
+    }
+  }
+
+  private void reverseArray(int[] digits) {
+    for (int i = 0; i < digits.length / 2; i++) {
+      int tmp = digits[i];
+      digits[i] = digits[digits.length - i - 1];
+      digits[digits.length - i - 1] = tmp;
+    }
+  }
+
+  /*
+   * Valid Number
+   */
+
+  public boolean isNumber(String s) {
+    int p = 0;
+    // 1 & 9
+    s = s.trim();
+    // 2
+    if (p < s.length() && (s.charAt(p) == '+' || s.charAt(p) == '-')) {
+      p++;
+    }
+    // 3
+    int n1 = 0;
+    while (p + n1 < s.length() && '0' <= s.charAt(p + n1) && s.charAt(p + n1) <= '9') {
+      n1++;
+    }
+    p = p + n1;
+    // 4
+    if (p < s.length() && s.charAt(p) == '.') {
+      p++;
+    }
+    // 5
+    int n2 = 0;
+    while (p + n2 < s.length() && '0' <= s.charAt(p + n2) && s.charAt(p + n2) <= '9') {
+      n2++;
+    }
+    p = p + n2;
+    // 6
+    if (n1 + n2 == 0) {
+      return false;
+    }
+    // 7
+    if (p < s.length() && (s.charAt(p) == 'e' || s.charAt(p) == 'E')) {
+      p++;
+      // 8
+      // .2
+      if (p < s.length() && (s.charAt(p) == '+' || s.charAt(p) == '-')) {
+        p++;
+      }
+      // .3
+      n1 = 0;
+      while (p + n1 < s.length() && '0' <= s.charAt(p + n1) && s.charAt(p + n1) <= '9') {
+        n1++;
+      }
+      p = p + n1;
+      // 8
+      if (n1 == 0) {
+        return false;
+      }
+    }
+    // 10
+    return p == s.length();
+  }
+
+  /*
+   * Add Binary
+   */
+
+  public String addBinary(String a, String b) {
+    StringBuilder aa = new StringBuilder(a).reverse();
+    StringBuilder bb = new StringBuilder(b).reverse();
+    while (bb.length() < aa.length()) {
+      bb.append("0");
+    }
+    while (aa.length() < bb.length()) {
+      aa.append("0");
+    }
+    //
+    StringBuilder sb = new StringBuilder();
+    int carry = 0;
+    for (int i = 0; i < aa.length(); i++) {
+      int tmp = (aa.charAt(i) - '0') + (bb.charAt(i) - '0') + carry;
+      sb.append(tmp % 2);
+      carry = tmp / 2;
+    }
+    if (carry > 0)
+      sb.append(1);
+    return sb.reverse().toString();
+  }
+
+  /*
+   * Merge Two Sorted Lists
+   */
+
+  public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    if (l1 == null)
+      return l2;
+    if (l2 == null)
+      return l1;
+    //
+    ListNode retHead;
+    ListNode pCurrent;
+    if (l1.val < l2.val) {
+      retHead = l1;
+      pCurrent = l1;
+      l1 = l1.next;
+    } else {
+      retHead = l2;
+      pCurrent = l2;
+      l2 = l2.next;
+    }
+    //
+    while (l1 != null && l2 != null) {
+      if (l1.val < l2.val) {
+        pCurrent.next = l1;
+        pCurrent = l1;
+        l1 = l1.next;
+      } else {
+        pCurrent.next = l2;
+        pCurrent = l2;
+        l2 = l2.next;
+      }
+    }
+    //
+    if (l1 != null)
+      pCurrent.next = l1;
+    if (l2 != null)
+      pCurrent.next = l2;
+    return retHead;
+  }
+
+  /*
+   * Minimum Path Sum
+   */
+
+  public int minPathSum(int[][] grid) {
+    int dp[][] = new int[grid.length][grid[0].length];
+    dp[0][0] = grid[0][0];
+    //
+    for (int i = 1; i < grid[0].length; i++) {
+      dp[0][i] = dp[0][i - 1] + grid[0][i];
+    }
+    for (int i = 1; i < grid.length; i++) {
+      dp[i][0] = dp[i - 1][0] + grid[i][0];
+    }
+    //
+    for (int i = 1; i < grid.length; i++) {
+      for (int j = 1; j < grid[0].length; j++) {
+        dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+      }
+    }
+    return dp[grid.length - 1][grid[0].length - 1];
+  }
+
+  /*
+   * Unique Paths II
+   */
+
+  public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+    if (obstacleGrid[0][0] == 1) {
+      return 0;
+    }
+    //
+    obstacleGrid[0][0] = -1;
+    for (int i = 1; i < obstacleGrid.length; i++) {
+      if (obstacleGrid[i][0] == 0) {
+        obstacleGrid[i][0] = obstacleGrid[i - 1][0];
+      } else {
+        break;
+      }
+    }
+    for (int i = 1; i < obstacleGrid[0].length; i++) {
+      if (obstacleGrid[0][i] == 0) {
+        obstacleGrid[0][i] = obstacleGrid[0][i - 1];
+      } else {
+        break;
+      }
+    }
+    //
+    for (int i = 1; i < obstacleGrid.length; i++) {
+      for (int j = 1; j < obstacleGrid[0].length; j++) {
+        if (obstacleGrid[i][j] == 0) {
+          obstacleGrid[i][j] =
+              Math.min(0, obstacleGrid[i - 1][j]) + Math.min(0, obstacleGrid[i][j - 1]);
+        }
+      }
+    }
+    //
+    if (obstacleGrid[obstacleGrid.length - 1][obstacleGrid[0].length - 1] > 0) {
+      return 0;
+    } else {
+      return -obstacleGrid[obstacleGrid.length - 1][obstacleGrid[0].length - 1];
+    }
+  }
+
+  /*
+   * Unique Paths
+   */
+
+  public int uniquePaths(int m, int n) {
+    int dp[][] = new int[m][n];
+    for (int i = 0; i < m; i++) {
+      dp[i][0] = 1;
+    }
+    for (int i = 0; i < n; i++) {
+      dp[0][i] = 1;
+    }
+    //
+    for (int i = 1; i < m; i++) {
+      for (int j = 1; j < n; j++) {
+        dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+      }
+    }
+    return dp[m - 1][n - 1];
+  }
+
+  /*
+   * Rotate List
+   */
+
+  public ListNode rotateRight(ListNode head, int n) {
+    int length = 0;
+    ListNode pCount = head;
+    while (pCount != null) {
+      pCount = pCount.next;
+      length++;
+    }
+    //
+    if (length == 0) {
+      return head;
+    }
+    n = n % length;
+    if (n == 0) {
+      return head;
+    }
+    //
+    ListNode p1 = head;
+    ListNode p2 = head;
+    for (int i = 0; i < n; i++) {
+      p2 = p2.next;
+    }
+    //
+    while (p2.next != null) {
+      p1 = p1.next;
+      p2 = p2.next;
+    }
+    //
+    ListNode retHead = p1.next;
+    p2.next = head;
+    p1.next = null;
+    return retHead;
+  }
+
+  /*
+   * Permutation Sequence
+   */
+
+  public String getPermutation(int n, int k) {
+    ArrayList<Integer> pool = new ArrayList<Integer>();
+    for (int i = 1; i <= n; i++) {
+      pool.add(i);
+    }
+
+    int[] jiechen = new int[n + 1];
+    jiechen[0] = 1;
+    for (int i = 1; i <= n; i++) {
+      jiechen[i] = jiechen[i - 1] * i;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    k--;
+    while (n > 0) {
+      int idx = k / jiechen[n - 1];
+      sb.append(pool.get(idx));
+      pool.remove(idx);
+      k = k % jiechen[n - 1];
+      n--;
+    }
+
+    return sb.toString();
+  }
+
+  /*
+   * Spiral Matrix II
+   */
+
+  public int[][] generateMatrix(int n) {
+    int[][] matrix = new int[n][n];
+    int out = 1;
+    int round = 0;
+    do {
+      out = fillOneRound(matrix, n, round++, out);
+    } while (out <= n * n);
+    return matrix;
+  }
+
+  private int fillOneRound(int[][] matrix, int n, int round, int start) {
+    for (int i = round; i <= n - round - 1; i++) {
+      matrix[round][i] = start++;
+    }
+    for (int i = round + 1; i <= n - round - 1; i++) {
+      matrix[i][n - round - 1] = start++;
+    }
+    for (int i = n - round - 2; i >= round; i--) {
+      matrix[n - round - 1][i] = start++;
+    }
+    for (int i = n - round - 2; i > round; i--) {
+      matrix[i][round] = start++;
+    }
+    return start;
+  }
+
+  /*
+   * Length of Last Word
+   */
+
+  public int lengthOfLastWord(String s) {
+    String ss = s.trim();
+    if (ss.length() == 0)
+      return 0;
+
+    int p1 = ss.length() - 1;
+    while (p1 >= 0 && ss.charAt(p1) != ' ') {
+      p1--;
+    }
+    return ss.length() - p1 - 1;
+  }
+
+  /*
+   * Insert Interval
+   */
+
+  public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+    if (intervals.isEmpty()) {
+      intervals.add(newInterval);
+      return intervals;
+    }
+    if (newInterval.end < intervals.get(0).start) {
+      intervals.add(0, newInterval);
+      return intervals;
+    } else if (newInterval.start > intervals.get(intervals.size() - 1).end) {
+      intervals.add(newInterval);
+      return intervals;
+    }
+
+    int p1 = -1, p2 = intervals.size();
+    for (int i = 0; i < intervals.size(); i++) {
+      if (p1 == -1 && newInterval.start <= intervals.get(i).end) {
+        p1 = i;
+      }
+      if (p2 == intervals.size() && newInterval.end < intervals.get(i).start) {
+        p2 = i;
+      }
+    }
+
+    ArrayList<Interval> ret = new ArrayList<Interval>();
+    if (p1 >= p2) {
+      ret.addAll(intervals.subList(0, p1));
+      ret.add(newInterval);
+      ret.addAll(intervals.subList(p2, intervals.size()));
+    } else {
+      ret.addAll(intervals.subList(0, p1));
+      newInterval.start = Math.min(newInterval.start, intervals.get(p1).start);
+      newInterval.end = Math.max(newInterval.end, intervals.get(p2 - 1).end);
+      ret.add(newInterval);
+      ret.addAll(intervals.subList(p2, intervals.size()));
+    }
+    return ret;
+  }
+
+  /*
+   * Merge Intervals
+   */
+
+  public List<Interval> merge(List<Interval> intervals) {
+    if (intervals.size() < 2) {
+      return intervals;
+    }
+
+    Collections.sort(intervals, new Comparator<Interval>() { // List.sort() in java8
+          public int compare(Interval o1, Interval o2) {
+            return o1.start - o2.start;
+          }
+        });
+
+    int p1 = 0;
+    int p2 = 1;
+    while (p2 < intervals.size()) {
+      if (intervals.get(p2).start <= intervals.get(p1).end) {
+        intervals.get(p1).end = Math.max(intervals.get(p1).end, intervals.get(p2).end);
+      } else {
+        p1++;
+        intervals.get(p1).start = intervals.get(p2).start;
+        intervals.get(p1).end = intervals.get(p2).end;
+      }
+      p2++;
+    }
+
+    return intervals.subList(0, p1 + 1);
+  }
+
+  /*
    * Jump Game
    */
 
