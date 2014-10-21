@@ -18,6 +18,74 @@ import java.util.Comparator;
 
 public class Solution {
   /*
+   * Simplify Path
+   */
+
+  public String simplifyPath(String path) {
+    String[] pathPieces = path.split("/");
+    ArrayDeque<String> stack = new ArrayDeque<String>();
+    for (int i = 0; i < pathPieces.length; i++) {
+      if (pathPieces[i].equals("")) {
+        // nop
+      } else if (pathPieces[i].equals(".")) {
+        // nop
+      } else if (pathPieces[i].equals("..")) {
+        if (!stack.isEmpty()) {
+          stack.removeLast();
+        }
+      } else {
+        stack.offer(pathPieces[i]);
+      }
+    }
+    StringBuilder sb = new StringBuilder();
+    if (stack.isEmpty()) {
+      sb.append("/");
+    } else {
+      while (!stack.isEmpty()) {
+        sb.append("/");
+        sb.append(stack.poll());
+      }
+    }
+    return sb.toString();
+  }
+
+  /*
+   * Climbing Stairs
+   */
+
+  public int climbStairs(int n) {
+    int[] dp = new int[Math.max(n + 1, 3)];
+    dp[1] = 1; // 1
+    dp[2] = 2; // 1+1 or 2
+    for (int i = 3; i <= n; i++) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
+  }
+
+  /*
+   * Sqrt(x)
+   */
+
+  public int sqrt(int x) {
+    long low = 1;
+    long high = x;
+    long mid = (low + high) / 2;
+    while (low <= high) {
+      mid = (low + high) / 2;
+      long mid2 = mid * mid;
+      if (mid2 < x) {
+        low = mid + 1;
+      } else if (mid2 > x) {
+        high = mid - 1;
+      } else {
+        return (int) mid;
+      }
+    }
+    return (int) high;
+  }
+
+  /*
    * Text Justification
    */
 
