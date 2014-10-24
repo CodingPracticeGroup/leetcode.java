@@ -18,6 +18,243 @@ import java.util.Comparator;
 
 public class Solution {
   /*
+   * Subsets
+   */
+
+  public List<List<Integer>> subsets(int[] S) {
+    ArrayList<List<Integer>> ret = new ArrayList<List<Integer>>();
+    Arrays.sort(S);
+    for (int i = 0; i < Math.pow(2, S.length); i++) {
+      ArrayList<Integer> row = new ArrayList<Integer>();
+      for (int j = 0; j < S.length; j++) {
+        if (((i >> j) & 1) > 0) {
+          row.add(S[j]);
+        }
+      }
+      ret.add(row);
+    }
+    return ret;
+  }
+
+  /*
+   * Combinations
+   */
+
+  public List<List<Integer>> combine(int n, int k) {
+    ArrayList<List<Integer>> ret = new ArrayList<List<Integer>>();
+    ArrayList<Integer> track = new ArrayList<Integer>();
+    dfsTrackCombine(ret, track, n, k);
+    return ret;
+  }
+
+  private void dfsTrackCombine(ArrayList<List<Integer>> ret, ArrayList<Integer> track, int n, int k) {
+    if (k == 0) {
+      ArrayList<Integer> trackclone = new ArrayList<Integer>(track);
+      ret.add(trackclone);
+    } else {
+      int last = 0;
+      if (track.size() > 0) {
+        last = track.get(track.size() - 1);
+      }
+      for (int i = last + 1; i <= n; i++) {
+        track.add(i);
+        dfsTrackCombine(ret, track, n, k - 1);
+        track.remove(track.size() - 1);
+      }
+    }
+  }
+
+  /*
+   * Minimum Window Substring
+   */
+
+  public String minWindow(String S, String T) {
+    if (T.equals("") || S.length() < T.length()) {
+      return "";
+    }
+    int arrLen = 260;
+    int[] tt = new int[arrLen];
+    int satisfyCount = 0;
+    for (int i = 0; i < T.length(); i++) {
+      char c = T.charAt(i);
+      if (tt[c] == 0) {
+        satisfyCount++;
+      }
+      tt[c]++;
+    }
+    //
+    int[] window = new int[arrLen];
+    int minLeft = 0;
+    int minRight = S.length();
+    int s1 = 0;
+    int s2 = 1;
+    int checkCount = 0;
+    boolean exist = false;
+    while (s2 <= S.length()) {
+      window[S.charAt(s2 - 1)]++;
+      if (window[S.charAt(s2 - 1)] == tt[S.charAt(s2 - 1)]) {
+        checkCount++;
+      }
+
+      if (satisfyCount == checkCount) {
+        exist = true;
+        while (s1 < s2 && satisfyCount == checkCount) {
+          window[S.charAt(s1)]--;
+          if (window[S.charAt(s1)] < tt[S.charAt(s1)]) {
+            checkCount--;
+          }
+          s1++;
+        }
+        if (minRight - minLeft > s2 - (s1 - 1)) {
+          minRight = s2;
+          minLeft = s1 - 1;
+        }
+      }
+
+      s2++;
+    }
+
+    if (exist)
+      return S.substring(minLeft, minRight);
+    else
+      return "";
+  }
+
+  /*
+   * Sort Colors
+   */
+
+  public void sortColors(int[] A) {
+    int idxToInsert0 = 0;
+    while (idxToInsert0 < A.length && A[idxToInsert0] == 0) {
+      idxToInsert0++;
+    }
+    int idxToInsert2 = A.length - 1;
+    while (idxToInsert2 >= 0 && A[idxToInsert2] == 2) {
+      idxToInsert2--;
+    }
+    for (int i = idxToInsert0; i <= idxToInsert2; i++) {
+      if (A[i] == 0) {
+        swapInArray(A, idxToInsert0++, i);
+      } else if (A[i] == 2) {
+        swapInArray(A, i, idxToInsert2);
+        while (idxToInsert0 >= 0 && A[idxToInsert2] == 2) {
+          idxToInsert2--;
+        }
+        i--;
+      }
+    }
+  }
+
+  /*
+   * Search a 2D Matrix
+   */
+
+  public boolean searchMatrix(int[][] matrix, int target) {
+    int findRow = -1;
+    int low = 0;
+    int high = matrix.length - 1;
+    while (low <= high) {
+      int mid = (low + high) / 2;
+      if (matrix[mid][0] <= target
+          && (mid + 1 < matrix.length ? target < matrix[mid + 1][0] : true)) {
+        findRow = mid;
+        break;
+      } else if (target < matrix[mid][0]) {
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+    if (findRow >= 0) {
+      return Arrays.binarySearch(matrix[findRow], target) >= 0;
+    } else {
+      return false;
+    }
+  }
+
+  /*
+   * Set Matrix Zeroes
+   */
+
+  public void setZeroes(int[][] matrix) {
+    boolean firstRowZero = false;
+    boolean firstColZero = false;
+    for (int i = 0; i < matrix.length; i++) {
+      if (matrix[i][0] == 0) {
+        firstColZero = true;
+        break;
+      }
+    }
+    for (int i = 0; i < matrix[0].length; i++) {
+      if (matrix[0][i] == 0) {
+        firstRowZero = true;
+        break;
+      }
+    }
+    //
+    for (int i = 1; i < matrix.length; i++) {
+      for (int j = 1; j < matrix[i].length; j++) {
+        if (matrix[i][j] == 0) {
+          matrix[i][0] = 0;
+          matrix[0][j] = 0;
+        }
+      }
+    }
+    //
+    for (int i = 1; i < matrix.length; i++) {
+      if (matrix[i][0] == 0) {
+        for (int j = 1; j < matrix[i].length; j++) {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+    for (int j = 1; j < matrix[0].length; j++) {
+      if (matrix[0][j] == 0) {
+        for (int i = 1; i < matrix.length; i++) {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+    //
+    if (firstRowZero) {
+      for (int i = 0; i < matrix[0].length; i++) {
+        matrix[0][i] = 0;
+      }
+    }
+    if (firstColZero) {
+      for (int i = 0; i < matrix.length; i++) {
+        matrix[i][0] = 0;
+      }
+    }
+  }
+
+  /*
+   * Edit Distance
+   */
+
+  public int minDistance(String word1, String word2) {
+    int dp[][] = new int[word1.length() + 1][word2.length() + 1];
+    dp[0][0] = 0;
+    for (int i = 1; i <= word1.length(); i++) {
+      dp[i][0] = dp[i - 1][0] + 1;
+    }
+    for (int i = 1; i <= word2.length(); i++) {
+      dp[0][i] = dp[0][i - 1] + 1;
+    }
+    //
+    for (int i = 1; i <= word1.length(); i++) {
+      for (int j = 1; j <= word2.length(); j++) {
+        int insert = dp[i - 1][j] + 1;
+        int delete = dp[i][j - 1] + 1;
+        int replace = dp[i - 1][j - 1] + ((word1.charAt(i - 1) == word2.charAt(j - 1)) ? 0 : 1);
+        dp[i][j] = Math.min(Math.min(insert, delete), replace);
+      }
+    }
+    return dp[word1.length()][word2.length()];
+  }
+
+  /*
    * Simplify Path
    */
 
