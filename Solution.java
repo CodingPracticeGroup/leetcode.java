@@ -18,6 +18,352 @@ import java.util.Comparator;
 
 public class Solution {
   /*
+   * Decode Ways
+   */
+
+  public int numDecodings(String s) {
+    if (s.length() == 0) {
+      return 0;
+    } else if (s.length() == 1) {
+      if (s.charAt(0) != '0') {
+        return 1;
+      } else {
+        return 0;
+      }
+    }
+
+    int dp[] = new int[s.length()];
+    dp[0] = s.charAt(0) == '0' ? 0 : 1;
+    int two = Integer.valueOf(s.substring(0, 2));
+    if (s.charAt(1) == '0') {
+      if (two == 10 || two == 20) {
+        dp[1] = 1;
+      } else {
+        dp[1] = 0;
+      }
+    } else {
+      if (two > 26 || two < 10) {
+        dp[1] = dp[0];
+      } else {
+        dp[1] = dp[0] + 1;
+      }
+    }
+    for (int i = 2; i < s.length(); i++) {
+      two = Integer.valueOf(s.substring(i - 1, i + 1));
+      if (s.charAt(i) == '0') {
+        if (two == 10 || two == 20) {
+          dp[i] = dp[i - 2];
+        } else {
+          dp[i] = 0;
+        }
+      } else {
+        if (two > 26 || two < 10) {
+          dp[i] = dp[i - 1];
+        } else {
+          dp[i] = dp[i - 1] + dp[i - 2];
+        }
+      }
+    }
+    return dp[s.length() - 1];
+  }
+
+  /*
+   * Gray Code
+   */
+
+
+
+  /*
+   * Merge Sorted Array
+   */
+
+  public void merge(int A[], int m, int B[], int n) {
+    int idxa = m - 1;
+    int idxb = n - 1;
+    int idxInsert = m + n - 1;
+    while (idxa >= 0 && idxb >= 0) {
+      if (A[idxa] > B[idxb]) {
+        A[idxInsert--] = A[idxa--];
+      } else {
+        A[idxInsert--] = B[idxb--];
+      }
+    }
+    while (idxb >= 0) {
+      A[idxInsert--] = B[idxb--];
+    }
+  }
+
+  /*
+   * Scramble String
+   */
+
+  public boolean isScramble(String s1, String s2) {
+    return recursiveScramble(s1, 0, s1.length(), s2, 0, s2.length());
+  }
+
+  private boolean recursiveScramble(String s1, int s1start, int s1end, String s2, int s2start,
+      int s2end) {
+    if (false == prune(s1, s1start, s1end, s2, s2start, s2end)) {
+      return false;
+    }
+    if (s1.substring(s1start, s1end).equals(s2.substring(s2start, s2end))) {
+      return true;
+    }
+    for (int i = s2start + 1; i < s2end; i++) {
+      int leftLen = i - s2start;
+      if (recursiveScramble(s1, s1start, s1start + leftLen, s2, s2start, s2start + leftLen)
+          && recursiveScramble(s1, s1start + leftLen, s1end, s2, s2start + leftLen, s2end)) {
+        return true;
+      }
+      int leftLen4s1 = s2end - (s2start + leftLen);
+      if (recursiveScramble(s1, s1start, s1start + leftLen4s1, s2, s2start + leftLen, s2end)
+          && recursiveScramble(s1, s1start + leftLen4s1, s1end, s2, s2start, s2start + leftLen)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean prune(String s1, int s1start, int s1end, String s2, int s2start, int s2end) {
+    HashMap<Character, Integer> memory = new HashMap<Character, Integer>();
+    for (int i = s1start; i < s1end; i++) {
+      char c = s1.charAt(i);
+      if (memory.containsKey(c)) {
+        memory.put(c, memory.get(c) + 1);
+      } else {
+        memory.put(c, 1);
+      }
+    }
+    for (int i = s2start; i < s2end; i++) {
+      char c = s2.charAt(i);
+      if (memory.containsKey(c)) {
+        if (memory.get(c) > 1) {
+          memory.put(c, memory.get(c) - 1);
+        } else {
+          memory.remove(c);
+        }
+      } else {
+        return false;
+      }
+    }
+    return memory.isEmpty();
+  }
+
+  /*
+   * Partition List
+   */
+
+  public ListNode partition(ListNode head, int x) {
+    ListNode preHead = new ListNode(x);
+    preHead.next = head;
+
+    ListNode preHeadNew = new ListNode(x);
+
+    ListNode p = preHead;
+    ListNode q = preHeadNew;
+
+    while (p.next != null) {
+      if (p.next.val >= x) {
+        q.next = p.next;
+        q = q.next;
+
+        p.next = p.next.next;
+        q.next = null;
+      } else {
+        p = p.next;
+      }
+    }
+
+    p.next = preHeadNew.next;
+    return preHead.next;
+  }
+
+  /*
+   * Maximal Rectangle
+   */
+
+  public int maximalRectangle(char[][] matrix) {
+    if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+      return 0;
+    }
+
+    int dp[][] = new int[matrix.length][matrix[0].length];
+    for (int i = 0; i < matrix.length; i++) {
+      for (int j = 0; j < matrix[0].length; j++) {
+        if (matrix[i][j] == '1') {
+          dp[i][j] = i - 1 >= 0 ? dp[i - 1][j] + 1 : 1;
+        } else {
+          dp[i][j] = 0;
+        }
+      }
+    }
+
+    int max = 0;
+    for (int row = 0; row < matrix.length; row++) {
+      max = Math.max(max, largestRectangleArea(dp[row]));
+    }
+    return max;
+  }
+
+  /*
+   * Largest Rectangle in Histogram
+   */
+
+  public int largestRectangleArea(int[] height) {
+    ArrayDeque<Integer> stack = new ArrayDeque<Integer>();
+    int max = 0;
+    for (int i = 0; i < height.length; i++) {
+      while (!stack.isEmpty() && height[stack.peek()] > height[i]) {
+        int idx = stack.pop();
+        int left = stack.isEmpty() ? -1 : stack.peek();
+        max = Math.max(max, height[idx] * (i - left - 1));
+      }
+      stack.push(i);
+    }
+    while (!stack.isEmpty()) {
+      int idx = stack.pop();
+      int left = stack.isEmpty() ? -1 : stack.peek();
+      max = Math.max(max, height[idx] * (height.length - left - 1));
+    }
+    return max;
+  }
+
+  /*
+   * Remove Duplicates from Sorted List II
+   */
+
+  public ListNode deleteDuplicates2(ListNode head) {
+    if (head == null) {
+      return null;
+    }
+
+    ListNode ret = new ListNode(head.val - 1);
+    ret.next = head;
+
+    ListNode p = ret;
+    while (p != null) {
+      boolean remove = false;
+      while (p.next != null && p.next.next != null && p.next.val == p.next.next.val) {
+        remove = true;
+        p.next.next = p.next.next.next;
+      }
+      if (remove && p.next != null) {
+        p.next = p.next.next;
+      } else {
+        p = p.next;
+      }
+    }
+
+    return ret.next;
+  }
+
+  /*
+   * Remove Duplicates from Sorted List
+   */
+
+  public ListNode deleteDuplicates(ListNode head) {
+    ListNode p = head;
+    while (p != null) {
+      while (p.next != null && p.next.val == p.val) {
+        p.next = p.next.next;
+      }
+      p = p.next;
+    }
+    return head;
+  }
+
+  /*
+   * Search in Rotated Sorted Array II
+   */
+
+  public boolean search2(int[] A, int target) {
+    return recursive(A, target, 0, A.length - 1);
+  }
+
+  private boolean recursive(int[] A, int target, int low, int high) {
+    if (low > high) {
+      return false;
+    }
+    //
+    int mid = (low + high) / 2;
+    if (A[mid] == target) {
+      return true;
+    } else if (A[mid] < target && target <= A[high]) { // normal binary search
+      return Arrays.binarySearch(A, mid + 1, high + 1, target) >= 0;
+    } else if (A[low] <= target && target < A[mid]) { // normal binary search
+      return Arrays.binarySearch(A, low, mid, target) >= 0;
+    } else { // abnormal binary search
+      return recursive(A, target, mid + 1, high) || recursive(A, target, low, mid - 1);
+    }
+  }
+
+  /*
+   * Remove Duplicates from Sorted Array II
+   */
+
+  public int removeDuplicates2(int[] A) {
+    if (A.length <= 2) {
+      return A.length;
+    }
+    int idxWhere2Insert = 2;
+    while (idxWhere2Insert < A.length && A[idxWhere2Insert] != A[idxWhere2Insert - 2]) {
+      idxWhere2Insert++;
+    }
+    //
+    int idxProbe = idxWhere2Insert + 1;
+    while (idxProbe < A.length) {
+      if ((A[idxProbe] != A[idxWhere2Insert - 1])
+          || (A[idxProbe] == A[idxWhere2Insert - 1] && A[idxProbe] != A[idxWhere2Insert - 2])) {
+        A[idxWhere2Insert++] = A[idxProbe];
+      }
+      idxProbe++;
+    }
+    return idxWhere2Insert;
+  }
+
+  /*
+   * Word Search
+   */
+
+  public boolean exist(char[][] board, String word) {
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < board[0].length; j++) {
+        if (dfs(board, word, i, j)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean dfs(char[][] board, String word, int i, int j) {
+    if (word.length() == 0) {
+      return true;
+    } else if (word.length() == 1 && word.charAt(0) == board[i][j]) {
+      return true;
+    }
+    //
+    if (word.charAt(0) == board[i][j]) {
+      char memory = board[i][j];
+      board[i][j] = 0;
+      if (i - 1 >= 0 && dfs(board, word.substring(1), i - 1, j)) {
+        return true;
+      }
+      if (j - 1 >= 0 && dfs(board, word.substring(1), i, j - 1)) {
+        return true;
+      }
+      if (i + 1 < board.length && dfs(board, word.substring(1), i + 1, j)) {
+        return true;
+      }
+      if (j + 1 < board[0].length && dfs(board, word.substring(1), i, j + 1)) {
+        return true;
+      }
+      board[i][j] = memory;
+    }
+    return false;
+  }
+
+  /*
    * Subsets
    */
 
