@@ -20,6 +20,7 @@ public class Solution {
         }).count();
     
         if (halves[1] > -1) {
+			Arrays.sort(halves);
           return halves;
         }
     
