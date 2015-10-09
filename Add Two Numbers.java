@@ -1,48 +1,43 @@
-/**
- * Definition for singly-linked list.
- */
 class ListNode {
-	int val;
-	ListNode next;
+  int val;
+  ListNode next;
 
-	ListNode(int x) {
-		val = x;
-		next = null;
-	}
+  ListNode(int x) {
+    val = x;
+  }
 }
 
+
 public class Solution {
-	public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-		ListNode p1 = l1;
-		ListNode p2 = l2;
-		ListNode head = new ListNode(0);
-		ListNode p3 = head;
-		int tmp = 0;
-		while (p1 != null && p2 != null) {
-			int sum = p1.val + p2.val + tmp;
-			p3.next = new ListNode(sum % 10);
-			tmp = sum / 10;
-			p1 = p1.next;
-			p2 = p2.next;
-			p3 = p3.next;
-		}
-		while (p1 != null) {
-			int sum = p1.val + tmp;
-			p3.next = new ListNode(sum % 10);
-			tmp = sum / 10;
-			p1 = p1.next;
-			p3 = p3.next;
-		}
-		while (p2 != null) {
-			int sum = p2.val + tmp;
-			p3.next = new ListNode(sum % 10);
-			tmp = sum / 10;
-			p2 = p2.next;
-			p3 = p3.next;
-		}
-		if (tmp != 0) {
-			p3.next = new ListNode(tmp);
-		}
-		return head.next;
-	}
+  public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    int c = 0;
+    ListNode ret = new ListNode(-1);
+    ListNode p = ret;
+    while (l1 != null && l2 != null) {
+      int val = l1.val + l2.val + c;
+      p.next = new ListNode(val % 10);
+      c = val / 10;
+      p = p.next;
+      l1 = l1.next;
+      l2 = l2.next;
+    }
+    while (l1 != null) {
+      int val = l1.val + c;
+      p.next = new ListNode(val % 10);
+      c = val / 10;
+      p = p.next;
+      l1 = l1.next;
+    }
+    while (l2 != null) {
+      int val = l2.val + c;
+      p.next = new ListNode(val % 10);
+      c = val / 10;
+      p = p.next;
+      l2 = l2.next;
+    }
+    if (c > 0) {
+      p.next = new ListNode(c);
+    }
+    return ret.next;
+  }
 }
