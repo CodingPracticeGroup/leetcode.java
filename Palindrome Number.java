@@ -1,32 +1,32 @@
 public class Solution {
-	public boolean isPalindrome(int x) {
-		if (x < 0) {
-			return false;
-		}
-		int left2right = 1;
-		while (left2right <= x / 10) {
-			left2right *= 10;
-		}
-		int right2left = 10;
-		int left = x;
-		int right = x;
-		while (left2right >= right2left) {
-			if (left / left2right != right % right2left) {
-				return false;
-			}
-			left = left % left2right;
-			right = right / 10;
-			left2right /= 10;
-			right2left = 10;
-		}
-		return true;
-	}
+  private int isPalindrome_digit(int x, int position) {
+    int pow = 1;
+    for (int i = 1; i < position; i++) {
+      pow *= 10;
+    }
+    x /= pow;
+    return x % 10;
+  }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new Solution().isPalindrome(10);
-	}
+  public boolean isPalindrome(int x) {
+    if (x < 0) {
+      return false;
+    } else if (x < 10) {
+      return true;
+    }
 
+    int t = x;
+    int len = 0;
+    while (t > 0) {
+      t /= 10;
+      len++;
+    }
+
+    for (int i = 1, j = len; i < j; i++, j--) {
+      if (isPalindrome_digit(x, i) != isPalindrome_digit(x, j)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
