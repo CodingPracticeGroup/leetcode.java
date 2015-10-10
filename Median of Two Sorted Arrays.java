@@ -1,91 +1,79 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Solution {
-	public double findMedianSortedArrays(int A[], int B[]) {
-		if (A.length == 0) {
-			if (B.length % 2 == 0) {
-				return (B[B.length / 2 - 1] + B[B.length / 2]) / 2.0;
-			} else {
-				return B[B.length / 2];
-			}
-		} else if (B.length == 0) {
-			if (A.length % 2 == 0) {
-				return (A[A.length / 2 - 1] + A[A.length / 2]) / 2.0;
-			} else {
-				return A[A.length / 2];
-			}
-		}
-		int count = (A.length + B.length) / 2;
-		int idxA = 0;
-		int idxB = 0;
-		boolean curA = true;
-		for (int i = 0; i < count; i++) {
-			if (idxA < A.length && idxB < B.length) {
-				if (A[idxA] < B[idxB]) {
-					idxA++;
-					curA = true;
-				} else {
-					idxB++;
-					curA = false;
-				}
-			} else {
-				if (idxA < A.length) {
-					idxA++;
-					curA = true;
-				}
-				if (idxB < B.length) {
-					idxB++;
-					curA = false;
-				}
-			}
-		}
-		if ((A.length + B.length) % 2 == 1) {
-			if (idxA < A.length && idxB < B.length) {
-				if (A[idxA] < B[idxB]) {
-					return A[idxA];
-				} else {
-					return B[idxB];
-				}
-			} else {
-				if (idxA < A.length) {
-					return A[idxA];
-				}
-				if (idxB < B.length) {
-					return B[idxB];
-				}
-			}
-		} else {
-			int num1 = 0;
-			if (curA) {
-				num1 = A[idxA - 1];
-			} else {
-				num1 = B[idxB - 1];
-			}
-			int num2 = 0;
-			if (idxA < A.length && idxB < B.length) {
-				if (A[idxA] < B[idxB]) {
-					num2 = A[idxA];
-				} else {
-					num2 = B[idxB];
-				}
-			} else {
-				if (idxA < A.length) {
-					num2 = A[idxA];
-				}
-				if (idxB < B.length) {
-					num2 = B[idxB];
-				}
-			}
-			return (num1 + num2) / 2.0;
-		}
-		return 0;
-	}
+  private double findMedianSortedArrays_median_sorted(int[] nums1, int start1, int end1) {
+    int len = end1 - start1;
+    if (len % 2 == 0) {
+      return (nums1[start1 + len / 2 - 1] + nums1[start1 + len / 2]) / 2.0;
+    } else {
+      return nums1[start1 + len / 2];
+    }
+  }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		int[] A = new int[] { 1, 2 };
-		int[] B = new int[] { 1, 2, 3 };
-		new Solution().findMedianSortedArrays(A, B);
-	}
+  private double findMedianSortedArrays_median(int[] nums1, int start1, int end1, int[] nums2,
+      int start2, int end2) {
+    List<Integer> temp = new ArrayList<>();
+    for (int i = start1; i < end1; i++) {
+      temp.add(nums1[i]);
+    }
+    for (int i = start2; i < end2; i++) {
+      temp.add(nums2[i]);
+    }
+    temp.sort((x, y) -> x - y);
+    int len = temp.size();
+    if (len % 2 == 0) {
+      return (temp.get(len / 2 - 1) + temp.get(len / 2)) / 2.0;
+    } else {
+      return temp.get(len / 2);
+    }
+  }
 
+  private double findMedianSortedArrays_recursion(int[] nums1, int start1, int end1, int[] nums2,
+      int start2, int end2) {
+    if (end1 - start1 == 1) {
+      if (end2 - start2 == 1) {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, start2, end2);
+      } else if ((end2 - start2) % 2 == 0) {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, (start2 + end2) / 2 - 1,
+            (start2 + end2) / 2 + 1);
+      } else {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, (start2 + end2) / 2 - 1,
+            (start2 + end2) / 2 + 2);
+      }
+    } else if (end1 - start1 == 2) {
+      if (end2 - start2 == 2) {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, start2, end2);
+      } else if ((end2 - start2) % 2 == 0) {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, (start2 + end2) / 2 - 2,
+            (start2 + end2) / 2 + 2);
+      } else {
+        return findMedianSortedArrays_median(nums1, start1, end1, nums2, (start2 + end2) / 2 - 1,
+            (start2 + end2) / 2 + 2);
+      }
+    }
+    int count = (end1 - start1 - 1) / 2;
+    if (nums1[start1 + (end1 - start1 - 1) / 2] <= nums2[start2 + (end2 - start2 - 1) / 2]) {
+      return findMedianSortedArrays_recursion(nums1, start1 + count, end1, nums2, start2, end2
+          - count);
+    } else {
+      return findMedianSortedArrays_recursion(nums1, start1, end1 - count, nums2, start2 + count,
+          end2);
+    }
+  }
+
+  public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    if (nums1.length == 0 && nums2.length > 0) {
+      return findMedianSortedArrays_median_sorted(nums2, 0, nums2.length);
+    } else if (nums1.length > 0 && nums2.length == 0) {
+      return findMedianSortedArrays_median_sorted(nums1, 0, nums1.length);
+    } else if (nums1.length == 0 && nums2.length == 0) {
+      return 0;
+    }
+    if (nums1.length < nums2.length) {
+      return findMedianSortedArrays_recursion(nums1, 0, nums1.length, nums2, 0, nums2.length);
+    } else {
+      return findMedianSortedArrays_recursion(nums2, 0, nums2.length, nums1, 0, nums1.length);
+    }
+  }
 }
