@@ -1,33 +1,34 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Solution {
-	public ArrayList<ArrayList<Integer>> fourSum(int[] num, int target) {
-		HashSet<ArrayList<Integer>> ret = new HashSet<ArrayList<Integer>>();
-		Arrays.sort(num);
-		for (int i = 0; i < num.length; i++) {
-			for (int j = i + 1; j < num.length; j++) {
-				int start = j + 1;
-				int end = num.length - 1;
-				while (start < end) {
-					if (num[i] + num[j] + num[start] + num[end] < target) {
-						start++;
-					} else if (num[i] + num[j] + num[start] + num[end] > target) {
-						end--;
-					} else {
-						ArrayList<Integer> solution = new ArrayList<Integer>();
-						solution.add(num[i]);
-						solution.add(num[j]);
-						solution.add(num[start]);
-						solution.add(num[end]);
-						ret.add(solution);
-						start++;
-						end--;
-					}
-				}
-			}
-		}
-		return new ArrayList<ArrayList<Integer>>(ret);
-	}
+  public List<List<Integer>> fourSum(int[] nums, int target) {
+    Set<List<Integer>> ret = new HashSet<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length; i++) {
+      for (int j = i + 1; j < nums.length; j++) {
+        int k = j + 1, m = nums.length - 1;
+        while (k < m) {
+          if (nums[i] + nums[j] + nums[k] + nums[m] < target) {
+            k++;
+          } else if (nums[i] + nums[j] + nums[k] + nums[m] > target) {
+            m--;
+          } else {
+            List<Integer> l = new ArrayList<Integer>();
+            l.add(nums[i]);
+            l.add(nums[j]);
+            l.add(nums[k]);
+            l.add(nums[m]);
+            ret.add(l);
+            k++;
+            m--;
+          }
+        }
+      }
+    }
+    return new ArrayList<List<Integer>>(ret);
+  }
 }
