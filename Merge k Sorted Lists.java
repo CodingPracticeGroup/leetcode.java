@@ -1,44 +1,30 @@
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Comparator;
-
-/**
- * Definition for singly-linked list.
- */
-class ListNode {
-	int val;
-	ListNode next;
-
-	ListNode(int x) {
-		val = x;
-		next = null;
-	}
-}
-
 public class Solution {
-	public ListNode mergeKLists(ArrayList<ListNode> lists) {
-		if (lists == null || lists.size() == 0) {
-			return null;
-		}
-		PriorityQueue<ListNode> heap = new PriorityQueue<ListNode>(lists.size(), new Comparator<ListNode>() {
-			public int compare(ListNode o1, ListNode o2) {
-				return o1.val - o2.val;
-			}
-		});
-		for (ListNode ln : lists) {
-			if (ln != null) {
-				heap.offer(ln);
-			}
-		}
-		ListNode head = new ListNode(0);
-		ListNode p = head;
-		while (!heap.isEmpty()) {
-			p.next = heap.poll();
-			p = p.next;
-			if (p.next != null) {
-				heap.offer(p.next);
-			}
-		}
-		return head.next;
-	}
+  public ListNode mergeKLists(ListNode[] lists) {
+    if (lists.length == 0) {
+      return null;
+    }
+    Queue<ListNode> heap = new PriorityQueue<>(lists.length, (x, y) -> x.val - y.val);
+    Map<ListNode, Integer> map = new HashMap<>();
+    ListNode head = new ListNode(0);
+    ListNode p = head;
+    for (int i = 0; i < lists.length; i++) {
+      if (lists[i] != null) {
+        heap.offer(lists[i]);
+        map.put(lists[i], i);
+        lists[i] = lists[i].next;
+      }
+    }
+    while (!heap.isEmpty()) {
+      p.next = heap.poll();
+      int idx = map.get(p.next);
+      map.remove(p.next);
+      p = p.next;
+      if (lists[idx] != null) {
+        heap.offer(lists[idx]);
+        map.put(lists[idx], idx);
+        lists[idx] = lists[idx].next;
+      }
+    }
+    return head.next;
+  }
 }
