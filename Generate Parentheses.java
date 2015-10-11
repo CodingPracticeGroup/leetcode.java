@@ -1,20 +1,24 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-
 public class Solution {
-	public ArrayList<String> generateParenthesis(int n) {
-		if (n == 1) {
-			ArrayList<String> ret = new ArrayList<String>();
-			ret.add("()");
-			return ret;
-		}
-		ArrayList<String> tmp = generateParenthesis(n - 1);
-		HashSet<String> ret = new HashSet<String>();
-		for (String s : tmp) {
-			for (int i = 0; i < s.length(); i++) {
-				ret.add(new StringBuilder(s).insert(i, "()").toString());
-			}
-		}
-		return new ArrayList<String>(ret);
-	}
+  private String generateParenthesis_insert(String str, int pos) {
+    return new String(str.substring(0, pos) + "()" + str.substring(pos));
+  }
+
+  private Set<String> generateParenthesis_hashset(int n) {
+    Set<String> ret = new HashSet<>();
+    if (n == 1) {
+      ret.add("()");
+      return ret;
+    }
+    Set<String> l = generateParenthesis_hashset(n - 1);
+    for (String s : l) {
+      for (int i = 0; i <= s.length(); i++) {
+        ret.add(generateParenthesis_insert(s, i));
+      }
+    }
+    return ret;
+  }
+
+  public List<String> generateParenthesis(int n) {
+    return new ArrayList<String>(generateParenthesis_hashset(n));
+  }
 }
