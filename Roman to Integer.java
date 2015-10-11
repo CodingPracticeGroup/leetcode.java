@@ -1,33 +1,21 @@
 public class Solution {
-    public int romanToInt(String s) {
-        if(s==null||s.length()==0) return 0;
-        int len=s.length();
-        s=s.toUpperCase();
-        int result=getValue(s.charAt(len-1));;
-        for(int i=len-2;i>=0;i--){
-            int value2=getValue(s.charAt(i+1));
-            int value1=getValue(s.charAt(i));
-            if(value2>value1){
-                result-=value1;
-            }else{
-                result+=value1;
-            }
+  public int romanToInt(String s) {
+    String[] roman =
+        new String[] {"MMM", "MM", "M", "CM", "DCCC", "DCC", "DC", "D", "CD", "CCC", "CC", "C",
+            "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X", "IX", "VIII", "VII", "VI", "V",
+            "IV", "III", "II", "I"};
+    int[] integer =
+        new int[] {3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90, 80, 70, 60,
+            50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    int ret = 0;
+    while (s.length() > 0) {
+      for (int i = 0; i < roman.length; i++) {
+        if (s.startsWith(roman[i])) {
+          s = s.substring(roman[i].length());
+          ret += integer[i];
         }
-        return result;
+      }
     }
-    
-    public int getValue(char c){
-        int value1=0;
-            switch(c){
-                case 'I':  value1 = 1; break;
-                case 'V':  value1 = 5;  break;
-                case 'X':  value1 = 10;  break;
-                case 'L':  value1 = 50;  break;
-                case 'C':  value1 = 100; break;
-                case 'D':  value1 = 500;  break;
-                case 'M':  value1 = 1000;  break;
-                default:   value1 = 0;  break;
-            };
-            return value1;
-    }
+    return ret;
+  }
 }
