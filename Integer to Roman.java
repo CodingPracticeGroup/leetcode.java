@@ -1,16 +1,21 @@
 public class Solution {
-    public String intToRoman(int num) {
-        String result="";
-        String symbol[]= new String[]{"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};    
-        int value[]=    new int[]{1000,900,500,400, 100, 90,  50, 40,  10, 9,   5,  4,   1};
-        int index=0;
-        while(num>0){
-            while(num>=value[index]){
-                num-=value[index];
-                result=result+symbol[index];
-            }
-            index++;
+  public String intToRoman(int num) {
+    String[] roman =
+        new String[] {"MMM", "MM", "M", "CM", "DCCC", "DCC", "DC", "D", "CD", "CCC", "CC", "C",
+            "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X", "IX", "VIII", "VII", "VI", "V",
+            "IV", "III", "II", "I"};
+    int[] integer =
+        new int[] {3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90, 80, 70, 60,
+            50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    StringBuilder sb = new StringBuilder();
+    while (num > 0) {
+      for (int i = 0; i < integer.length; i++) {
+        if (num >= integer[i]) {
+          num -= integer[i];
+          sb.append(roman[i]);
         }
-        return result;
+      }
     }
+    return sb.toString();
+  }
 }
