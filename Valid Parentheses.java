@@ -1,42 +1,31 @@
-import java.util.ArrayDeque;
-
 public class Solution {
-	public boolean isValid(String s) {
-		ArrayDeque<Character> stack = new ArrayDeque<Character>();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			switch (c) {
-			case '(':
-				stack.push(c);
-				break;
-			case '[':
-				stack.push(c);
-				break;
-			case '{':
-				stack.push(c);
-				break;
-			case ')':
-				if (stack.isEmpty() || stack.pop() != '(') {
-					return false;
-				}
-				break;
-			case ']':
-				if (stack.isEmpty() || stack.pop() != '[') {
-					return false;
-				}
-				break;
-			case '}':
-				if (stack.isEmpty() || stack.pop() != '{') {
-					return false;
-				}
-				break;
-			default:
-			}
-		}
-		if (stack.isEmpty()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+  private boolean isValid_match(char left, char right) {
+    if (left == '(' && right == ')') {
+      return true;
+    }
+    if (left == '[' && right == ']') {
+      return true;
+    }
+    if (left == '{' && right == '}') {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isValid(String s) {
+    char[] c = s.toCharArray();
+    Deque<Character> stack = new ArrayDeque<>();
+    for (int i = 0; i < c.length; i++) {
+      if (stack.isEmpty()) {
+        stack.push(c[i]);
+      } else {
+        if (isValid_match(stack.peek(), c[i])) {
+          stack.pop();
+        } else {
+          stack.push(c[i]);
+        }
+      }
+    }
+    return stack.isEmpty();
+  }
 }
