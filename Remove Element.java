@@ -1,18 +1,30 @@
 public class Solution {
-	public int removeElement(int[] A, int elem) {
-		int insertIdx = 0;
-		while (insertIdx < A.length && A[insertIdx] != elem) {
-			insertIdx++;
-		}
+  private int removeElement_findNextRead(int[] nums, int val, int read) {
+    read++;
+    while (read < nums.length) {
+      if (nums[read] != val) {
+        return read;
+      } else {
+        read++;
+      }
+    }
+    return read;
+  }
 
-		int pickIdx = insertIdx + 1;
-		while (pickIdx < A.length) {
-			if (A[pickIdx] == elem) {
-				pickIdx++;
-			} else {
-				A[insertIdx++] = A[pickIdx++];
-			}
-		}
-		return insertIdx;
-	}
+  public int removeElement(int[] nums, int val) {
+    int start = 0;
+    while (start < nums.length && nums[start] == val) {
+      start++;
+    }
+    if (start == nums.length) {
+      return 0;
+    }
+    int read = start, write = 0;
+    while (read < nums.length) {
+      nums[write] = nums[read];
+      write++;
+      read = removeElement_findNextRead(nums, val, read);
+    }
+    return write;
+  }
 }
