@@ -1,53 +1,14 @@
 public class Solution {
-	public int[] searchRange(int[] A, int target) {
-		int[] ret = new int[2];
+  public int[] searchRange(int[] nums, int target) {
+    int idx = Arrays.binarySearch(nums, target);
+    if (idx < 0)
+      return new int[] {-1, -1};
 
-		int left = 0;
-		int right = A.length - 1;
-		while (left <= right) {
-			int mid = (left + right) / 2; // floor
-			if (target < A[mid]) {
-				right = mid - 1;
-			} else if (A[mid] < target) {
-				left = mid + 1;
-			} else {
-				if (A[left] < target) {
-					right = mid;
-				} else {
-					break;
-				}
-			}
-		}
-		if (left > right) {
-			ret[0] = -1;
-			ret[1] = -1;
-			return ret;
-		}
-		ret[0] = left; // this is where to insert. note the floor and ceil differences
+    int left = idx;
+    int right = idx;
+    for (int t = idx; (t = Arrays.binarySearch(nums, 0, t, target)) >= 0; left = t);
+    for (int t = idx; (t = Arrays.binarySearch(nums, t + 1, nums.length, target)) >= 0; right = t);
 
-		left = 0;
-		right = A.length - 1;
-		while (left <= right) {
-			int mid = (left + right) / 2 + (left + right) % 2; // ceil
-			if (target < A[mid]) {
-				right = mid - 1;
-			} else if (A[mid] < target) {
-				left = mid + 1;
-			} else {
-				if (target < A[right]) {
-					left = mid;
-				} else {
-					break;
-				}
-			}
-		}
-		ret[1] = right;
-
-		return ret;
-	}
-
-	public static void main(String[] args) {
-		int[] A = { 2, 2 };
-		new Solution().searchRange(A, 3);
-	}
+    return new int[] {left, right};
+  }
 }
