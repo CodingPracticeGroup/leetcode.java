@@ -1,23 +1,20 @@
 public class Solution {
-	public int removeDuplicates(int[] A) {
-		if (A.length <= 1) {
-			return A.length;
-		}
+  private int removeDuplicates_find(int[] nums, int j) {
+    int tmp = nums[j];
+    while (j < nums.length && nums[j] == tmp) {
+      j++;
+    }
+    return j;
+  }
 
-		int insertIdx = 1;
-		while (insertIdx < A.length && A[insertIdx - 1] != A[insertIdx]) {
-			insertIdx++;
-		}
-
-		int pickIdx = insertIdx + 1;
-		while (pickIdx < A.length) {
-			if (A[insertIdx - 1] == A[pickIdx]) {
-				pickIdx++;
-			} else {
-				A[insertIdx++] = A[pickIdx++];
-			}
-		}
-
-		return insertIdx;
-	}
+  public int removeDuplicates(int[] nums) {
+    int i = 0, j = 0;
+    while (j < nums.length) {
+      int n = nums[j];
+      nums[i] = n;
+      i++;
+      j = removeDuplicates_find(nums, j);
+    }
+    return i;
+  }
 }
