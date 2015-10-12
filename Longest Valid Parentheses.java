@@ -1,63 +1,36 @@
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class Solution {
-  private boolean longestValidParentheses_match(char left, char right) {
-    if (left == '(' && right == ')') {
-      return true;
-    }
-    return false;
-  }
-
   public int longestValidParentheses(String s) {
-    int lastValidStart = -1;
-
-    lastValidStart = 0;
     int max = 0;
-    Deque<Character> stack = new ArrayDeque<>();
-    for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
-      if (stack.isEmpty()) {
-        if (c == '(') {
-          stack.push(c);
+    Deque<Integer> stack = new ArrayDeque<>();
+    int dp[] = new int[s.length()]; // the start idx of current round
+    Arrays.fill(dp, -1);
+    int i = 0;
+    for (; i < s.length(); i++) {
+      if (s.charAt(i) == '(') {
+        dp[i] = i; // start idx
+        stack.push(i);
+        break;
+      }
+    }
+    if (i == s.length()) {
+      return max;
+    }
+    for (i++; i < s.length(); i++) {
+      if (s.charAt(i) == '(') {
+        if (i - 1 > 0 && s.charAt(i - 1) == ')' && dp[i - 1] != -1) {
+          dp[i] = dp[i - 1];
         } else {
-          lastValidStart = i + 1;
+          dp[i] = i; // start idx
         }
+        stack.push(i);
       } else {
-        if (longestValidParentheses_match(stack.peek(), c)) {
+        if (!stack.isEmpty()) {
+          dp[i] = dp[stack.peek()];
+          max = Math.max(max, i - dp[i] + 1);
           stack.pop();
-          if (stack.isEmpty()) {
-            max = Math.max(max, i - lastValidStart + 1);
-          }
-        } else {
-          stack.push(c);
         }
       }
     }
-
-    lastValidStart = s.length() - 1;
-    int max2 = 0;
-    stack.clear();
-    for (int i = s.length() - 1; i >= 0; i--) {
-      char c = s.charAt(i);
-      if (stack.isEmpty()) {
-        if (c == ')') {
-          stack.push(c);
-        } else {
-          lastValidStart = i - 1;
-        }
-      } else {
-        if (longestValidParentheses_match(c, stack.peek())) {
-          stack.pop();
-          if (stack.isEmpty()) {
-            max2 = Math.max(max2, lastValidStart - i + 1);
-          }
-        } else {
-          stack.push(c);
-        }
-      }
-    }
-
-    return Math.max(max, max2);
+    return max;
   }
 }
