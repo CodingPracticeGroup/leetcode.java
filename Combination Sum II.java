@@ -1,33 +1,25 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> combinationSum2(int[] num, int target) {
-		ArrayList<Integer> source = new ArrayList<Integer>();
-		for (int i = 0; i < num.length; i++) {
-			source.add(num[i]);
-		}
-		HashSet<ArrayList<Integer>> ret = new HashSet<ArrayList<Integer>>();
-		recursion(new ArrayDeque<Integer>(), ret, target, source);
-		return new ArrayList<ArrayList<Integer>>(ret);
-	}
+  private void combinationSum2_bt(int[] candidates, int target, Set<List<Integer>> ret,
+      Deque<Integer> stack, int start) {
+    if (target == 0) { // found
+      List<Integer> report = new ArrayList<>(stack);
+      Collections.reverse(report);
+      ret.add(report); // report
+    } else {
+      for (int i = start; i < candidates.length; i++) { // candidates
+        if (target - candidates[i] >= 0) { // prune
+          stack.push(candidates[i]); // forward
+          combinationSum2_bt(candidates, target - candidates[i], ret, stack, i + 1); // recursion
+          stack.pop(); // backward
+        }
+      }
+    }
+  }
 
-	private void recursion(ArrayDeque<Integer> track, HashSet<ArrayList<Integer>> ret, int target,
-			ArrayList<Integer> source) {
-		if (target == 0) { // if found then report
-			ArrayList<Integer> solution = new ArrayList<Integer>(track);
-			Collections.sort(solution);
-			ret.add(solution);
-		} else {
-			for (int i = 0; i < source.size(); i++) { // explore candidates
-				if (source.get(i) <= target) {
-					track.push(source.remove(i)); // forward
-					recursion(track, ret, target - track.peek(), source); // dfs
-					source.add(i, track.pop()); // backward
-				}
-			}
-		}
-	}
+  public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+    Arrays.sort(candidates);
+    Set<List<Integer>> ret = new HashSet<>();
+    combinationSum2_bt(candidates, target, ret, new ArrayDeque<Integer>(), 0);
+    return new ArrayList<List<Integer>>(ret);
+  }
 }

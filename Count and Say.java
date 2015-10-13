@@ -1,30 +1,27 @@
 public class Solution {
-    public String countAndSay(int n) {
-        ArrayList<Integer> result = new ArrayList<Integer>();
-        result.add(1);
-        while(n>1){
-            ArrayList<Integer> temp = new ArrayList<Integer>();
-            int previous=result.get(0);
-            int count=0;
-            for(int i=0;i<result.size();i++){
-                if(result.get(i)!=previous){
-                    temp.add(count);
-                    temp.add(previous);
-                    count=1;
-                    previous=result.get(i);
-                }else{
-                    count++;
-                }
-            }
-            temp.add(count);
-            temp.add(previous);
-            result=temp;
-            n--;
-        }
-        StringBuilder sb = new StringBuilder();
-        for(Integer i:result){
-            sb.append(i);
-        }
-        return sb.toString();
+  private String countAndSay_once(String str) {
+    int j = 0; // number
+    int k = 0; // count
+    StringBuilder ret = new StringBuilder();
+    while (k < str.length()) {
+      while (k < str.length() && str.charAt(j) == str.charAt(k)) {
+        k++;
+      }
+      ret.append(k - j);
+      ret.append(str.charAt(j));
+      j = k;
     }
+    return ret.toString();
+  }
+
+  public String countAndSay(int n) {
+    String ret = "1";
+    if (n == 1) {
+      return ret;
+    }
+    for (int i = 1; i < n; i++) {
+      ret = countAndSay_once(ret);
+    }
+    return ret;
+  }
 }

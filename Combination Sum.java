@@ -1,28 +1,36 @@
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Deque;
+import java.util.List;
 
 public class Solution {
-	public ArrayList<ArrayList<Integer>> combinationSum(int[] candidates, int target) {
-		HashSet<ArrayList<Integer>> ret = new HashSet<ArrayList<Integer>>();
-		recursion(new ArrayDeque<Integer>(), target, ret, candidates);
-		return new ArrayList<ArrayList<Integer>>(ret);
-	}
+  private void combinationSum_bt(int[] candidates, int target, List<List<Integer>> ret,
+      Deque<Integer> stack) {
+    if (target == 0) { // found
+      List<Integer> report = new ArrayList<Integer>(stack);
+      Collections.reverse(report);
+      ret.add(report); // report
+    } else {
+      int i = 0;
+      if (!stack.isEmpty()) {
+        i = Arrays.binarySearch(candidates, stack.peek());
+      }
+      for (; i < candidates.length; i++) { // candidates
+        if (target - candidates[i] >= 0) { // prune
+          stack.push(candidates[i]); // forward
+          combinationSum_bt(candidates, target - candidates[i], ret, stack); // explore
+          stack.pop(); // backward
+        }
+      }
+    }
+  }
 
-	private void recursion(ArrayDeque<Integer> track, int target, HashSet<ArrayList<Integer>> ret, int[] candidates) {
-		if (target == 0) { // if found then report
-			ArrayList<Integer> solution = new ArrayList<Integer>(track);
-			Collections.sort(solution);
-			ret.add(solution);
-		} else {
-			for (int i = 0; i < candidates.length; i++) { // explore candidates
-				if (candidates[i] <= target) {
-					track.push(candidates[i]); // forward
-					recursion(track, target - candidates[i], ret, candidates); // dfs
-					track.pop(); // backward
-				}
-			}
-		}
-	}
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    Arrays.sort(candidates);
+    List<List<Integer>> ret = new ArrayList<>();
+    combinationSum_bt(candidates, target, ret, new ArrayDeque<Integer>());
+    return ret;
+  }
 }
