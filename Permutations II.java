@@ -1,32 +1,32 @@
 public class Solution {
-    public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
-        if(num==null||num.length==0) return null;
-        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
-        boolean[] visit = new boolean[num.length];
-        ArrayList<Integer> one = new ArrayList<Integer>();
-        
-        Arrays.sort(num);
-        
-        per(num,visit,one,result);
-        return result;
-    }
-    
-    public void per(int[] num, boolean[] visit, ArrayList<Integer> one, ArrayList<ArrayList<Integer>> result){
-        if(one.size()==num.length){
-            result.add(new ArrayList<Integer>(one));return;
+  private void permuteUnique_bt(int[] nums, Set<Integer> idx, Set<List<Integer>> ret,
+      Deque<Integer> stack) {
+    if (idx.isEmpty()) {
+      ret.add(new ArrayList<Integer>(stack));
+    } else {
+      Set<Integer> tabu = new HashSet<>();
+      for (Integer i : idx) {
+        if (!tabu.contains(nums[i])) {
+          stack.push(nums[i]);
+          Set<Integer> forchild = new HashSet<>(idx);
+          forchild.remove(i);
+          permuteUnique_bt(nums, forchild, ret, stack);
+          stack.pop();
+          tabu.add(nums[i]);
         }
-        
-        for(int i=0;i<num.length;i++){
-            if(visit[i]){continue;}
-            visit[i]=true;
-            one.add(num[i]);
-            per(num,visit,one,result);
-            one.remove(one.size()-1);
-            visit[i]=false;
-            while(i<num.length-1 && num[i+1]==num[i]){
-                i++;
-            }
-        }
-        
+      }
     }
+  }
+
+  public List<List<Integer>> permuteUnique(int[] nums) {
+    Set<List<Integer>> ret = new HashSet<>();
+    Set<Integer> idx = new HashSet<>();
+    // IntStream.range(0, nums.length).boxed().collect(Collectors.toSet());
+    for (int i = 0; i < nums.length; i++) {
+      idx.add(i);
+    }
+
+    permuteUnique_bt(nums, idx, ret, new ArrayDeque<Integer>());
+    return new ArrayList<List<Integer>>(ret);
+  }
 }
