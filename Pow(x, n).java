@@ -1,33 +1,24 @@
 public class Solution {
-    public double pow(double x, int n) {
-        if (n > 0) {
-			return powP(x, n);
-		} else if(n < 0) {
-		    if(n==Integer.MIN_VALUE){
-		        return 1 / (powP(x, -n-1) * x);
-		    }
-			return 1 / powP(x, -n);
-		}else{
-		    return 1.0;
-		}
+  private double myPow_positive(double x, int n) {
+    if (n == 1) {
+      return x;
+    } else if (n == 0) {
+      return 1;
     }
-    
-    public double powP(double x, int n){
-        int bitmask = 0x01<<30;
-        //find the most significant bit
-        while((n&bitmask)==0){
-            bitmask=bitmask>>1;
-        }
-        bitmask=bitmask>>1;
-        double result=x;
-        while(bitmask!=0){
-            //n=2^2+2^1+...
-            result*=result;
-            if((bitmask&n)!=0){
-                result*=x;
-            }
-            bitmask=bitmask>>1;
-        }
-        return result;
+    int n2 = n / 2;
+    double r = myPow_positive(x, n2);
+    if (n2 + n2 + 1 == n) {
+      return r * r * x;
+    } else { // n2+n2=n
+      return r * r;
     }
+  }
+
+  public double myPow(double x, int n) {
+    double ret = myPow_positive(x, Math.abs(n));
+    if (n < 0) {
+      return 1 / ret;
+    }
+    return ret;
+  }
 }
