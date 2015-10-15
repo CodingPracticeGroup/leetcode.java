@@ -1,35 +1,49 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Solution {
-	public ArrayList<Integer> spiralOrder(int[][] matrix) {
-		ArrayList<Integer> ret = new ArrayList<Integer>();
-		if (matrix.length == 0) {
-			return ret;
-		}
-		int maxLevel = Math.min(matrix.length, matrix[0].length) / 2;
-		for (int i = 0; i <= maxLevel && ret.size() < matrix.length * matrix[0].length; i++) {
-			for (int j = i; j < matrix[0].length - i; j++) {
-				ret.add(matrix[i][j]);
-			}
-			for (int j = i + 1; j < matrix.length - i; j++) {
-				ret.add(matrix[j][matrix[0].length - i - 1]);
-			}
-			if (i < matrix.length - i - 1) {
-				for (int j = matrix[0].length - i - 1 - 1; j >= i; j--) {
-					ret.add(matrix[matrix.length - i - 1][j]);
-				}
-			}
-			if (i < matrix[0].length - i - 1) {
-				for (int j = matrix.length - i - 1 - 1; j > i; j--) {
-					ret.add(matrix[j][i]);
-				}
-			}
-		}
-		return ret;
-	}
+  private List<Integer> spiralOrder_(int[][] matrix, int k, int m, int n) {
+    List<Integer> ret = new ArrayList<>();
+    if (m - k - k == 1 && n - k - k == 1) {
+      ret.add(matrix[k][k]);
+    } else if (m - k - k == 1 && n - k - k > 1) {
+      for (int i = k; i < n - k; i++) {
+        ret.add(matrix[k][i]);
+      }
+    } else if (m - k - k > 1 && n - k - k == 1) {
+      for (int i = k; i < m - k; i++) {
+        ret.add(matrix[i][k]);
+      }
+    } else {
+      for (int i = 0 + k; i < n - k - 1; i++) {
+        ret.add(matrix[0 + k][i]);
+      }
+      for (int i = 0 + k; i < m - k - 1; i++) {
+        ret.add(matrix[i][n - k - 1]);
+      }
+      for (int i = n - k - 1; i > 0 + k; i--) {
+        ret.add(matrix[m - k - 1][i]);
+      }
+      for (int i = m - k - 1; i > 0 + k; i--) {
+        ret.add(matrix[i][0 + k]);
+      }
+    }
+    return ret;
+  }
 
-	public static void main(String[] args) {
-		int matrix[][] = { { 2, 3 } };
-		new Solution().spiralOrder(matrix);
-	}
+  public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> ret = new ArrayList<>();
+    int m = matrix.length;
+    if (m == 0) {
+      return ret;
+    }
+    int n = matrix[0].length;
+    if (n == 0) {
+      return ret;
+    }
+    for (int i = 0; i < Math.min(m, n) / 2 + Math.min(m, n) % 2; i++) {
+      ret.addAll(spiralOrder_(matrix, i, m, n));
+    }
+    return ret;
+  }
 }

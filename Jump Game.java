@@ -1,11 +1,18 @@
 public class Solution {
-	// greedy: local optimization leads to global optimization
-	// hint in question: max jump at location i -> local optimization
-	public boolean canJump(int[] A) {
-		int maxLoc = 0; // global optimization
-		for (int i = 0; i <= maxLoc && i < A.length; i++) { // iterate every local position i
-			maxLoc = Math.max(maxLoc, i + A[i]); // local optimization -> global optimization
-		}
-		return maxLoc >= A.length - 1;
-	}
+  public boolean canJump(int[] nums) {
+    int far = nums[0];
+    int cur = 0;
+    while (far < nums.length && cur < far) {
+      int next_far = far;
+      for (int i = cur; i <= far; i++) {
+        next_far = Math.max(next_far, i + nums[i]);
+      }
+      cur = far;
+      far = next_far;
+    }
+    if (far >= nums.length - 1) {
+      return true;
+    }
+    return false;
+  }
 }

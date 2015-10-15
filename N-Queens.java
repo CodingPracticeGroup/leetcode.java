@@ -1,62 +1,83 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 
 public class Solution {
-	public ArrayList<String[]> solveNQueens(int n) {
-		ArrayList<String[]> ret = new ArrayList<String[]>();
-		// initialize track
-		String[] track = new String[n];
-		for (int i = 0; i < n; i++) {
-			StringBuilder sb = new StringBuilder();
-			for (int j = 0; j < n; j++) {
-				sb.append('.');
-			}
-			track[i] = sb.toString();
-		}
-		// trigger recursion
-		recursion(n, ret, track, -1, new HashSet<Integer>(), new HashSet<Integer>(), new HashSet<Integer>());
-		//
-		return ret;
-	}
+  private boolean solveNQueens_check(int n, char[][] stack) {
+    for (int i = 0; i < n; i++) {
+      int count = 0;
+      for (int j = 0; j < n; j++) {
+        if (stack[i][j] != '.') {
+          count++;
+        }
+      }
+      if (count > 1) {
+        return false;
+      }
+    }
+    for (int i = 0; i < n; i++) {
+      int count = 0;
+      for (int j = 0; j < n; j++) {
+        if (stack[j][i] != '.') {
+          count++;
+        }
+      }
+      if (count > 1) {
+        return false;
+      }
+    }
+    for (int k = 0; k <= 2 * n - 2; k++) {
+      int count = 0;
+      for (int i = 0; i < n; i++) {
+        int j = k - i;
+        if (0 <= j && j < n && stack[i][j] != '.') {
+          count++;
+        }
+      }
+      if (count > 1) {
+        return false;
+      }
+    }
+    for (int k = -(n - 1); k <= n - 1; k++) {
+      int count = 0;
+      for (int i = 0; i < n; i++) {
+        int j = i - k;
+        if (0 <= j && j < n && stack[i][j] != '.') {
+          count++;
+        }
+      }
+      if (count > 1) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	private void recursion(int n, ArrayList<String[]> ret, String[] track, int row, HashSet<Integer> ocupiedCol,
-			HashSet<Integer> ocupiedDiagPositive, HashSet<Integer> ocupiedDiagNegtive) {
-		if (row == n - 1) {// found solution
-			ret.add(Arrays.copyOf(track, track.length));
-		} else { // continue searching
-			row++; // track index
-			for (int col = 0; col < n; col++) { // construct candidates
-				if (!ocupiedCol.contains(col) && !ocupiedDiagPositive.contains(row + col)
-						&& !ocupiedDiagNegtive.contains(row - col)) {// prune
-					StringBuilder sb = new StringBuilder();
-					for (int j = 0; j < n; j++) {
-						sb.append('.');
-					}
-					sb.setCharAt(col, 'Q');
-					// track forward
-					String old = track[row];
-					track[row] = sb.toString();
-					ocupiedCol.add(col);
-					ocupiedDiagPositive.add(row + col);
-					ocupiedDiagNegtive.add(row - col);
-					// recursion & pruning
-					recursion(n, ret, track, row, ocupiedCol, ocupiedDiagPositive, ocupiedDiagNegtive);
-					// track backward
-					track[row] = old;
-					ocupiedCol.remove(col);
-					ocupiedDiagPositive.remove(row + col);
-					ocupiedDiagNegtive.remove(row - col);
-				}
-			}
-		}
-	}
+  private void solveNQueens_bt(int n, int working_row, List<List<String>> ret, char[][] stack) {
+    if (working_row == n) {
+      List<String> report = new ArrayList<>();
+      for (char[] row : stack) {
+        report.add(new String(row));
+      }
+      ret.add(report);
+    } else {
+      for (int i = 0; i < n; i++) {
+        stack[working_row][i] = 'Q';
+        if (solveNQueens_check(n, stack)) {
+          solveNQueens_bt(n, working_row + 1, ret, stack);
+        }
+        stack[working_row][i] = '.';
+      }
+    }
+  }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new Solution().solveNQueens(3);
-	}
-
+  public List<List<String>> solveNQueens(int n) {
+    List<List<String>> ret = new ArrayList<>();
+    char[][] stack = new char[n][n];
+    for (int i = 0; i < n; i++) {
+      Arrays.fill(stack[i], '.');
+    }
+    solveNQueens_bt(n, 0, ret, stack);
+    return ret;
+  }
 }

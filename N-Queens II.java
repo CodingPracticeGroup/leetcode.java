@@ -1,60 +1,43 @@
-import java.util.HashSet;
-
 public class Solution {
-	public int totalNQueens(int n) {
-		int ret[] = new int[1];
-		// initialize track
-		String[] track = new String[n];
-		for (int i = 0; i < n; i++) {
-			StringBuilder sb = new StringBuilder();
-			for (int j = 0; j < n; j++) {
-				sb.append('.');
-			}
-			track[i] = sb.toString();
-		}
-		// trigger recursion
-		recursion(n, ret, track, -1, new HashSet<Integer>(), new HashSet<Integer>(), new HashSet<Integer>());
-		//
-		return ret[0];
-	}
+  private boolean totalNQueens_check(int n, int[] colPos) {
+    for (int i = 0; i < n; i++) { // point {i, colPos[i]}
+      for (int j = i + 1; j < n; j++) { // point {j, colPos[j]}
+        if (colPos[i] >= 0 && colPos[j] >= 0) {
+          if (colPos[i] == colPos[j]) { // same col
+            return false;
+          }
+          if (i - colPos[i] == j - colPos[j]) { // same \
+            return false;
+          }
+          if (i + colPos[i] == j + colPos[j]) { // same /
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
 
-	private void recursion(int n, int[] ret, String[] track, int row, HashSet<Integer> ocupiedCol,
-			HashSet<Integer> ocupiedDiagPositive, HashSet<Integer> ocupiedDiagNegtive) {
-		if (row == n - 1) {// found solution
-			ret[0]++;
-		} else { // continue searching
-			row++; // track index
-			for (int col = 0; col < n; col++) { // construct candidates
-				if (!ocupiedCol.contains(col) && !ocupiedDiagPositive.contains(row + col)
-						&& !ocupiedDiagNegtive.contains(row - col)) {// prune
-					StringBuilder sb = new StringBuilder();
-					for (int j = 0; j < n; j++) {
-						sb.append('.');
-					}
-					sb.setCharAt(col, 'Q');
-					// track forward
-					String old = track[row];
-					track[row] = sb.toString();
-					ocupiedCol.add(col);
-					ocupiedDiagPositive.add(row + col);
-					ocupiedDiagNegtive.add(row - col);
-					// recursion & pruning
-					recursion(n, ret, track, row, ocupiedCol, ocupiedDiagPositive, ocupiedDiagNegtive);
-					// track backward
-					track[row] = old;
-					ocupiedCol.remove(col);
-					ocupiedDiagPositive.remove(row + col);
-					ocupiedDiagNegtive.remove(row - col);
-				}
-			}
-		}
-	}
+  private void totalNQueens_bt(int n, int working_row, int[] ret, int[] colPos) {
+    if (working_row == n) {
+      ret[0]++;
+    } else {
+      for (int i = 0; i < n; i++) {
+        colPos[working_row] = i;
+        if (totalNQueens_check(n, colPos)) {
+          totalNQueens_bt(n, working_row + 1, ret, colPos);
+        }
+        colPos[working_row] = -1;
+      }
+    }
+  }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		new Solution().totalNQueens(1);
-	}
-
+  public int totalNQueens(int n) {
+    int[] ret = new int[1];
+    ret[0] = 0;
+    int[] colPos = new int[n];
+    Arrays.fill(colPos, -1);
+    totalNQueens_bt(n, 0, ret, colPos);
+    return ret[0];
+  }
 }

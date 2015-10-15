@@ -1,19 +1,14 @@
 public class Solution {
-	public int maxSubArray(int[] A) {
-		int max = Integer.MIN_VALUE;
-		int sum = 0;
-		for (int i = 0; i < A.length; i++) {
-			sum += A[i];
-			max = Math.max(sum, max);
-			if (sum < 0) {
-				sum = 0; // don't pick history sum
-			}
-		}
-		return max;
-	}
-
-	public static void main(String[] args) {
-		int[] A = new int[] { 1, 2 };
-		new Solution().maxSubArray(A);
-	}
+  public int maxSubArray(int[] nums) {
+    int max = nums[0];
+    int sum = 0;
+    for (int i = 0; i < nums.length; i++) {
+      sum += nums[i];
+      max = Math.max(max, sum);
+      if (sum < 0) { // if negative contribution
+        sum = 0; // start from scratch
+      }
+    }
+    return max;
+  }
 }
