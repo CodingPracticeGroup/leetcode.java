@@ -1,19 +1,17 @@
-import java.util.Arrays;
-
 public class Solution {
-	public int[] plusOne(int[] digits) {
-		int[] ret = new int[digits.length + 1];
-		int tmp = 1;
-		for (int i = digits.length - 1; i >= 0; i--) {
-			int sum = digits[i] + tmp;
-			tmp = sum / 10;
-			ret[i + 1] = sum % 10;
-		}
-		if (tmp == 0) {
-			return Arrays.copyOfRange(ret, 1, ret.length);
-		} else {
-			ret[0] = tmp;
-			return ret;
-		}
-	}
+  public int[] plusOne(int[] digits) {
+    List<Integer> l = Arrays.stream(digits).boxed().collect(Collectors.toList());
+    Collections.reverse(l);
+    int carry = 1;
+    for (int i = 0; i < digits.length; i++) {
+      int tmp = l.get(i) + carry;
+      carry = tmp / 10;
+      l.set(i, tmp % 10);
+    }
+    if (carry > 0) {
+      l.add(carry);
+    }
+    Collections.reverse(l);
+    return l.stream().mapToInt(i -> i).toArray();
+  }
 }

@@ -1,22 +1,22 @@
 public class Solution {
-	public int sqrt(int x) {
-		int left = 1;
-		int right = x;
-		int mid = (left + right) / 2;
-		while (mid != left && mid != right) {
-			if (x / mid > mid) { // cannot use mid*mid because it could be greater than
-				left = mid;
-			} else if (x / mid < mid) {
-				right = mid;
-			} else {
-				return mid;
-			}
-			mid = (left + right) / 2;
-		}
-		return mid;
-	}
-
-	public static void main(String[] args) {
-		new Solution().sqrt(2147395599);
-	}
+  public int mySqrt(int x) {
+    if (x == 0)
+      return 0;
+    if (x == 1)
+      return 1;
+    long low = 1;
+    long high = x;
+    long mid = (low + high) / 2;
+    while (low < mid && mid < high) {
+      if (mid * mid > x) {
+        high = mid;
+      } else if (mid * mid < x) {
+        low = mid;
+      } else {
+        return (int) mid;
+      }
+      mid = (low + high) / 2;
+    }
+    return (int) mid;
+  }
 }

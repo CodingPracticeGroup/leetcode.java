@@ -1,126 +1,41 @@
 public class Solution {
-	public boolean isNumber(String s) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		int len = s.length();
-		if (len == 0)
-			return false;
-
-		if (s.indexOf(".") != s.lastIndexOf("."))
-			return false;
-		if (s.indexOf("e") != s.lastIndexOf("e"))
-			return false;
-		if (s.indexOf("E") != s.lastIndexOf("E"))
-			return false;
-
-		if (s.indexOf("e") >= 0)
-			return checkE(s, "e");
-		else if (s.indexOf("E") >= 0)
-			return checkE(s, "E");
-		else if (s.indexOf(".") >= 0)
-			return checkDot(s);
-		else
-			return checkNormal(s);
-
-	}
-
-	boolean checkE(String s, String e) {
-		String[] ss = s.split(e);
-		if (ss.length == 2 && !ss[0].equals("") && !ss[1].equals(""))
-			return checkLeft(ss[0]) && checkEright(ss[1]);
-		else
-			return false;
-	}
-
-	boolean checkEright(String s) {
-		if (s.indexOf("+") == s.lastIndexOf("+") && s.indexOf("+") >= 0) {
-			return s.matches("\\+\\d+\\s*");
-		} else if (s.indexOf("-") == s.lastIndexOf("-") && s.indexOf("-") >= 0) {
-			return s.matches("\\-\\d+\\s*");
-		} else {
-			return s.matches("\\d+\\s*");
-		}
-	}
-
-	boolean checkDot(String s) {
-		String[] ss = s.split("\\.");
-		if (ss.length == 2) {
-			if (ss[1].equals(""))
-				return checkLeft(ss[0]);
-			else if (ss[0].equals(""))
-				return ss[1].matches("\\d+\\s*");
-			else {
-				if (ss[0].indexOf("+") == ss[0].lastIndexOf("+") && ss[0].indexOf("+") >= 0) {
-					return s.matches("\\s*\\+\\d+.\\d*\\s*") || s.matches("\\s*\\+\\d*.\\d+\\s*");
-				} else if (ss[0].indexOf("-") == ss[0].lastIndexOf("-") && ss[0].indexOf("-") >= 0) {
-					return s.matches("\\s*\\-\\d+.\\d*\\s*") || s.matches("\\s*\\-\\d*.\\d+\\s*");
-				} else {
-					return s.matches("\\s*\\d+.\\d*\\s*") || s.matches("\\s*\\d*.\\d+\\s*");
-				}
-			}
-		} else if (ss.length == 1) {
-			if (s.indexOf("+") == s.lastIndexOf("+") && s.indexOf("+") >= 0) {
-				return s.matches("\\s*\\+\\d+.");
-			} else if (s.indexOf("-") == s.lastIndexOf("-") && s.indexOf("-") >= 0) {
-				return s.matches("\\s*\\-\\d+.");
-			} else {
-				return s.matches("\\s*\\d+.");
-			}
-		} else
-			return false;
-	}
-
-	boolean checkLeft(String s) {
-		if (s.indexOf(".") == s.lastIndexOf(".") && s.indexOf(".") >= 0) {
-			String[] ss = s.split("\\.");
-			if (ss.length == 2) {
-				if (ss[1].equals("")) {
-					if (ss[0].indexOf("+") == ss[0].lastIndexOf("+") && ss[0].indexOf("+") >= 0) {
-						return ss[0].matches("\\s*\\+\\d+");
-					} else if (ss[0].indexOf("-") == ss[0].lastIndexOf("-") && ss[0].indexOf("-") >= 0) {
-						return ss[0].matches("\\s*\\-\\d+");
-					} else {
-						return ss[0].matches("\\s*\\d+");
-					}
-				} else if (ss[0].equals(""))
-					return ss[1].matches("\\d+");
-				else {
-					if (ss[0].indexOf("+") == ss[0].lastIndexOf("+") && ss[0].indexOf("+") >= 0) {
-						return s.matches("\\s*\\+\\d+.\\d*") || s.matches("\\s*\\+\\d*.\\d+");
-					} else if (ss[0].indexOf("-") == ss[0].lastIndexOf("-") && ss[0].indexOf("-") >= 0) {
-						return s.matches("\\s*\\-\\d+.\\d*") || s.matches("\\s*\\-\\d*.\\d+");
-					} else {
-						return s.matches("\\s*\\d+.\\d*") || s.matches("\\s*\\d*.\\d+");
-					}
-				}
-			} else if (ss.length == 1) {
-				if (s.indexOf("+") == s.lastIndexOf("+") && s.indexOf("+") >= 0) {
-					return s.matches("\\s*\\+\\d+.");
-				} else if (s.indexOf("-") == s.lastIndexOf("-") && s.indexOf("-") >= 0) {
-					return s.matches("\\s*\\-\\d+.");
-				} else {
-					return s.matches("\\s*\\d+.");
-				}
-			} else
-				return false;
-		} else {
-			if (s.indexOf("+") == s.lastIndexOf("+") && s.indexOf("+") >= 0) {
-				return s.matches("\\s*\\+\\d+");
-			} else if (s.indexOf("-") == s.lastIndexOf("-") && s.indexOf("-") >= 0) {
-				return s.matches("\\s*\\-\\d+");
-			} else {
-				return s.matches("\\s*\\d+");
-			}
-		}
-	}
-
-	boolean checkNormal(String s) {
-		if (s.indexOf("+") == s.lastIndexOf("+") && s.indexOf("+") >= 0) {
-			return s.matches("\\s*\\+\\d+\\s*");
-		} else if (s.indexOf("-") == s.lastIndexOf("-") && s.indexOf("-") >= 0) {
-			return s.matches("\\s*\\-\\d+\\s*");
-		} else {
-			return s.matches("\\s*\\d+\\s*");
-		}
-	}
+  public boolean isNumber(String s) {
+    s = s.trim();
+    int len = s.length();
+    int p = 0;
+    if (p < len && (s.charAt(p) == '+' || s.charAt(p) == '-')) {
+      p++;
+    }
+    int i = 0;
+    while (p + i < len && ('0' <= s.charAt(p + i) && s.charAt(p + i) <= '9')) {
+      i++;
+    }
+    p += i;
+    if (p < len && s.charAt(p) == '.') {
+      p++;
+    }
+    int j = 0;
+    while (p + j < len && ('0' <= s.charAt(p + j) && s.charAt(p + j) <= '9')) {
+      j++;
+    }
+    p += j;
+    if (i + j == 0) {
+      return false;
+    }
+    if (p < len && (s.charAt(p) == 'e' || s.charAt(p) == 'E')) {
+      p++;
+      if (p < len && (s.charAt(p) == '+' || s.charAt(p) == '-')) {
+        p++;
+      }
+      int k = 0;
+      while (p + k < len && ('0' <= s.charAt(p + k) && s.charAt(p + k) <= '9')) {
+        k++;
+      }
+      p += k;
+      if (k == 0) {
+        return false;
+      }
+    }
+    return p == len;
+  }
 }

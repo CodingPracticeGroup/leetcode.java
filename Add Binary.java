@@ -1,26 +1,33 @@
 public class Solution {
-	public String addBinary(String a, String b) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		String a_ = new StringBuilder(a).reverse().toString();
-		String b_ = new StringBuilder(b).reverse().toString();
-		String[] a_arr = a_.split("");
-		String[] b_arr = b_.split("");
-		int i = 1;
-		int tmp = 0;
-		StringBuilder sb = new StringBuilder();
-		while (i < a_arr.length || i < b_arr.length) {
-			int sum = tmp;
-			if (i < a_arr.length)
-				sum += Integer.valueOf(a_arr[i]);
-			if (i < b_arr.length)
-				sum += Integer.valueOf(b_arr[i]);
-			tmp = sum / 2;
-			sb.append(sum % 2);
-			i++;
-		}
-		if (tmp > 0)
-			sb.append(tmp);
-		return sb.reverse().toString();
-	}
+  public String addBinary(String a, String b) {
+    int[] a_ = new StringBuilder(a).reverse().toString().chars().map(i -> i - '0').toArray();
+    int[] b_ = new StringBuilder(b).reverse().toString().chars().map(i -> i - '0').toArray();
+    int[] long_ = a_;
+    int[] short_ = b_;
+    if (a_.length < b_.length) {
+      long_ = b_;
+      short_ = a_;
+    }
+    int carry = 0;
+    for (int i = 0; i < short_.length; i++) {
+      int tmp = short_[i] + long_[i] + carry;
+      carry = tmp / 2;
+      long_[i] = tmp % 2;
+    }
+    for (int i = short_.length; i < long_.length; i++) {
+      int tmp = long_[i] + carry;
+      carry = tmp / 2;
+      long_[i] = tmp % 2;
+    }
+    StringBuilder sb = new StringBuilder();
+    for (Integer i : long_) {
+      sb.append(i);
+    }
+    String ret = sb.reverse().toString();
+    if (carry > 0) {
+      return "1" + ret;
+    } else {
+      return ret;
+    }
+  }
 }

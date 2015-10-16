@@ -1,47 +1,56 @@
 public class Solution {
-    public ArrayList<String> fullJustify(String[] words, int L) {
-        ArrayList<String> result = new ArrayList<String>();
-        StringBuilder  sb = null;
-        int num=words.length;
-        int index=0;
-        while(index<num){
-            sb = new StringBuilder();
-            int end = index;
-            int lenofWords = 0;
-            //greedy add words
-            while((end<num) && ((lenofWords+words[end].length())<=L) ){
-                lenofWords+=words[end++].length()+1;
-            }
-            int numofWords = end - index;
-            if(numofWords>1){
-                int space = L-(lenofWords-numofWords);
-                int meanSpace = end==num?1:space/(numofWords-1);
-                int moreSpace = end==num?0:space%(numofWords-1);
-                //construct one line of result
-                for(int i=index;i<end-1;i++){
-                    sb.append(words[i]);
-                    for(int j=0;j<meanSpace;j++){
-                        sb.append(" ");
-                    }
-                    if(moreSpace-->0) sb.append(" ");
-                }
-                sb.append(words[end-1]);
-                if(end==num){
-                    for(int j=0;j<L-lenofWords+1;j++){
-                        sb.append(" ");
-                    }
-                }
-                //add one line
-                result.add(sb.toString());
-            }else{
-                sb.append(words[index]);
-                for(int i=0;i<(L-words[index].length());i++){
-                    sb.append(" ");
-                }
-                result.add(sb.toString());
-            }
-            index=end;
-        }
-        return result;
+  private String fullJustify_space(int n) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < n; i++) {
+      sb.append(' ');
     }
+    return sb.toString();
+  }
+
+  public List<String> fullJustify(String[] words, int maxWidth) {
+    List<String> ret = new ArrayList<>();
+    Deque<String> row = new ArrayDeque<>();
+    for (String w : words) {
+      int wordTotalLen =
+          row.stream().reduce(0, (acc, e) -> acc + e.length(), (acc1, acc2) -> acc1 + acc2);
+      if (row.size() + wordTotalLen + w.length() > maxWidth) {
+        StringBuilder sb = new StringBuilder();
+        if (row.size() == 1) {
+          sb.append(row.poll());
+          if (sb.length() < maxWidth) {
+            sb.append(fullJustify_space(maxWidth - sb.length()));
+          }
+        } else {
+          int commonSpace = (maxWidth - wordTotalLen) / (row.size() - 1);
+          int extraSpace = (maxWidth - wordTotalLen) % (row.size() - 1);
+          while (!row.isEmpty()) {
+            sb.append(row.poll());
+            if (!row.isEmpty()) {
+              sb.append(fullJustify_space(commonSpace));
+              if (extraSpace > 0) {
+                sb.append(' ');
+                extraSpace--;
+              }
+            }
+          }
+        }
+        ret.add(sb.toString());
+        row.clear();
+      }
+      row.offer(w);
+    }
+    if (!row.isEmpty()) {
+      StringBuilder sb = new StringBuilder();
+      while (!row.isEmpty()) {
+        sb.append(row.poll());
+        if (!row.isEmpty()) {
+          sb.append(' ');
+        } else {
+          sb.append(fullJustify_space(maxWidth - sb.length()));
+        }
+      }
+      ret.add(sb.toString());
+    }
+    return ret;
+  }
 }
