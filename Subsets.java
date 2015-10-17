@@ -1,19 +1,30 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> subsets(int[] S) {
-		Arrays.sort(S);
-		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
-		ret.add(new ArrayList<Integer>()); // []
-		for (int i = 0; i < S.length; i++) {
-			int len = ret.size();
-			for (int j = 0; j < len; j++) { // double
-				ArrayList<Integer> newone = new ArrayList<Integer>(ret.get(j));
-				newone.add(S[i]);
-				ret.add(newone);
-			}
-		}
-		return ret;
-	}
+  private void subsets_bt(int[] nums, int k, List<List<Integer>> ret, Deque<Integer> stack) {
+    if (stack.size() == k) {
+      List<Integer> report = new ArrayList<Integer>();
+      for (Integer idx : stack) {
+        report.add(nums[idx]);
+      }
+      Collections.sort(report);
+      ret.add(report);
+    } else {
+      for (int i = stack.isEmpty() ? 0 : stack.peekLast() + 1; i < nums.length; i++) {
+        if (nums.length - i >= k - stack.size()) {
+          stack.offerLast(i);
+          subsets_bt(nums, k, ret, stack);
+          stack.pollLast();
+        }
+      }
+    }
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> ret = new ArrayList<>();
+    for (int i = 0; i <= nums.length; i++) {
+      List<List<Integer>> report = new ArrayList<>();
+      subsets_bt(nums, i, report, new ArrayDeque<Integer>());
+      ret.addAll(report);
+    }
+    return ret;
+  }
 }
