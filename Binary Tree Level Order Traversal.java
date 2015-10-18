@@ -6,16 +6,18 @@ public class Solution {
       queue.offer(root);
       while (!queue.isEmpty()) {
         List<Integer> row = new ArrayList<>();
-        Deque<TreeNode> nextLevel = new ArrayDeque<>();
-        for (TreeNode tn : queue) {
-          if (tn.left != null)
-            nextLevel.offer(tn.left);
-          if (tn.right != null)
-            nextLevel.offer(tn.right);
+        int levelcount = queue.size();
+        for (int i = 0; i < levelcount; i++) {
+          TreeNode tn = queue.poll();
+          if (tn.left != null) {
+            queue.offer(tn.left);
+          }
+          if (tn.right != null) {
+            queue.offer(tn.right);
+          }
           row.add(tn.val);
         }
         ret.add(row);
-        queue = nextLevel;
       }
     }
     return ret;
