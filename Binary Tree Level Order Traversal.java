@@ -1,36 +1,23 @@
-/**
- * Definition for binary tree
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 public class Solution {
-    public ArrayList<ArrayList<Integer>> levelOrder(TreeNode root) {
-        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
-        if(null==root) return result; 
-        ArrayList<TreeNode> level = new ArrayList<TreeNode>();
-        level.add(root);
-        while(!level.isEmpty()){
-            ArrayList<TreeNode> nextlevel = new ArrayList<TreeNode>();
-            ArrayList<Integer> temp = new ArrayList<Integer>();
-            for(int i=0;i<level.size();i++){
-                TreeNode node = level.get(i);
-                temp.add(node.val);
-                if(node.left!=null)
-                {
-                    nextlevel.add(node.left);
-                }
-                if(node.right!=null)
-                {
-                    nextlevel.add(node.right);
-                }
-            }
-            result.add(temp);
-            level=nextlevel;
+  public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root != null) {
+      Deque<TreeNode> queue = new ArrayDeque<>();
+      queue.offer(root);
+      while (!queue.isEmpty()) {
+        List<Integer> row = new ArrayList<>();
+        Deque<TreeNode> nextLevel = new ArrayDeque<>();
+        for (TreeNode tn : queue) {
+          if (tn.left != null)
+            nextLevel.offer(tn.left);
+          if (tn.right != null)
+            nextLevel.offer(tn.right);
+          row.add(tn.val);
         }
-        return result;
+        ret.add(row);
+        queue = nextLevel;
+      }
     }
+    return ret;
+  }
 }
