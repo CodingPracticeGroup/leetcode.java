@@ -1,25 +1,27 @@
-/**
- * Definition for binary tree
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 public class Solution {
-    public void flatten(TreeNode root) {
-        Stack<TreeNode> stack = new Stack<TreeNode>();
-        TreeNode temp = root;
-        while(temp!=null || !stack.empty()){
-            if(temp.right!=null){stack.push(temp.right);}
-            if(temp.left!=null){
-                temp.right=temp.left;
-                temp.left=null;
-            }else if(!stack.empty()){
-                temp.right=stack.pop();
-            }
-            temp=temp.right;
-        }
+  private TreeNode flatten_(TreeNode root) {
+    TreeNode left = root.left;
+    TreeNode right = root.right;
+    root.left = null;
+    root.right = left;
+
+    TreeNode leftlast = root;
+    if (left != null) {
+      leftlast = flatten_(left);
     }
+    leftlast.right = right;
+
+    TreeNode rightlast = leftlast;
+    if (right != null) {
+      rightlast = flatten_(right);
+    }
+
+    return rightlast;
+  }
+
+  public void flatten(TreeNode root) {
+    if (root != null) {
+      flatten_(root);
+    }
+  }
 }
