@@ -1,41 +1,26 @@
-import java.util.ArrayList;
-
-/**
- * Definition for binary tree
- */
-class TreeNode {
-	int val;
-	TreeNode left;
-	TreeNode right;
-
-	TreeNode(int x) {
-		val = x;
-	}
-}
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> pathSum(TreeNode root, int sum) {
-		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
-		ArrayList<Integer> track = new ArrayList<Integer>();
-		if (root != null)
-			recursion(root, sum, track, ret);
-		return ret;
-	}
+  private void pathSum_bt(TreeNode root, int sum, List<List<Integer>> ret, Deque<Integer> stack) {
+    if (root.left == null && root.right == null && sum == root.val) {
+      stack.offerLast(root.val);
+      ret.add(new ArrayList<Integer>(stack));
+      stack.pollLast();
+    } else {
+      stack.offerLast(root.val);
+      if (root.left != null) {
+        pathSum_bt(root.left, sum - root.val, ret, stack);
+      }
+      if (root.right != null) {
+        pathSum_bt(root.right, sum - root.val, ret, stack);
+      }
+      stack.pollLast();
+    }
+  }
 
-	private void recursion(TreeNode root, int sum, ArrayList<Integer> track, ArrayList<ArrayList<Integer>> ret) {
-		if (root.val == sum && root.left == null && root.right == null) {
-			ArrayList<Integer> col = new ArrayList<Integer>(track);
-			col.add(root.val);
-			ret.add(col);
-			return;
-		}
-		track.add(root.val);
-		if (root.left != null) {
-			recursion(root.left, sum - root.val, track, ret);
-		}
-		if (root.right != null) {
-			recursion(root.right, sum - root.val, track, ret);
-		}
-		track.remove(track.size() - 1);
-	}
+  public List<List<Integer>> pathSum(TreeNode root, int sum) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root != null) {
+      pathSum_bt(root, sum, ret, new ArrayDeque<Integer>());
+    }
+    return ret;
+  }
 }

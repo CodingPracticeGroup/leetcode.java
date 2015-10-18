@@ -1,37 +1,26 @@
-/**
- * Definition for binary tree
- */
-class TreeNode {
-	int val;
-	TreeNode left;
-	TreeNode right;
-
-	TreeNode(int x) {
-		val = x;
-	}
-}
-
 public class Solution {
-	public boolean isBalanced(TreeNode root) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
+  // info[0] height; info[1] balanced
+  private void isBalanced_(TreeNode root, int[] info) {
+    if (root != null) {
+      int[] leftinfo = new int[2];
+      isBalanced_(root.left, leftinfo);
+      int[] rightinfo = new int[2];
+      isBalanced_(root.right, rightinfo);
+      if (leftinfo[1] == 1 && rightinfo[1] == 1 && Math.abs(leftinfo[0] - rightinfo[0]) <= 1) {
+        info[1] = 1;
+      } else {
+        info[1] = 0;
+      }
+      info[0] = Math.max(leftinfo[0], rightinfo[0]) + 1;
+    } else {
+      info[0] = 0;
+      info[1] = 1; // true
+    }
+  }
 
-		// cannot use Boolean ret = new Boolean(true); because Boolean does not have setting function
-		boolean[] ret = new boolean[1];
-		ret[0] = true;
-		height(root, ret);
-		return ret[0];
-	}
-
-	int height(TreeNode root, boolean[] balanced) {
-		if (root == null) {
-			return 0;
-		}
-		int leftHeight = height(root.left, balanced);
-		int rightHeight = height(root.right, balanced);
-		if (Math.abs(leftHeight - rightHeight) > 1) {
-			balanced[0] = false;
-		}
-		return Math.max(leftHeight, rightHeight) + 1;
-	}
+  public boolean isBalanced(TreeNode root) {
+    int[] info = new int[2];
+    isBalanced_(root, info);
+    return info[1] == 1;
+  }
 }
