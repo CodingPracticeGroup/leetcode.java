@@ -1,27 +1,26 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class Solution {
-  private TreeNode flatten_(TreeNode root) {
-    TreeNode left = root.left;
-    TreeNode right = root.right;
-    root.left = null;
-    root.right = left;
-
-    TreeNode leftlast = root;
-    if (left != null) {
-      leftlast = flatten_(left);
-    }
-    leftlast.right = right;
-
-    TreeNode rightlast = leftlast;
-    if (right != null) {
-      rightlast = flatten_(right);
-    }
-
-    return rightlast;
-  }
-
   public void flatten(TreeNode root) {
     if (root != null) {
-      flatten_(root);
+      Deque<TreeNode> stack = new ArrayDeque<>();
+      stack.push(root);
+      TreeNode last = null;
+      while (!stack.isEmpty()) {
+        TreeNode tn = stack.pop();
+        if (last != null) {
+          last.right = tn;
+          last.left = null;
+        }
+        if (tn.right != null) {
+          stack.push(tn.right);
+        }
+        if (tn.left != null) {
+          stack.push(tn.left);
+        }
+        last = tn;
+      }
     }
   }
 }
