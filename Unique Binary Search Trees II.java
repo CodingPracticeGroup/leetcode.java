@@ -1,44 +1,42 @@
-import java.util.ArrayList;
-
-/**
- * Definition for binary tree
- */
-class TreeNode {
-	int val;
-	TreeNode left;
-	TreeNode right;
-
-	TreeNode(int x) {
-		val = x;
-		left = null;
-		right = null;
-	}
-}
-
 public class Solution {
-	public ArrayList<TreeNode> generateTrees(int n) {
-		return generateSubTrees(1, n); // [1,n]
-	}
+  private List<TreeNode> generateTrees_range(int start, int end) {
+    List<TreeNode> ret = new ArrayList<>();
+    if (end - start == 0) {
+      ret.add(null);
+      return ret;
+    }
+    if (end - start == 1) {
+      ret.add(new TreeNode(start));
+      return ret;
+    }
+    List<TreeNode> rightOnly = generateTrees_range(start + 1, end);
+    for (TreeNode tn : rightOnly) {
+      TreeNode root = new TreeNode(start);
+      root.right = tn;
+      ret.add(root);
+    }
+    List<TreeNode> leftOnly = generateTrees_range(start, end - 1);
+    for (TreeNode tn : leftOnly) {
+      TreeNode root = new TreeNode(end - 1);
+      root.left = tn;
+      ret.add(root);
+    }
+    for (int root = start + 1; root < end - 1; root++) {
+      List<TreeNode> left = generateTrees_range(start, root);
+      List<TreeNode> right = generateTrees_range(root + 1, end);
+      for (TreeNode tnleft : left) {
+        for (TreeNode tnright : right) {
+          TreeNode roottn = new TreeNode(root);
+          roottn.left = tnleft;
+          roottn.right = tnright;
+          ret.add(roottn);
+        }
+      }
+    }
+    return ret;
+  }
 
-	// since we want to visit all possibilities, so recursion/dfs is within time limit (no pruning is necessary)
-	private ArrayList<TreeNode> generateSubTrees(int min, int max) {
-		ArrayList<TreeNode> ret = new ArrayList<TreeNode>();
-		if (min > max) {
-			ret.add(null); // note this
-			return ret;
-		}
-		for (int i = min; i <= max; i++) {
-			ArrayList<TreeNode> leftSubTrees = generateSubTrees(min, i - 1);
-			ArrayList<TreeNode> rightSubTrees = generateSubTrees(i + 1, max);
-			for (TreeNode left : leftSubTrees) {
-				for (TreeNode right : rightSubTrees) {
-					TreeNode root = new TreeNode(i);
-					root.left = left;
-					root.right = right;
-					ret.add(root);
-				}
-			}
-		}
-		return ret;
-	}
+  public List<TreeNode> generateTrees(int n) {
+    return generateTrees_range(1, n + 1);
+  }
 }
