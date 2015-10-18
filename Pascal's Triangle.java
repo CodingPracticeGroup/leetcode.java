@@ -1,32 +1,26 @@
-import java.util.ArrayList;
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> generate(int numRows) {
-		// IMPORTANT: Please reset any member data you declared, as
-		// the same Solution instance will be reused for each test case.
-		ArrayList<ArrayList<Integer>> triangle = new ArrayList<ArrayList<Integer>>();
-		if (numRows == 0) {
-			return triangle;
-		}
-
-		ArrayList<Integer> row = new ArrayList<Integer>();
-		row.add(1);
-		triangle.add(row);
-
-		for (int i = 1; i < numRows; i++) {
-			ArrayList<Integer> rowDuplicate = new ArrayList<Integer>(row);
-			for (int j = 1; j < i ; j++) {
-				rowDuplicate.set(j, row.get(j - 1) + row.get(j));
-			}
-			rowDuplicate.add(1);
-			triangle.add(rowDuplicate);
-			row = rowDuplicate;
-		}
-
-		return triangle;
-	}
-
-	public static void main(String[] args) {
-		new Solution().generate(3);
-	}
+  public List<List<Integer>> generate(int numRows) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (numRows == 0)
+      return ret;
+    List<Integer> row1 = Stream.of(1).collect(Collectors.toList());
+    ret.add(row1);
+    if (numRows == 1)
+      return ret;
+    List<Integer> row2 = Stream.of(1, 1).collect(Collectors.toList());
+    ret.add(row2);
+    if (numRows == 0)
+      return ret;
+    for (int i = 3; i <= numRows; i++) {
+      List<Integer> lastrow = ret.get(ret.size() - 1);
+      List<Integer> newrow = new ArrayList<>();
+      for (int j = 1; j < lastrow.size(); j++) {
+        newrow.add(lastrow.get(j - 1) + lastrow.get(j));
+      }
+      newrow.add(0, 1);
+      newrow.add(newrow.size(), 1);
+      ret.add(newrow);
+    }
+    return ret;
+  }
 }
