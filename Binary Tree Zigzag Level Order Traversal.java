@@ -1,55 +1,32 @@
-import java.util.ArrayList;
-import java.util.Collections;
-
-/**
- * Definition for binary tree
- */
-class TreeNode {
-	int val;
-	TreeNode left;
-	TreeNode right;
-
-	TreeNode(int x) {
-		val = x;
-	}
-}
-
 public class Solution {
-	public ArrayList<ArrayList<Integer>> zigzagLevelOrder(TreeNode root) {
-		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
-
-		if (root != null) {
-			int height = 0;
-			ArrayList<TreeNode> level = new ArrayList<TreeNode>();
-			// enqueue level
-			level.add(root);
-			// while level is not empty
-			while (!level.isEmpty()) {
-				// dequeue level
-				ArrayList<TreeNode> tmp = new ArrayList<TreeNode>(level);
-				level.clear();
-				// process
-				ArrayList<Integer> tmpInt = new ArrayList<Integer>();
-				for (TreeNode tn : tmp) {
-					tmpInt.add(tn.val);
-				}
-				if (height % 2 != 0) {
-					Collections.reverse(tmpInt);
-				}
-				height++;
-				ret.add(tmpInt);
-				// enqueue next level
-				for (TreeNode tn : tmp) {
-					if (tn.left != null) {
-						level.add(tn.left);
-					}
-					if (tn.right != null) {
-						level.add(tn.right);
-					}
-				}
-			}
-		}
-
-		return ret;
-	}
+  public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root != null) {
+      Deque<TreeNode> queue = new ArrayDeque<>();
+      queue.offerLast(root);
+      int level = 1;
+      while (!queue.isEmpty()) {
+        List<Integer> row = new ArrayList<>();
+        int count = queue.size();
+        for (int i = 0; i < count; i++) {
+          TreeNode tn = queue.poll();
+          row.add(tn.val);
+          if (tn.left != null) {
+            queue.offer(tn.left);
+          }
+          if (tn.right != null) {
+            queue.offer(tn.right);
+          }
+        }
+        if (level % 2 == 1) {
+          ret.add(row);
+        } else {
+          Collections.reverse(row);
+          ret.add(row);
+        }
+        level++;
+      }
+    }
+    return ret;
+  }
 }
