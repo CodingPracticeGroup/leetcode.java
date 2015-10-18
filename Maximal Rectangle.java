@@ -1,44 +1,47 @@
 public class Solution {
-    public int maximalRectangle(char[][] matrix) {
-        if(null==matrix) return 0;
-        int m=matrix.length;
-        if(0==m) return 0;
-        int n=matrix[0].length;
-        
-        //straight forward solution: dp 0-j consecutive 0's
-        int[][] dp = new int[m][n];
-        for(int i=0;i<m;i++){
-            for(int j=0;j<n;j++){
-                dp[i][j]=matrix[i][j]-'0';
-                if(1==dp[i][j]&&j>0){
-                    dp[i][j]=dp[i][j-1]+1;
-                }
-            }
-        }
-        int result=0; 
-        for(int i=0;i<m;i++){
-            for(int j=0;j<n;j++){
-                if(dp[i][j]!=0){
-                    //expand down
-                    int height=0;
-                    int width=dp[i][j];
-                    for(int row=i;row<m;row++){
-                        if(dp[row][j]>=width){
-                            height++;
-                            result=Math.max(result,height*width);
-                        }else if(dp[row][j]>0){
-                            width=dp[row][j];
-                            height++;
-                            result=Math.max(result,height*width);
-                        }else{
-                            break;
-                        }
-                    }
-                    
-                }
-            }
-        }
-        
-        return result;
+  private int maximalRectangle_row(char[] row) {
+    int max = 0;
+    Deque<Integer> stack = new ArrayDeque<>();
+    for (int i = 0; i < row.length; i++) {
+      while (!stack.isEmpty() && row[stack.peek()] > row[i]) {
+        int idx = stack.pop();
+        int leftBoundary = stack.isEmpty() ? -1 : stack.peek();
+        int rightBoundary = i;
+        int area = (rightBoundary - leftBoundary - 1) * row[idx];
+        max = Math.max(max, area);
+      }
+      stack.push(i);
     }
+    while (!stack.isEmpty()) {
+      int idx = stack.pop();
+      int leftBoundary = stack.isEmpty() ? -1 : stack.peek();
+      int rightBoundary = row.length;
+      int area = (rightBoundary - leftBoundary - 1) * row[idx];
+      max = Math.max(max, area);
+    }
+    return max;
+  }
+
+  public int maximalRectangle(char[][] matrix) {
+    if (matrix.length == 0 || matrix[0].length == 0) {
+      return 0;
+    }
+    for (int j = 0; j < matrix[0].length; j++) {
+      matrix[0][j] -= '0';
+    }
+    for (int i = 1; i < matrix.length; i++) {
+      for (int j = 0; j < matrix[i].length; j++) {
+        matrix[i][j] -= '0';
+        if (matrix[i][j] > 0) {
+          matrix[i][j] += matrix[i - 1][j];
+        }
+      }
+    }
+    int max = 0;
+    for (int i = 0; i < matrix.length; i++) {
+      int row = maximalRectangle_row(matrix[i]);
+      max = Math.max(max, row);
+    }
+    return max;
+  }
 }

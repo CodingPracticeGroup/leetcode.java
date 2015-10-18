@@ -1,57 +1,34 @@
-import java.util.Arrays;
-
 public class Solution {
-	public boolean search(int[] A, int target) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		return searchRange(A, target, 0, A.length);
-	}
+  private boolean search_(int[] nums, int target, int low, int high) {
+    if (low > high) {
+      return false;
+    }
+    if (low == high) {
+      return nums[low] == target;
+    }
+    int mid = (low + high) / 2;
+    if (nums[low] < nums[high]) {
+      return Arrays.binarySearch(nums, low, high + 1, target) >= 0;
+    } else {
+      if (nums[low] < nums[mid]) {
+        if (nums[low] <= target && target <= nums[mid]) {
+          return Arrays.binarySearch(nums, low, mid + 1, target) >= 0;
+        } else {
+          return search_(nums, target, mid + 1, high);
+        }
+      } else if (nums[mid] < nums[high]) {
+        if (nums[mid] <= target && target <= nums[high]) {
+          return Arrays.binarySearch(nums, mid, high + 1, target) >= 0;
+        } else {
+          return search_(nums, target, low, mid);
+        }
+      } else {
+        return search_(nums, target, low, mid) || search_(nums, target, mid + 1, high);
+      }
+    }
+  }
 
-	boolean searchRange(int[] A, int target, int start, int end) {
-		if (end <= start)
-			return false;
-		if (end - start == 1) {
-			if (A[start] == target) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (end - start == 2) {
-			if (A[start] == target || A[start + 1] == target) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		//
-		int mid = start + (end - start) / 2;
-		if (A[mid] == target)
-			return true;
-		if (A[start] == A[mid] && A[mid] == A[end - 1]) {
-			return searchRange(A, target, start, mid) || searchRange(A, target, mid, end);
-		} else if (A[mid] == A[end - 1]) {
-			return searchRange(A, target, start, mid);
-		} else if (A[start] == A[mid]) {
-			return searchRange(A, target, mid, end);
-		}
-		if (A[start] < A[mid]) { // 2 search here
-			if (A[start] <= target && target < A[mid]) { // 2 search
-				int bs = Arrays.binarySearch(A, start, mid, target);
-				if (bs >= 0)
-					return true;
-			} else { // repeat
-				return searchRange(A, target, mid, end);
-			}
-		} else if (A[mid] < A[end - 1]) { // 2 search here
-			if (A[mid] < target && target <= A[end - 1]) { // 2 search
-				int bs = Arrays.binarySearch(A, mid, end, target);
-				if (bs >= 0)
-					return true;
-			} else { // repeat
-				return searchRange(A, target, start, mid);
-			}
-		}
-		return false;
-	}
+  public boolean search(int[] nums, int target) {
+    return search_(nums, target, 0, nums.length - 1);
+  }
 }

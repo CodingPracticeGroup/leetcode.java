@@ -1,69 +1,47 @@
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class Solution {
-	public boolean isScramble(String s1, String s2) {
-		return recursion(s1, 0, s1.length(), s2, 0, s2.length());
-	}
+  private int[] isScramble_dictionary_arr = new int[128];
 
-	// 4 point recursion can pass large test
-	// String.substring(x,y)/isScramble cannot pass large test
-	private boolean recursion(String s1, int startS1, int endS1, String s2, int startS2, int endS2) {
-		if (prune(s1, startS1, endS1, s2, startS2, endS2) == false) {
-			return false;
-		}
+  private boolean isScramble_dictionary(String s1, int s1start, int s1end, String s2, int s2start,
+      int s2end) {
+    if (s1end - s1start != s2end - s2start)
+      return false;
+    Arrays.fill(isScramble_dictionary_arr, 0);
+    for (int i = s1start; i < s1end; i++) {
+      isScramble_dictionary_arr[s1.charAt(i)]++;
+    }
+    for (int i = s2start; i < s2end; i++) {
+      isScramble_dictionary_arr[s2.charAt(i)]--;
+      if (isScramble_dictionary_arr[s2.charAt(i)] < 0) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-		if (s1.substring(startS1, endS1).equals(s2.substring(startS2, endS2))) {
-			return true;
-		}
+  private boolean isScramble_dfs(String s1, int s1start, int s1end, String s2, int s2start,
+      int s2end) {
+    if (isScramble_dictionary(s1, s1start, s1end, s2, s2start, s2end)) {
+      if (s1.substring(s1start, s1end).equals(s2.substring(s2start, s2end))) {
+        return true;
+      }
+      int len = s1end - s1start;
+      for (int i = 1; i <= len - 1; i++) { // i is s1 left substring length
+        if (isScramble_dfs(s1, s1start, s1start + i, s2, s2end - i, s2end)
+            && isScramble_dfs(s1, s1start + i, s1end, s2, s2start, s2end - i)) {
+          return true;
+        }
+        if (isScramble_dfs(s1, s1start, s1start + i, s2, s2start, s2start + i)
+            && isScramble_dfs(s1, s1start + i, s1end, s2, s2start + i, s2end)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
-		int lenS1 = endS1 - startS1;
-		for (int i = 1; i < lenS1; i++) { // left sub string length
-			boolean check1 = recursion(s1, startS1, startS1 + i, s2, startS2, startS2 + i)
-					&& recursion(s1, startS1 + i, endS1, s2, startS2 + i, endS2);
-			boolean check2 = recursion(s1, startS1, startS1 + i, s2, endS2 - i, endS2)
-					&& recursion(s1, startS1 + i, endS1, s2, startS2, endS2 - i);
-			if (check1 || check2) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	HashMap<Character, Integer> hmS1 = new HashMap<Character, Integer>();
-
-	private boolean prune(String s1, int startS1, int endS1, String s2, int startS2, int endS2) {
-		if (endS1 - startS1 != endS2 - startS2) {
-			return false;
-		}
-
-		hmS1.clear();
-		for (int i = startS1; i < endS1; i++) {
-			char character = s1.charAt(i);
-			int count = 0;
-			if (hmS1.containsKey(character)) {
-				count = hmS1.get(character);
-			}
-			hmS1.put(character, count + 1);
-		}
-		for (int i = startS2; i < endS2; i++) {
-			char character = s2.charAt(i);
-			if (hmS1.containsKey(character)) {
-				int count = hmS1.get(character);
-				if (count == 1) {
-					hmS1.remove(character);
-				} else {
-					hmS1.put(character, count - 1);
-				}
-			} else {
-				return false;
-			}
-		}
-		return hmS1.size() == 0;
-	}
-
-	public static void main(String[] args) {
-		boolean ret = new Solution().isScramble("ab", "ba");
-		System.out.println(ret);
-	}
+  public boolean isScramble(String s1, String s2) {
+    return isScramble_dfs(s1, 0, s1.length(), s2, 0, s2.length());
+  }
 }
