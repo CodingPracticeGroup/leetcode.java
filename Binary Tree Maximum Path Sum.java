@@ -1,39 +1,29 @@
-/**
- * Definition for binary tree
- */
-class TreeNode {
-	int val; // may be negative
-	TreeNode left;
-	TreeNode right;
-
-	TreeNode(int x) {
-		val = x;
-	}
-}
-
 public class Solution {
+  private int maxPathSum_max(int... a) {
+    int max = Integer.MIN_VALUE;
+    for (int i : a) {
+      max = Math.max(max, i);
+    }
+    return max;
+  }
 
-	int wholeTreeMax = Integer.MIN_VALUE;
+  private void maxPathSum_maxdepthsum(TreeNode root, int[] info) {
+    // info[0] max depth sum, info[1] max path sum
+    if (root != null) {
+      int[] left = new int[] {Integer.MIN_VALUE, Integer.MIN_VALUE};
+      maxPathSum_maxdepthsum(root.left, left);
+      int[] right = new int[] {Integer.MIN_VALUE, Integer.MIN_VALUE};
+      maxPathSum_maxdepthsum(root.right, right);
+      info[0] = maxPathSum_max(0, left[0] + root.val, right[0] + root.val, root.val);
+      info[1] = maxPathSum_max(info[1], left[1], right[1], left[0] + right[0] + root.val);
+    } else {
+      info[0] = 0;
+    }
+  }
 
-	public int maxPathSum(TreeNode root) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		if (root != null) {
-			contributeMax(root);
-		}
-		return wholeTreeMax;
-	}
-
-	private int contributeMax(TreeNode root) {
-		int leftMax = 0, rightMax = 0;
-		if (root.left != null) {
-			leftMax = Math.max(0, contributeMax(root.left));
-		}
-		if (root.right != null) {
-			rightMax = Math.max(0, contributeMax(root.right));
-		}
-		wholeTreeMax = Math.max(wholeTreeMax, leftMax + root.val + rightMax);
-		return Math.max(root.val + leftMax, root.val + rightMax);
-	}
-
+  public int maxPathSum(TreeNode root) {
+    int[] info = new int[] {Integer.MIN_VALUE, Integer.MIN_VALUE};
+    maxPathSum_maxdepthsum(root, info);
+    return info[1];
+  }
 }
