@@ -1,26 +1,41 @@
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Solution {
-	public int longestConsecutive(int[] num) {
-		HashSet<Integer> set = new HashSet<Integer>(num.length);
-		for (int i = 0; i < num.length; i++) {
-			set.add(num[i]);
-		}
-		int longestLength = 0;
-		while (!set.isEmpty()) {
-			int cur = set.iterator().next();
-			set.remove(cur);
-			int left = cur, right = cur;
-			while (set.contains(--left)) {
-				set.remove(left);
-			}
-			while (set.contains(++right)) {
-				set.remove(right);
-			}
-			if (right - left - 1 > longestLength) {
-				longestLength = right - left - 1;
-			}
-		}
-		return longestLength;
-	}
+  public int longestConsecutive(int[] nums) {
+    Map<Integer, Integer> start_end = new HashMap<>();
+    Map<Integer, Integer> end_start = new HashMap<>();
+    for (Integer i : nums) {
+      if (start_end.containsKey(i + 1)) {
+        int old_end = start_end.remove(i + 1);
+        if (start_end.containsKey(i)) {
+          old_end = Math.max(old_end, start_end.get(i));
+        }
+        start_end.put(i, old_end);
+      } else if (!start_end.containsKey(i)) {
+        start_end.put(i, i);
+      }
+      if (end_start.containsKey(i - 1)) {
+        int old_start = end_start.remove(i - 1);
+        if (end_start.containsKey(i)) {
+          old_start = Math.min(old_start, end_start.get(i));
+        }
+        end_start.put(i, old_start);
+      } else if (!end_start.containsKey(i)) {
+        end_start.put(i, i);
+      }
+      if (start_end.containsKey(i) && end_start.containsKey(i)) {
+        int old_end = start_end.remove(i);
+        int old_start = end_start.remove(i);
+        start_end.put(old_start, old_end);
+        end_start.put(old_end, old_start);
+      }
+    }
+    int max = 0;
+    for (Integer start : start_end.keySet()) {
+      Integer end = start_end.get(start);
+      max = Math.max(max, end - start + 1);
+    }
+    return max;
+  }
 }
