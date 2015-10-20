@@ -1,36 +1,33 @@
+import java.util.Arrays;
+
 public class Solution {
-    public int minCut(String s) {
-        if(null==s||s.length()==0) return 0;
-        int n = s.length();
-        boolean[][] dp = new boolean[n][n];
-        
-        for(int i=0;i<n;i++){
-            dp[i][i]=true;
-        }
-        for(int i=0;i<n;i++){
-            //odd
-            int l=i-1;
-            int r=i+1;
-            while(l>=0&&r<s.length()&&s.charAt(l)==s.charAt(r)){
-                dp[l--][r++]=true;
-            }
-            //even
-             l=i-1;
-             r=i;
-            while(l>=0&&r<s.length()&&s.charAt(l)==s.charAt(r)){
-                dp[l--][r++]=true;
-            }
-        }
-        int [] cuts = new int[n+1];
-        cuts[n]=0;
-        for(int i=n-1;i>=0;i--){
-            cuts[i]=n-i;
-            for(int j=i;j<n;j++){
-                if(dp[i][j]){
-                    cuts[i]=Math.min(cuts[i],1+cuts[j+1]);
-                }
-            }
-        }
-        return cuts[0]-1;
+  public int minCut(String s) {
+    int len = s.length();
+    boolean dp[][] = new boolean[len][len]; // [i, j]
+    for (int i = 0; i < len; i++) {
+      Arrays.fill(dp[i], false);
     }
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; i - j >= 0 && i + j < len && s.charAt(i - j) == s.charAt(i + j); j++) {
+        dp[i - j][i + j] = true;
+      }
+    }
+    for (int i = 1; i < len; i++) {
+      for (int j = 0; i - 1 - j >= 0 && i + j < len && s.charAt(i - 1 - j) == s.charAt(i + j); j++) {
+        dp[i - 1 - j][i + j] = true;
+      }
+    }
+
+    int[] dp2 = new int[len + 1]; // fix start=0
+    dp2[0] = 0;
+    for (int l = 1; l <= len; l++) { // [0,l)
+      dp2[l] = dp[0][l - 1] ? 0 : l - 1; // default
+      for (int k = 1; k < l; k++) { // 1 hop [k,l)
+        if (dp[k][l - 1])
+          dp2[l] = Math.min(dp2[k] + 1, dp2[l]);
+      }
+    }
+
+    return dp2[len];
+  }
 }
