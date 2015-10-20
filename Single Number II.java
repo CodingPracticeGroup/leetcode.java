@@ -1,20 +1,14 @@
 public class Solution {
-	public int singleNumber(int[] A) {
-		int zeros = -1, ones = 0, twos = 0;
-		for (int i = 0; i < A.length; i++) {
-			int tmpZero = zeros;
-			int tmpOne = ones;
-			int tmpTwo = twos;
-			ones = (tmpOne | (tmpZero & A[i])) & (~(tmpOne & A[i]));
-			twos = (tmpTwo | (tmpOne & A[i])) & (~(tmpTwo & A[i]));
-			zeros = (tmpZero | (tmpTwo & A[i])) & (~(tmpZero & A[i]));
-		}
-		return ones;
-	}
-
-	public static void main(String[] args) throws Exception {
-		int A[] = new int[] { -2, -2, -2, 1, 1, 1, -3, -3, -3, -4 };
-		new Solution().singleNumber(A);
-	}
-
+  public int singleNumber(int[] nums) {
+    int one = 0, two = 0, three = -1;
+    for (int i = 0; i < nums.length; i++) {
+      int one_ = one;
+      int two_ = two;
+      int three_ = three;
+      one = (one_ | (nums[i] & three_)) & (~(one_ & nums[i]));
+      two = (two_ | (nums[i] & one_)) & (~(two_ & nums[i]));
+      three = (three_ | (nums[i] & two_)) & (~(three_ & nums[i]));
+    }
+    return one;
+  }
 }

@@ -1,28 +1,22 @@
-/**
- * Definition for undirected graph.
- * class UndirectedGraphNode {
- *     int label;
- *     ArrayList<UndirectedGraphNode> neighbors;
- *     UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
- * };
- */
 public class Solution {
-    public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
-        if(null==node) return null;
-        HashMap<UndirectedGraphNode,UndirectedGraphNode> visited = new HashMap<UndirectedGraphNode,UndirectedGraphNode>();
-        visited.put(node,new UndirectedGraphNode(node.label));
-        dfs(node,visited);
-        return visited.get(node);
-    }
-    
-    public void dfs(UndirectedGraphNode node, HashMap<UndirectedGraphNode,UndirectedGraphNode> visited){
-        UndirectedGraphNode newnode = visited.get(node);
-        for(UndirectedGraphNode neighbor:node.neighbors){
-            if(!visited.containsKey(neighbor)){
-                visited.put(neighbor,new UndirectedGraphNode(neighbor.label));
-                dfs(neighbor,visited);
-            }
-            newnode.neighbors.add(visited.get(neighbor));
+  public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+    if (node == null)
+      return null;
+    Map<UndirectedGraphNode, UndirectedGraphNode> visited_map = new HashMap<>(); // mark
+    Deque<UndirectedGraphNode> stack = new LinkedList<>(); // stack
+    visited_map.put(node, new UndirectedGraphNode(node.label)); // mark
+    stack.push(node); // push
+    while (!stack.isEmpty()) {
+      UndirectedGraphNode un = stack.pop(); // pop
+      for (UndirectedGraphNode child : un.neighbors) { // neighbors
+        if (!visited_map.containsKey(child)) { // prune
+          visited_map.put(child, new UndirectedGraphNode(child.label)); // mark
+          stack.push(child); // push
         }
+        visited_map.get(un).neighbors.add(visited_map.get(child));
+      }
+
     }
+    return visited_map.get(node);
+  }
 }

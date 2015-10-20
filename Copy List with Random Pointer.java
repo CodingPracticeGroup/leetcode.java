@@ -1,40 +1,34 @@
-/**
- * Definition for singly-linked list with a random pointer.
- * class RandomListNode {
- *     int label;
- *     RandomListNode next, random;
- *     RandomListNode(int x) { this.label = x; }
- * };
- */
 public class Solution {
-    public RandomListNode copyRandomList(RandomListNode head) {
-        if(null==head) return null;
-        RandomListNode p = head;
-        //insert new nodes
-        while(p!=null){
-            RandomListNode newnode = new RandomListNode(p.label);
-            newnode.next=p.next;
-            p.next=newnode;
-            p=newnode.next;
-        }
-        //copy random nodes
-        p=head;
-        while(p!=null){
-            p.next.random=p.random==null?null:p.random.next;
-            p=p.next.next;
-        }
-        //split two lists
-        RandomListNode newhead = head.next;
-        RandomListNode newp = newhead;
-        p=head;
-        while(p!=null){
-            p.next=newp.next;
-            p=p.next;
-            if(p!=null){
-                newp.next=p.next;
-                newp=newp.next;
-            }
-        }
-        return newhead;
+  public RandomListNode copyRandomList(RandomListNode head) {
+    if (head == null)
+      return null;
+    RandomListNode p = head;
+    while (p != null) {
+      RandomListNode q = new RandomListNode(p.label);
+      q.next = p.next;
+      p.next = q;
+      p = q.next;
     }
+    p = head;
+    while (p != null) {
+      RandomListNode q = p.random;
+      if (q != null) {
+        p.next.random = q.next;
+      } else {
+        p.next.random = null;
+      }
+      p = p.next.next;
+    }
+    RandomListNode ret = head.next;
+    p = head;
+    while (p != null) {
+      RandomListNode q = p.next;
+      p.next = q.next;
+      if (p.next != null) {
+        q.next = p.next.next;
+      }
+      p = p.next;
+    }
+    return ret;
+  }
 }
