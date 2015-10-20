@@ -1,44 +1,38 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-
 public class Solution {
-	public ArrayList<ArrayList<String>> partition(String s) {
-		// Start typing your Java solution below
-		// DO NOT write main() function
-		int len = s.length();
-		boolean dpIsPalindrome[][] = new boolean[len + 1][len + 1];
-		for (int i = 0; i < len; i++) {
-			for (int j = i + 1; j <= len; j++) {
-				if (isPalindrome(s.substring(i, j))) {
-					dpIsPalindrome[i][j] = true;
-				}
-			}
-		}
-		ArrayList<ArrayList<String>> ret = new ArrayList<ArrayList<String>>();
-		dfs(s, 0, len, ret, new ArrayDeque<String>(), dpIsPalindrome);
-		return ret;
-	}
+  private boolean partition_palindrome(String s, int start, int end) {
+    if (end <= start)
+      return false;
+    while (start <= end - 1) {
+      if (s.charAt(start) != s.charAt(end - 1)) {
+        return false;
+      }
+      start++;
+      end--;
+    }
+    return true;
+  }
 
-	private void dfs(String s, int start, int end, ArrayList<ArrayList<String>> ret, ArrayDeque<String> root2leaf,
-			boolean dpIsPalindrome[][]) {
-		if (dpIsPalindrome[start][end]) {
-			ArrayList<String> al = new ArrayList<String>(root2leaf);
-			al.add(s.substring(start, end));
-			ret.add(al);
-		}
-		for (int i = start + 1; i < end; i++) {
-			if (dpIsPalindrome[start][i]) {
-				root2leaf.offerLast(s.substring(start, i));
-				dfs(s, i, end, ret, root2leaf, dpIsPalindrome);
-				root2leaf.pollLast();
-			}
-		}
-	}
+  private List<List<String>> partition_range(String s, int start, int end) {
+    List<List<String>> ret = new LinkedList<>();
+    if (partition_palindrome(s, start, end)) {
+      List<String> newlist = new LinkedList<>();
+      newlist.add(0, s.substring(start, end));
+      ret.add(newlist);
+    }
+    int len = end - start;
+    for (int i = 1; i <= len; i++) {// candidates
+      if (partition_palindrome(s, start, start + i)) { // prune
+        List<List<String>> children = partition_range(s, start + i, end); // recusion
+        for (List<String> l : children) {
+          l.add(0, s.substring(start, start + i));
+        }
+        ret.addAll(children);
+      }
+    }
+    return ret;
+  }
 
-	private boolean isPalindrome(String s) {
-		if (s.equals(new StringBuilder(s).reverse().toString())) {
-			return true;
-		}
-		return false;
-	}
+  public List<List<String>> partition(String s) {
+    return partition_range(s, 0, s.length());
+  }
 }
