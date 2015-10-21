@@ -1,19 +1,19 @@
 public class Solution {
-    public int findMin(int[] num) {
-        if(null == num || num.length == 0) return Integer.MAX_VALUE;
-        int n = num.length;
-        int left =0, right=n-1;
-        if(n<=2) return Math.min(num[left],num[right]);
-        int mid = (left+right)/2;
-            if(num[left]<num[mid] && num[right]>num[mid])
-                ;
-            else if(num[left]<num[mid]){
-                return Math.min(num[left],findMin(Arrays.copyOfRange(num,mid+1,right+1)));
-            }else if(num[right]>num[mid]){
-                return Math.min(num[mid],findMin(Arrays.copyOfRange(num,left,mid)));
-            }else{
-                return Math.min(findMin(Arrays.copyOfRange(num,left,mid)),findMin(Arrays.copyOfRange(num,mid,right+1)));
-            }
-        return num[left];
+    private int findMin_range(int[] nums, int start, int end) {
+        if (start+1==end) return nums[start];
+        if (start+2==end) return Math.min(nums[start], nums[start+1]);
+        int mid = (start+end)/2;
+        if(nums[start]<nums[mid] && nums[mid]<nums[end-1]) {
+            return nums[start];
+        } else if (nums[start]<nums[mid]) {
+            return Math.min(nums[start], findMin_range(nums, mid+1, end));
+        } else if (nums[mid]<nums[end-1]) {
+            return Math.min(nums[mid], findMin_range(nums, start, mid));
+        } else {
+            return Math.min(findMin_range(nums, start, mid), findMin_range(nums, mid, end));
+        }
+    }
+    public int findMin(int[] nums) {
+        return findMin_range(nums, 0, nums.length);
     }
 }

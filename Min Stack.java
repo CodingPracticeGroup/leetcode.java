@@ -1,28 +1,30 @@
 class MinStack {
-    private ArrayDeque<Integer> stack = new ArrayDeque<Integer>();
-    private ArrayDeque<Integer> minstack = new ArrayDeque<Integer>();
-    
-    public void push(int x) {
-        stack.push(x);
-        if(minstack.isEmpty()){
-            minstack.push(x);
-        }
-        else if(x <= minstack.peek()){
-            minstack.push(x);
-        }
-    }
+  Deque<Integer> stack = new ArrayDeque<>();
+  Deque<Integer> minstack = new ArrayDeque<>();
 
-    public void pop() {
-        if(stack.pop().equals(minstack.peek())){
-            minstack.pop();
-        }
+  public void push(int x) {
+    stack.push(x);
+    if (minstack.isEmpty()) {
+      minstack.push(x);
+    } else {
+      if (x <= minstack.peek()) {
+        minstack.push(x);
+      }
     }
+  }
 
-    public int top() {
-        return stack.peek();
+  public void pop() {
+    if (stack.peek().equals(minstack.peek())) {
+      minstack.pop();
     }
+    stack.pop();
+  }
 
-    public int getMin() {
-        return minstack.peek();
-    }
+  public int top() {
+    return stack.peek();
+  }
+
+  public int getMin() {
+    return minstack.peek();
+  }
 }

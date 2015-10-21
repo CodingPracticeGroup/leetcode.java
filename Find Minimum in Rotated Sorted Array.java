@@ -1,25 +1,18 @@
 public class Solution {
-    public int findMin(int[] num) {
-        if(null == num || num.length == 0) return 0;
-        int n = num.length;
-        int left =0, right=n-1;
-        while(left<=right){
-            int mid = (left+right)/2;
-            if(num[left]>num[mid]){
-                left++;
-                right=mid;
-            }else if(num[right]<num[mid]){
-                mid++;
-                left=mid;
-            }else break;
-            /*if(x>num[mid]){
-                left=mid+1;
-            }else if(x<num[mid]){
-                right=mid-1;
-            }else{
-                return mid;
-            }*/
-        }
-        return num[left];
+  private int findMin_range(int[] nums, int start, int end) {
+    if (start + 1 == end)
+      return nums[start];
+    if (start + 2 == end)
+      return Math.min(nums[start], nums[start + 1]);
+    int mid = (start + end) / 2;
+    if (nums[start] < nums[mid]) {
+      return Math.min(nums[start], findMin_range(nums, mid + 1, end));
+    } else {// nums[mid]<nums[right]
+      return Math.min(nums[mid], findMin_range(nums, start, mid));
     }
+  }
+
+  public int findMin(int[] nums) {
+    return findMin_range(nums, 0, nums.length);
+  }
 }
