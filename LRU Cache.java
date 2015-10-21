@@ -1,45 +1,70 @@
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
+
+class DLNode {
+  int key;
+  int val;
+  DLNode pre;
+  DLNode nxt;
+
+  DLNode(int k, int v) {
+    key = k;
+    val = v;
+    pre = null;
+    nxt = null;
+  }
+}
+
 
 public class LRUCache {
+  int capacity;
+  DLNode head; // for order
+  DLNode tail;
+  Map<Integer, DLNode> keyVal; // for key-val store
 
-	public static final float loadFactor = (float) 0.75;
+  public LRUCache(int capacity) {
+    this.capacity = capacity;
+    head = new DLNode(-1, -1);
+    tail = new DLNode(-1, -1);
+    head.nxt = tail;
+    tail.pre = head;
+    keyVal = new HashMap<>();
+  }
 
-	LinkedHashMap<Integer, Integer> cache;
-	int capacity;
+  private void insert(int k, int v) {
+    DLNode n = new DLNode(k, v);
+    n.nxt = head.nxt;
+    n.pre = head;
+    n.nxt.pre = n;
+    n.pre.nxt = n;
 
-	public LRUCache(int capacity) {
-		this.capacity = capacity;
-		cache = new LinkedHashMap<Integer, Integer>((int) (capacity / loadFactor) + 1, loadFactor, true);
-	}
+    keyVal.put(k, n);
 
-	public int get(int key) {
-		Integer val = cache.get(key);
-		if (val == null) {
-			return -1;
-		}
-		return val;
-	}
+    if (keyVal.size() > capacity) {
+      delete(tail.pre.key);
+    }
+  }
 
-	public void set(int key, int value) {
-		if (cache.containsKey(key)) {
-			cache.put(key, value);
-			return;
-		}
-		if (cache.size() >= capacity) {
-			cache.remove(cache.keySet().iterator().next());
-		}
-		cache.put(key, value);
-	}
+  private int delete(int k) {
+    if (!keyVal.containsKey(k))
+      return -1;
 
-	public static void main(String[] args) {
-		LRUCache o = new LRUCache(2);
-		int v;
-		v = o.get(2);
-		o.set(2, 6);
-		v = o.get(1);
-		o.set(1, 5);
-		o.set(1, 2);
-		v = o.get(1);
-		v = o.get(2);
-	}
+    DLNode n = keyVal.remove(k);
+    n.pre.nxt = n.nxt;
+    n.nxt.pre = n.pre;
+
+    return n.val;
+  }
+
+  public int get(int key) {
+    int val = delete(key);
+    if (val != -1)
+      insert(key, val);
+    return val;
+  }
+
+  public void set(int key, int value) {
+    delete(key);
+    insert(key, value);
+  }
 }

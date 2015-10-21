@@ -1,58 +1,48 @@
-/**
- * Definition for singly-linked list.
- */
-class ListNode {
-	int val;
-	ListNode next;
-
-	ListNode(int x) {
-		val = x;
-		next = null;
-	}
-}
-
 public class Solution {
-	public ListNode sortList(ListNode head) {
-		if (head == null || head.next == null) {
-			return head;
-		}
-		ListNode fast = head;
-		ListNode slow = head;
-		while (fast.next != null && fast.next.next != null) {
-			fast = fast.next.next;
-			slow = slow.next;
-		}
-		fast = slow.next;
-		slow.next = null;
-		return mergeList(sortList(head), sortList(fast));
-	}
+  public ListNode sortList(ListNode head) {
+    if (head == null) {
+      return null;
+    }
+    if (head.next == null) {
+      return head;
+    }
 
-	private ListNode mergeList(ListNode head1, ListNode head2) {
-		ListNode ret = head1.val < head2.val ? head1 : head2;
-		if (head1.val < head2.val) {
-			ret = head1;
-			head1 = head1.next;
-		} else {
-			ret = head2;
-			head2 = head2.next;
-		}
-		ListNode cur = ret;
-		while (head1 != null && head2 != null) {
-			if (head1.val < head2.val) {
-				cur.next = head1;
-				cur = cur.next;
-				head1 = head1.next;
-			} else {
-				cur.next = head2;
-				cur = cur.next;
-				head2 = head2.next;
-			}
-		}
-		if (head1 != null) {
-			cur.next = head1;
-		} else if (head2 != null) {
-			cur.next = head2;
-		}
-		return ret;
-	}
+    ListNode p1 = head;
+    ListNode p2 = head;
+    while (p2 != null && p2.next != null && p2.next.next != null) {
+      p1 = p1.next;
+      p2 = p2.next.next;
+    }
+    p2 = p1.next;
+    p1.next = null;
+
+    p1 = sortList(head);
+    p2 = sortList(p2);
+    ListNode ret = null;
+    ListNode q = null;
+    while (p1 != null && p2 != null) {
+      ListNode t = null;
+      if (p1.val < p2.val) {
+        t = p1;
+        p1 = p1.next;
+      } else {
+        t = p2;
+        p2 = p2.next;
+      }
+      if (q == null) {
+        q = t;
+        ret = t;
+      } else {
+        q.next = t;
+        q = q.next;
+      }
+    }
+    if (p1 != null) {
+      q.next = p1;
+    }
+    if (p2 != null) {
+      q.next = p2;
+    }
+    return ret;
+  }
 }

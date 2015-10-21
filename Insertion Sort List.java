@@ -1,35 +1,29 @@
-/**
- * Definition for singly-linked list.
- */
-class ListNode {
-	int val;
-	ListNode next;
-
-	ListNode(int x) {
-		val = x;
-		next = null;
-	}
-}
-
 public class Solution {
-	public ListNode insertionSortList(ListNode head) {
-        if(head==null) return null;
-        ListNode pointer1=head.next;
-        ListNode pointer2;
-        while(pointer1!=null){
-            int temp=pointer1.val;
-            pointer2=head;
-            while(pointer2!=pointer1){
-                if(temp<pointer2.val){
-                    int swap = pointer2.val;
-                    pointer2.val=temp;
-                    temp=swap;
-                }
-                pointer2=pointer2.next;
-            }
-            pointer1.val=temp;
-            pointer1=pointer1.next;
+  public ListNode insertionSortList(ListNode head) {
+    if (head == null)
+      return null;
+    ListNode myHead = new ListNode(Integer.MIN_VALUE);
+    myHead.next = head;
+
+    ListNode picknext = myHead;
+    while (picknext != null && picknext.next != null) {
+      ListNode insertnext = myHead;
+      while (insertnext != picknext) {
+        if (insertnext.val <= picknext.next.val && picknext.next.val <= insertnext.next.val) {
+          break;
+        } else {
+          insertnext = insertnext.next;
         }
-        return head;
+      }
+      if (insertnext != picknext) {
+        ListNode p = picknext.next;
+        picknext.next = p.next;
+        p.next = insertnext.next;
+        insertnext.next = p;
+      } else {
+        picknext = picknext.next;
+      }
     }
+    return myHead.next;
+  }
 }
