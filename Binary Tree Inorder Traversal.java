@@ -1,17 +1,15 @@
 public class Solution {
   public List<Integer> inorderTraversal(TreeNode root) {
+    Deque<TreeNode> stack = new LinkedList<>();
+    for (TreeNode p = root; p != null; p = p.left) {
+      stack.push(p);
+    }
     List<Integer> ret = new ArrayList<>();
-    Deque<TreeNode> stack = new ArrayDeque<>();
-    TreeNode p = root;
-    while (p != null || !stack.isEmpty()) {
-      while (p != null) {
+    while (!stack.isEmpty()) {
+      TreeNode tn = stack.pop();
+      ret.add(tn.val);
+      for (TreeNode p = tn.right; p != null; p = p.left) {
         stack.push(p);
-        p = p.left;
-      }
-      if (!stack.isEmpty()) {
-        p = stack.pop();
-        ret.add(p.val);
-        p = p.right;
       }
     }
     return ret;
