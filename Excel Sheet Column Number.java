@@ -1,12 +1,10 @@
 public class Solution {
   public int titleToNumber(String s) {
-    List<Integer> l = s.chars().map(x -> x - 'A' + 1).boxed().collect(Collectors.toList());
-    Collections.reverse(l);
-    int[] arr = l.stream().mapToInt(x -> x).toArray();
+    int[] arr = s.chars().map(x -> x - 'A' + 1).toArray();
     // ..+a2x^2+a1x^1+a0x^0, ai=[1,26] x=[26]
     int ret = 0;
-    for (int i = 0; i < arr.length; i++) {
-      ret += Math.pow(26, i) * arr[i];
+    for (int i = arr.length - 1; i >= 0; i--) {
+      ret += Math.pow(26, arr.length - 1 - i) * arr[i];
     }
     return ret;
   }
