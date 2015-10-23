@@ -1,14 +1,10 @@
 public class BSTIterator {
-
-  private Deque<TreeNode> stack;
+  Deque<TreeNode> stack;
 
   public BSTIterator(TreeNode root) {
-    stack = new LinkedList<>();
-    TreeNode p = root;
-    while (p != null) {
+    stack = new ArrayDeque<>();
+    for (TreeNode p = root; p != null; p = p.left)
       stack.push(p);
-      p = p.left;
-    }
   }
 
   /** @return whether we have a next smallest number */
@@ -18,13 +14,10 @@ public class BSTIterator {
 
   /** @return the next smallest number */
   public int next() {
-    TreeNode p = stack.pop();
-    int ret = p.val;
-    p = p.right;
-    while (p != null) {
+    TreeNode tn = stack.pop();
+    int ret = tn.val;
+    for (TreeNode p = tn.right; p != null; p = p.left)
       stack.push(p);
-      p = p.left;
-    }
     return ret;
   }
 }
