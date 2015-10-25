@@ -1,27 +1,17 @@
 public class Solution {
   public int numSquares(int n) {
-    List<Integer> pool = new ArrayList<>();
-    for (int i = 1; i * i <= n; i++) {
-      pool.add(i * i);
+    int dp[] = new int[n + 1];
+    for (int i = 0; i <= n; i++) {
+      dp[i] = i;
     }
-    int level = 0;
-    Deque<Integer> queue = new ArrayDeque<>();
-    queue.offer(n);
-    while (!queue.isEmpty()) {
-      level++;
-      int size = queue.size();
-      for (int i = 0; i < size; i++) {
-        int m = queue.poll();
-        for (int k : pool) {
-          if (m - k > 0)
-            queue.offer(m - k);
-          else if (m - k == 0)
-            return level;
-          else
-            break;
-        }
+    for (int i = 1; i * i <= n; i++) {
+      dp[i * i] = 1;
+    }
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j * j + i <= n; j++) {
+        dp[j * j + i] = Math.min(dp[j * j + i], dp[i] + 1);
       }
     }
-    return n;
+    return dp[n];
   }
 }
