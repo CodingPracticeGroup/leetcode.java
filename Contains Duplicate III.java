@@ -4,8 +4,11 @@ public class Solution {
       return false;
     TreeSet<Long> window = new TreeSet<>();
     for (int i = 0; i < nums.length; i++) {
-      Set<Long> s = window.subSet((long) nums[i] - t, true, (long) nums[i] + t, true);
-      if (!s.isEmpty())
+      Long s = window.ceiling((long) nums[i]);
+      if (s != null && s - nums[i] <= t)
+        return true;
+      s = window.floor((long) nums[i]);
+      if (s != null && nums[i] - s <= t)
         return true;
       if (i >= k)
         window.remove((long) nums[i - k]);
