@@ -3,11 +3,9 @@ public class Solution {
     if (nums.length == 0)
       return 0;
     int dp[] = new int[nums.length + 1];
-    dp[0] = 0;
-    dp[1] = nums[0];
-    for (int len = 2; len <= nums.length; len++) {
-      dp[len] = Math.max(dp[len - 1], dp[len - 2] + nums[len - 1]);
+    for (int i = 0; i < nums.length; i++) {
+      dp[i] = Math.max(i - 1 >= 0 ? dp[i - 1] : 0, (i - 2 >= 0 ? dp[i - 2] : 0) + nums[i]);
     }
-    return dp[nums.length];
+    return dp[nums.length - 1];
   }
 }
