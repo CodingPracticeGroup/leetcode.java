@@ -1,24 +1,21 @@
 public class Solution {
   public boolean wordPattern(String pattern, String str) {
-    if (pattern.equals(""))
+    String ss[] = str.split(" ");
+    if (pattern.length() != ss.length)
       return false;
-    String[] p = pattern.split("");
-    String[] s = str.split(" ");
-    if (p.length != s.length)
-      return false;
-    Map<String, String> p2s = new HashMap<>();
-    Map<String, String> s2p = new HashMap<>();
-    for (int i = 0; i < p.length; i++) {
-      if (p2s.containsKey(p[i]) && s2p.containsKey(s[i]) && p2s.get(p[i]).equals(s[i])
-          && s2p.get(s[i]).equals(p[i])) {
-        // nop
-      } else if (!p2s.containsKey(p[i]) && !s2p.containsKey(s[i])) {
-        p2s.put(p[i], s[i]);
-        s2p.put(s[i], p[i]);
+    Map<Character, String> c2s = new HashMap<>();
+    for (int i = 0; i < ss.length; i++) {
+      char c = pattern.charAt(i);
+      if (c2s.containsKey(c)) {
+        if (!c2s.get(c).equals(ss[i])) {
+          return false;
+        }
       } else {
-        return false;
+        c2s.put(c, ss[i]);
       }
     }
-    return true;
+    return c2s.values().stream()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).values()
+        .stream().filter(x -> x > 1).count() == 0;
   }
 }
