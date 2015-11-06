@@ -3,27 +3,22 @@ public class Solution {
     List<String> ret = new ArrayList<>();
     if (nums.length == 0)
       return ret;
-    int i = 0, j = 1;
-    while (j < nums.length) {
-      if (nums[j - 1] + 1 != nums[j]) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(nums[i]);
-        if (i + 1 != j) {
-          sb.append("->");
-          sb.append(nums[j - 1]);
+    int last = 0;
+    for (int i = 1; i < nums.length; i++) {
+      if (nums[i - 1] + 1 != nums[i]) {
+        if (last == i - 1) {
+          ret.add(String.valueOf(nums[last]));
+        } else {
+          ret.add(String.valueOf(nums[last]) + "->" + String.valueOf(nums[i - 1]));
         }
-        ret.add(sb.toString());
-        i = j;
+        last = i;
       }
-      j++;
     }
-    StringBuilder sb = new StringBuilder();
-    sb.append(nums[i]);
-    if (i + 1 != j) {
-      sb.append("->");
-      sb.append(nums[j - 1]);
+    if (last == nums.length - 1) {
+      ret.add(String.valueOf(nums[last]));
+    } else {
+      ret.add(String.valueOf(nums[last]) + "->" + String.valueOf(nums[nums.length - 1]));
     }
-    ret.add(sb.toString());
     return ret;
   }
 }

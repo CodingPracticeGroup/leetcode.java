@@ -1,6 +1,6 @@
 class MyStack {
-  Queue<Integer> q1 = new ArrayDeque<>(); // base
-  Queue<Integer> q2 = new ArrayDeque<>(); // temp
+  private Deque<Integer> q1 = new ArrayDeque<>();
+  private Deque<Integer> q2 = new ArrayDeque<>();
 
   // Push element x onto stack.
   public void push(int x) {
@@ -9,10 +9,11 @@ class MyStack {
 
   // Removes the element on top of the stack.
   public void pop() {
-    while (q1.size() > 1) {
+    int count = q1.size();
+    for (int i = 1; i < count; i++) {
       q2.offer(q1.poll());
     }
-    q1.clear();
+    q1.poll();
     while (!q2.isEmpty()) {
       q1.offer(q2.poll());
     }
@@ -20,11 +21,12 @@ class MyStack {
 
   // Get the top element.
   public int top() {
-    while (q1.size() > 1) {
+    int count = q1.size();
+    for (int i = 1; i < count; i++) {
       q2.offer(q1.poll());
     }
-    int ret = q1.peek();
-    q2.offer(q1.poll());
+    int ret = q1.poll();
+    q2.offer(ret);
     while (!q2.isEmpty()) {
       q1.offer(q2.poll());
     }
