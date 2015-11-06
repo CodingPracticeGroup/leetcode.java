@@ -5,7 +5,6 @@ public class Solution {
       p.val = p.next.val;
       if (p.next.next == null) {
         p.next = null;
-        return;
       }
       p = p.next;
     }
