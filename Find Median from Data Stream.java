@@ -1,47 +1,39 @@
 class MedianFinder {
-  Queue<Integer> high = new PriorityQueue<>(); // min heap
-  Queue<Integer> low = new PriorityQueue<>(Collections.reverseOrder()); // max heap
-  Integer median = null;
+
+  Queue<Integer> maxheap = new PriorityQueue<>(Collections.reverseOrder());
+  Queue<Integer> minheap = new PriorityQueue<>();
+  Integer mid = null;
 
   // Adds a number into the data structure.
   public void addNum(int num) {
-    if (median == null) { // even +1
-      if (low.isEmpty() && high.isEmpty()) {
-        median = num;
+    if (mid == null) {
+      if (!maxheap.isEmpty() && num < maxheap.peek()) {
+        mid = maxheap.poll();
+        maxheap.offer(num);
+      } else if (!minheap.isEmpty() && minheap.peek() < num) {
+        mid = minheap.poll();
+        minheap.offer(num);
       } else {
-        if (num < low.peek()) {
-          median = low.poll();
-          low.offer(num);
-        } else if (num > high.peek()) {
-          median = high.poll();
-          high.offer(num);
-        } else {
-          median = num;
-        }
+        mid = num;
       }
-    } else { // odd +1
-      if (num < median) {
-        low.offer(num);
-        high.offer(median);
+    } else {
+      if (mid < num) {
+        maxheap.offer(mid);
+        minheap.offer(num);
       } else {
-        low.offer(median);
-        high.offer(num);
+        maxheap.offer(num);
+        minheap.offer(mid);
       }
-      median = null;
+      mid = null;
     }
   }
 
   // Returns the median of current data stream
   public double findMedian() {
-    if (median == null) {
-      return (low.peek() + high.peek()) / 2.0;
+    if (mid == null) {
+      return (maxheap.peek() + minheap.peek()) / 2.0;
     } else {
-      return median;
+      return mid;
     }
   }
-};
-
-// Your MedianFinder object will be instantiated and called as such:
-// MedianFinder mf = new MedianFinder();
-// mf.addNum(1);
-// mf.findMedian();
+}
