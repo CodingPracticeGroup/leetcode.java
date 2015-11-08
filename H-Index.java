@@ -1,15 +1,16 @@
 public class Solution {
   public int hIndex(int[] citations) {
-    int low = 0;
-    int high = citations.length;
-    while (low < high) {
-      int mid = low + (int) Math.ceil((high - low) / 2.0);
-      if (Arrays.stream(citations).filter(x -> x >= mid).count() >= mid) {
-        low = mid;
-      } else {
-        high = mid - 1;
-      }
+    Map<Integer, Long> map =
+        Arrays.stream(citations).boxed()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    long dp[] = new long[citations.length + 1];
+    for (int i = 0; i <= citations.length; i++) {
+      dp[i] = (i - 1 >= 0 ? dp[i - 1] : 0) + (map.containsKey(i) ? map.get(i) : 0);
     }
-    return low; // low==high
+    for (int h = citations.length; h >= 1; h--) {
+      if (citations.length - dp[h - 1] >= h)
+        return h;
+    }
+    return 0;
   }
 }
