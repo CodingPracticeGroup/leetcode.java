@@ -2,15 +2,16 @@ public class Solution {
   public int hIndex(int[] citations) {
     if (citations.length == 0)
       return 0;
-    int low = 0, high = citations.length - 1;
-    while (low <= high) {
-      int mid = (low + high) / 2;
+    if (citations[citations.length - 1] == 0)
+      return 0;
+    int low = 0;
+    int high = citations.length - 1;
+    while (low < high) {
+      int mid = low + (high - low) / 2;
       int h = citations.length - mid;
       if (citations[mid] >= h) {
-        if (mid == high)
-          return h;
         high = mid;
-      } else {
+      } else if (citations[mid] < h) {
         low = mid + 1;
       }
     }
