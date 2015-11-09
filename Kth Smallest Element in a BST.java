@@ -1,13 +1,20 @@
 public class Solution {
   public int kthSmallest(TreeNode root, int k) {
     Deque<TreeNode> stack = new ArrayDeque<>();
-    for (TreeNode p = root; p != null; p = p.left)
-      stack.push(p);
-    for (int i = 0; i < k - 1; i++) {
-      TreeNode tn = stack.pop(); // visit k-1 times
-      for (TreeNode p = tn.right; p != null; p = p.left)
-        stack.push(p);
+    for (TreeNode tn = root; tn != null; tn = tn.left) {
+      stack.push(tn);
     }
-    return stack.pop().val;
+    int count = 0;
+    while (!stack.isEmpty()) {
+      TreeNode tn2 = stack.pop();
+      count++;
+      if (count == k) {
+        return tn2.val;
+      }
+      for (TreeNode tn = tn2.right; tn != null; tn = tn.left) {
+        stack.push(tn);
+      }
+    }
+    return -1;
   }
 }
