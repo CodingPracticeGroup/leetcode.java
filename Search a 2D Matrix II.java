@@ -1,17 +1,21 @@
 public class Solution {
-  private boolean searchMatrix(int[][] matrix, int target, int left, int right, int top, int bottom) {
-    if (left > right || top > bottom)
+  private boolean searchMatrix_block(int[][] matrix, int target, int r0, int rm, int c0, int cn) {
+    if (r0 > rm || c0 > cn)
       return false;
-    int j = left + (right - left) / 2;
-    int i = top + (bottom - top) / 2;
-    if (matrix[i][j] < target) {
-      return searchMatrix(matrix, target, left, j, i + 1, bottom)
-          || searchMatrix(matrix, target, j + 1, right, i + 1, bottom)
-          || searchMatrix(matrix, target, j + 1, right, top, i);
-    } else if (matrix[i][j] > target) {
-      return searchMatrix(matrix, target, left, j - 1, top, i - 1)
-          || searchMatrix(matrix, target, left, j - 1, i, bottom)
-          || searchMatrix(matrix, target, j, right, top, i - 1);
+    int x = r0 + (rm - r0) / 2;
+    int y = c0 + (cn - c0) / 2;
+    if (matrix[x][y] < target) {
+      boolean b = false;
+      b = b || searchMatrix_block(matrix, target, x + 1, rm, y + 1, cn);
+      b = b || searchMatrix_block(matrix, target, x + 1, rm, c0, y);
+      b = b || searchMatrix_block(matrix, target, r0, x, y + 1, cn);
+      return b;
+    } else if (matrix[x][y] > target) {
+      boolean b = false;
+      b = b || searchMatrix_block(matrix, target, r0, x - 1, c0, y - 1);
+      b = b || searchMatrix_block(matrix, target, r0, x - 1, y, cn);
+      b = b || searchMatrix_block(matrix, target, x, rm, c0, y - 1);
+      return b;
     } else {
       return true;
     }
@@ -24,6 +28,6 @@ public class Solution {
     int n = matrix[0].length;
     if (n == 0)
       return false;
-    return searchMatrix(matrix, target, 0, n - 1, 0, m - 1);
+    return searchMatrix_block(matrix, target, 0, m - 1, 0, n - 1);
   }
 }
