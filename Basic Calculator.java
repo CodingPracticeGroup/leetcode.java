@@ -1,13 +1,13 @@
 public class Solution {
-  private int calculate(Deque<String> s) {
+  private int calculate_(Deque<String> s) {
     int ret = Integer.parseInt(s.pollFirst());
     while (!s.isEmpty()) {
       String op = s.pollFirst();
-      String rnd = s.pollFirst();
+      int rnd = Integer.parseInt(s.pollFirst());
       if (op.equals("+")) {
-        ret += Integer.parseInt(rnd);
+        ret += rnd;
       } else if (op.equals("-")) {
-        ret -= Integer.parseInt(rnd);
+        ret -= rnd;
       }
     }
     return ret;
@@ -17,27 +17,24 @@ public class Solution {
     s = s.replaceAll("\\s+", "");
     s = s.replaceAll("\\+", " \\+ ");
     s = s.replaceAll("\\-", " \\- ");
-    s = s.replaceAll("\\*", " \\* ");
-    s = s.replaceAll("\\/", " \\/ ");
     s = s.replaceAll("\\(", " \\( ");
     s = s.replaceAll("\\)", " \\) ");
-    s = s.replaceAll("\\s+", " ");
     s = s.trim();
-    String ss[] = s.split(" ");
-
+    String ss[] = s.split("\\s+");
     Deque<String> stack = new ArrayDeque<>();
-    for (String str : ss) {
-      if (str.equals(")")) {
+    for (int i = 0; i < ss.length; i++) {
+      if (ss[i].equals(")")) {
         Deque<String> tmp = new ArrayDeque<>();
         while (!stack.peekLast().equals("(")) {
           tmp.offerFirst(stack.pollLast());
         }
         stack.pollLast();
-        stack.offerLast(String.valueOf(calculate(tmp)));
+        String ts = String.valueOf(calculate_(tmp));
+        stack.offerLast(ts);
       } else {
-        stack.offerLast(str);
+        stack.offerLast(ss[i]);
       }
     }
-    return calculate(stack);
+    return calculate_(stack);
   }
 }
