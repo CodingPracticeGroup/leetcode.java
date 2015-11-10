@@ -1,22 +1,21 @@
 public class Solution {
   public int calculate(String s) {
-    s = s.replaceAll("\\s*", "");
+    s = s.replaceAll("\\s+", "");
     s = s.replaceAll("\\+", " \\+ ");
     s = s.replaceAll("\\-", " \\- ");
     s = s.replaceAll("\\*", " \\* ");
     s = s.replaceAll("\\/", " \\/ ");
-    s = s.trim();
     String ss[] = s.split(" ");
     Deque<String> stack = new ArrayDeque<>();
     for (int i = 0; i < ss.length; i++) {
       if (ss[i].equals("*")) {
-        stack.offerLast(String.valueOf(Integer.parseInt(stack.pollLast())
-            * Integer.parseInt(ss[i + 1])));
-        i++;
+        int o1 = Integer.parseInt(stack.pollLast());
+        int o2 = Integer.parseInt(ss[++i]);
+        stack.offerLast(String.valueOf(o1 * o2));
       } else if (ss[i].equals("/")) {
-        stack.offerLast(String.valueOf(Integer.parseInt(stack.pollLast())
-            / Integer.parseInt(ss[i + 1])));
-        i++;
+        int o1 = Integer.parseInt(stack.pollLast());
+        int o2 = Integer.parseInt(ss[++i]);
+        stack.offerLast(String.valueOf(o1 / o2));
       } else {
         stack.offerLast(ss[i]);
       }
@@ -24,11 +23,11 @@ public class Solution {
     int ret = Integer.parseInt(stack.pollFirst());
     while (!stack.isEmpty()) {
       String op = stack.pollFirst();
-      String rnd = stack.pollFirst();
+      int rnd = Integer.parseInt(stack.pollFirst());
       if (op.equals("+")) {
-        ret += Integer.parseInt(rnd);
+        ret += rnd;
       } else if (op.equals("-")) {
-        ret -= Integer.parseInt(rnd);
+        ret -= rnd;
       }
     }
     return ret;
