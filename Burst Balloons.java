@@ -1,20 +1,6 @@
 import java.util.Arrays;
 
 public class Solution {
-  int burst(int[][] mem, int[] nums_, int start, int end) { // (start, end)
-    if (mem[start][end] >= 0) {
-      return mem[start][end];
-    } else if (start + 1 == end) {
-      mem[start][end] = 0;
-      return mem[start][end];
-    }
-    for (int i = start + 1; i < end; i++) { // last
-      mem[start][end] = Math.max(mem[start][end], nums_[start] * nums_[i] * nums_[end]
-          + burst(mem, nums_, start, i) + burst(mem, nums_, i, end));
-    }
-    return mem[start][end];
-  }
-
   public int maxCoins(int[] nums) {
     int[] nums_ = new int[nums.length + 2];
     nums_[0] = 1;
@@ -23,11 +9,24 @@ public class Solution {
       nums_[i + 1] = nums[i];
     }
 
-    int[][] mem = new int[nums.length + 2][nums.length + 2];
-    for (int[] mem_ : mem) {
-      Arrays.fill(mem_, -1);
+    int dp[][] = new int[nums.length + 2][nums.length + 2]; // (,)
+    for (int[] dp_ : dp) {
+      Arrays.fill(dp_, -1);
+    }
+    for (int i = 0; i + 1 < nums.length + 2; i++) {
+      dp[i][i + 1] = 0;
     }
 
-    return burst(mem, nums_, 0, nums.length + 1);
+    for (int len = 2; len < nums.length + 2; len++) {
+      for (int start = 0; start + len < nums.length + 2; start++) {
+        for (int last_divide = start + 1; last_divide < start + len; last_divide++) {
+          dp[start][start + len] = Math.max(dp[start][start + len],
+              nums_[start] * nums_[last_divide] * nums_[start + len] + dp[start][last_divide]
+                  + dp[last_divide][start + len]);
+        }
+      }
+    }
+
+    return dp[0][nums.length + 1];
   }
 }
