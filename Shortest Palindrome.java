@@ -1,39 +1,45 @@
 public class Solution {
-  private String shortestPalindrome_check(String s, int i, int j) {
-    for (int k = 0; i - k >= 0 && j + k < s.length(); k++) {
-      if (s.charAt(i - k) != s.charAt(j + k))
+  String checkBuildReturn(String s, int center1, int center2) {
+    for (int i = 0; center1 - i >= 0 && center2 + i < s.length(); i++) {
+      if (s.charAt(center1 - i) != s.charAt(center2 + i)) {
         return null;
+      }
     }
-    StringBuilder sb = new StringBuilder(s.substring(j + i + 1));
+    StringBuilder sb = new StringBuilder(s.substring(center2 + center1 + 1));
     sb.reverse();
-    return sb + s;
+    return sb.toString() + s;
   }
 
   public String shortestPalindrome(String s) {
     int len = s.length();
-    if (len == 0)
-      return "";
-    if (len == 1)
+    if (len <= 1) {
       return s;
+    }
     if (len % 2 == 0) {
-      for (int i = len / 2; i >= 0; i--) {
-        String str = shortestPalindrome_check(s, i - 1, i);
-        if (str != null)
-          return str;
-        str = shortestPalindrome_check(s, i - 1, i - 1);
-        if (str != null)
-          return str;
+      for (int i = len / 2; i - 1 >= 0; i--) {
+        String ret = checkBuildReturn(s, i - 1, i);
+        if (ret != null) {
+          return ret;
+        }
+        ret = checkBuildReturn(s, i - 1, i - 1);
+        if (ret != null) {
+          return ret;
+        }
       }
     } else {
       for (int i = len / 2; i >= 0; i--) {
-        String str = shortestPalindrome_check(s, i, i);
-        if (str != null)
-          return str;
-        str = shortestPalindrome_check(s, i - 1, i);
-        if (str != null)
-          return str;
+        String ret = checkBuildReturn(s, i, i);
+        if (ret != null) {
+          return ret;
+        }
+        if (i - 1 >= 0) {
+          ret = checkBuildReturn(s, i - 1, i);
+          if (ret != null) {
+            return ret;
+          }
+        }
       }
     }
-    return "";
+    return null;
   }
 }
