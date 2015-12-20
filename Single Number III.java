@@ -1,23 +1,19 @@
 public class Solution {
-  private int singleNumber_mask(int x) {
-    int count = 0;
-    while (((x >>> count) & 1) == 0) {
-      count++;
-    }
-    return 1 << count;
-  }
-
   public int[] singleNumber(int[] nums) {
-    int xor = Arrays.stream(nums).reduce((x, y) -> x ^ y).getAsInt();
-    int mask = singleNumber_mask(xor);
-    int ret[] = new int[2];
-    for (int i : nums) {
-      if ((i & mask) == 0) {
-        ret[0] ^= i;
+    int xor = 0; // x ^ 0 = x
+    for (int n : nums) {
+      xor ^= n;
+    }
+    int mask = Integer.lowestOneBit(xor); //
+    int xor_mask0 = 0;
+    int xor_mask1 = 0;
+    for (int n : nums) {
+      if ((n & mask) == 0) {
+        xor_mask0 ^= n; // x ^ x = 0
       } else {
-        ret[1] ^= i;
+        xor_mask1 ^= n; // x ^ x = 0
       }
     }
-    return ret;
+    return new int[] {xor_mask0, xor_mask1};
   }
 }
