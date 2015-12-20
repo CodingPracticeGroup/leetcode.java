@@ -1,15 +1,12 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class TrieNode {
-  char c = 0;
-  Set<TrieNode> children;
+  Map<Character, TrieNode> children;
 
   // Initialize your data structure here.
   public TrieNode() {
-    this('$'); // !!
-  }
-
-  public TrieNode(char cc) {
-    c = cc;
-    children = new HashSet<>();
+    children = new HashMap<>();
   }
 }
 
@@ -23,64 +20,40 @@ public class Trie {
 
   // Inserts a word into the trie.
   public void insert(String word) {
-    TrieNode p = root;
+    TrieNode tn = root;
     for (int i = 0; i < word.length(); i++) {
       char c = word.charAt(i);
-      boolean notfound = true;
-      for (TrieNode child : p.children) {
-        if (child.c == c) {
-          p = child;
-          notfound = false;
-          break;
-        }
+      if (!tn.children.containsKey(c)) {
+        tn.children.put(c, new TrieNode());
       }
-      if (notfound) {
-        TrieNode q = new TrieNode(c);
-        p.children.add(q);
-        p = q;
-      }
+      tn = tn.children.get(c);
     }
-    p.children.add(root);
+    tn.children.put('$', root);
   }
 
   // Returns if the word is in the trie.
   public boolean search(String word) {
-    TrieNode p = root;
+    TrieNode tn = root;
     for (int i = 0; i < word.length(); i++) {
       char c = word.charAt(i);
-      boolean notfound = true;
-      for (TrieNode child : p.children) {
-        if (child.c == c) {
-          p = child;
-          notfound = false;
-          break;
-        }
-      }
-      if (notfound)
+      if (!tn.children.containsKey(c)) {
         return false;
+      }
+      tn = tn.children.get(c);
     }
-    if (p.children.contains(root))
-      return true;
-    else
-      return false;
+    return tn.children.containsKey('$');
   }
 
   // Returns if there is any word in the trie
   // that starts with the given prefix.
   public boolean startsWith(String prefix) {
-    TrieNode p = root;
+    TrieNode tn = root;
     for (int i = 0; i < prefix.length(); i++) {
       char c = prefix.charAt(i);
-      boolean notfound = true;
-      for (TrieNode child : p.children) {
-        if (child.c == c) {
-          p = child;
-          notfound = false;
-          break;
-        }
-      }
-      if (notfound)
+      if (!tn.children.containsKey(c)) {
         return false;
+      }
+      tn = tn.children.get(c);
     }
     return true;
   }
