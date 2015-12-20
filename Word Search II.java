@@ -1,50 +1,59 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class Solution {
-  class TrieNode {
-    Map<Character, TrieNode> children = new HashMap<>();
-  }
-
-  private TrieNode findWords_build(String[] words) {
-    TrieNode root = new TrieNode();
-    for (String s : words) {
-      TrieNode p = root;
-      for (int i = 0; i < s.length(); i++) {
-        char c = s.charAt(i);
-        if (!p.children.containsKey(c))
-          p.children.put(c, new TrieNode());
-        p = p.children.get(c);
+  // be going to process [i,j]
+  void bt_trie(char[][] board, int i, int j, Map<Character, Object> trie, Set<String> ret,
+      StringBuilder stack) {
+    if (trie.containsKey(board[i][j])) {
+      stack.append(board[i][j]);
+      Map<Character, Object> next = (Map<Character, Object>) trie.get(board[i][j]);
+      if (next != null) {
+        board[i][j] = '#';
+        if (i - 1 >= 0 && board[i - 1][j] != '#') {
+          bt_trie(board, i - 1, j, next, ret, stack);
+        }
+        if (i + 1 < board.length && board[i + 1][j] != '#') {
+          bt_trie(board, i + 1, j, next, ret, stack);
+        }
+        if (j - 1 >= 0 && board[i][j - 1] != '#') {
+          bt_trie(board, i, j - 1, next, ret, stack);
+        }
+        if (j + 1 < board[0].length && board[i][j + 1] != '#') {
+          bt_trie(board, i, j + 1, next, ret, stack);
+        }
+        //
+        if (next.containsKey('$')) {
+          ret.add(stack.toString());
+        }
+        board[i][j] = stack.charAt(stack.length() - 1);
       }
-      p.children.put('$', root);
-    }
-    return root;
-  }
-
-  private void findWords_bt(char[][] board, int i, int j, TrieNode p, Set<List<Character>> ret,
-      Deque<Character> stack) {
-    if (p.children.containsKey('$')) {
-      ret.add(new ArrayList<Character>(stack));
-    }
-    if (i >= 0 && i < board.length && j >= 0 && j < board[0].length
-        && p.children.containsKey(board[i][j])) {
-      stack.offerLast(board[i][j]);
-      board[i][j] = '#';
-      findWords_bt(board, i - 1, j, p.children.get(stack.peekLast()), ret, stack);
-      findWords_bt(board, i, j - 1, p.children.get(stack.peekLast()), ret, stack);
-      findWords_bt(board, i + 1, j, p.children.get(stack.peekLast()), ret, stack);
-      findWords_bt(board, i, j + 1, p.children.get(stack.peekLast()), ret, stack);
-      board[i][j] = stack.pollLast();
+      stack.setLength(stack.length() - 1);
     }
   }
 
   public List<String> findWords(char[][] board, String[] words) {
-    TrieNode root = findWords_build(words);
+    Map<Character, Object> trie_root = new HashMap<>();
+    for (String w : words) {
+      Map<Character, Object> node = trie_root;
+      for (int i = 0; i < w.length(); i++) {
+        char c = w.charAt(i);
+        if (!node.containsKey(c)) {
+          node.put(c, new HashMap<Character, Object>());
+        }
+        node = (Map<Character, Object>) node.get(c);
+      }
+      node.put('$', trie_root);
+    }
+    //
     Set<String> ret = new HashSet<>();
     for (int i = 0; i < board.length; i++) {
       for (int j = 0; j < board[0].length; j++) {
-        Set<List<Character>> collection = new HashSet<>();
-        findWords_bt(board, i, j, root, collection, new ArrayDeque<Character>());
-        for (List<Character> l : collection) {
-          ret.add(l.stream().map(c -> c.toString()).reduce("", (acc, e) -> acc + e));
-        }
+        bt_trie(board, i, j, trie_root, ret, new StringBuilder());
       }
     }
     return new ArrayList<String>(ret);
