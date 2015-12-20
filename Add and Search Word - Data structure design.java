@@ -1,62 +1,43 @@
-class Node {
-  Map<Character, Node> children;
-
-  public Node() {
-    children = new HashMap<>();
-  }
-}
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class WordDictionary {
-  Node root;
-
-  public WordDictionary() {
-    root = new Node();
-  }
+  Map<Character, Object> root = new HashMap<>();
 
   // Adds a word into the data structure.
   public void addWord(String word) {
-    Node p = root;
+    Map<Character, Object> node = root;
     for (int i = 0; i < word.length(); i++) {
       char c = word.charAt(i);
-      if (p.children.containsKey(c)) {
-        p = p.children.get(c);
-      } else {
-        Node q = new Node();
-        p.children.put(c, q);
-        p = q;
+      if (!node.containsKey(c)) {
+        node.put(c, new HashMap<Character, Object>());
       }
+      node = (Map<Character, Object>) node.get(c);
     }
-    p.children.put('$', root);
+    node.put('$', root);
   }
 
-  private boolean search(String word, int start, Node p) {
+  boolean search_internal(String word, int start, Map<Character, Object> node) {
     if (start == word.length()) {
-      if (p.children.containsKey('$'))
-        return true;
-      else
-        return false;
-    } else {
-      char c = word.charAt(start);
-      if (c == '.') {
-        for (Node n : p.children.values()) {
-          if (n != root && search(word, start + 1, n))
-            return true;
-        }
-        return false;
-      } else {
-        if (p.children.containsKey(c))
-          return search(word, start + 1, p.children.get(c));
-        else
-          return false;
-      }
+      return node.containsKey('$');
     }
+    char c = word.charAt(start);
+    if (c == '.') {
+      for (Object o : node.values()) {
+        if (o != root && search_internal(word, start + 1, (Map<Character, Object>) o)) {
+          return true;
+        }
+      }
+    } else if (node.containsKey(c)) {
+      return search_internal(word, start + 1, (Map<Character, Object>) node.get(c));
+    }
+    return false;
   }
 
   // Returns if the word is in the data structure. A word could
   // contain the dot character '.' to represent any one letter.
   public boolean search(String word) {
-    return search(word, 0, root);
+    return search_internal(word, 0, root);
   }
 }
 
