@@ -1,16 +1,27 @@
 public class Solution {
   public ListNode reverseList(ListNode head) {
-    if (head == null)
-      return null;
-    if (head.next == null)
-      return head;
-    ListNode ret = reverseList(head.next);
-    ListNode p = ret;
-    while (p.next != null) {
-      p = p.next;
+    ListNode myhead = new ListNode(0);
+    myhead.next = head;
+
+    ListNode rethead = new ListNode(0);
+    while (myhead.next != null) {
+      ListNode ln = myhead.next;
+      myhead.next = ln.next;
+      //
+      ln.next = rethead.next;
+      rethead.next = ln;
     }
-    head.next = p.next;
-    p.next = head;
+    return rethead.next;
+  }
+
+  public ListNode reverseList_(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    ListNode tail = head.next;
+    ListNode ret = reverseList(head.next);
+    tail.next = head;
+    head.next = null;
     return ret;
   }
 }
