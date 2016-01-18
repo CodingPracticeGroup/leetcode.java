@@ -1,17 +1,25 @@
 public class Solution {
-  private boolean isPowerOfTwo_test(int n, int offset) {
-    return (n & (1 << offset)) != 0;
+  public boolean isPowerOfTwo__(int n) {
+    if (n <= 0) {
+      return false;
+    }
+    while (n % 2 == 0) {
+      n /= 2;
+    }
+    return n == 1;
+  }
+
+  public boolean isPowerOfTwo_(int n) {
+    if (n <= 0) {
+      return false;
+    }
+    return Math.pow(2, Math.round(Math.log(n) / Math.log(2))) == n;
   }
 
   public boolean isPowerOfTwo(int n) {
-    if (n <= 0)
+    if (n <= 0) {
       return false;
-    int count = 0;
-    for (int i = 0; i < 32; i++) {
-      if (isPowerOfTwo_test(n, i)) {
-        count++;
-      }
     }
-    return count == 1;
+    return Integer.bitCount(n) == 1;
   }
 }
