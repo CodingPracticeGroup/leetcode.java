@@ -1,10 +1,11 @@
 public class Solution {
   public int titleToNumber(String s) {
-    int[] arr = s.chars().map(x -> x - 'A' + 1).toArray();
-    // ..+a2x^2+a1x^1+a0x^0, ai=[1,26] x=[26]
+    // ret = .. + x*26^2 + y*26^1 + z*26^0, xyz in [A..Z]
     int ret = 0;
-    for (int i = arr.length - 1; i >= 0; i--) {
-      ret += Math.pow(26, arr.length - 1 - i) * arr[i];
+    int base = 1;
+    for (int i = s.length() - 1; i >= 0; i--) {
+      ret += base * (s.charAt(i) - 'A' + 1);
+      base *= 26;
     }
     return ret;
   }
