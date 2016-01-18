@@ -1,26 +1,23 @@
 public class Solution {
-  // info[0] height; info[1] balanced
-  private void isBalanced_(TreeNode root, int[] info) {
-    if (root != null) {
-      int[] leftinfo = new int[2];
-      isBalanced_(root.left, leftinfo);
-      int[] rightinfo = new int[2];
-      isBalanced_(root.right, rightinfo);
-      if (leftinfo[1] == 1 && rightinfo[1] == 1 && Math.abs(leftinfo[0] - rightinfo[0]) <= 1) {
-        info[1] = 1;
-      } else {
-        info[1] = 0;
-      }
-      info[0] = Math.max(leftinfo[0], rightinfo[0]) + 1;
-    } else {
-      info[0] = 0;
-      info[1] = 1; // true
+  private int height(TreeNode root, boolean[] ret) {
+    if (ret[0] == false) {
+      return -1;
     }
+    if (root == null) {
+      return 0;
+    }
+    int left = height(root.left, ret);
+    int right = height(root.right, ret);
+    if (Math.abs(left - right) > 1) {
+      ret[0] = false;
+    }
+    return Math.max(left, right) + 1;
   }
 
   public boolean isBalanced(TreeNode root) {
-    int[] info = new int[2];
-    isBalanced_(root, info);
-    return info[1] == 1;
+    boolean ret[] = new boolean[1];
+    ret[0] = true;
+    height(root, ret);
+    return ret[0];
   }
 }
