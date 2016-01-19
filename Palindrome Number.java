@@ -1,11 +1,9 @@
 public class Solution {
-  private int isPalindrome_digit(int x, int position) {
-    int pow = 1;
-    for (int i = 1; i < position; i++) {
-      pow *= 10;
+  private int digit(int x, int pos) {
+    for (int i = 0; i < pos; i++) { // right shift
+      x /= 10;
     }
-    x /= pow;
-    return x % 10;
+    return x % 10; // cut the last digit
   }
 
   public boolean isPalindrome(int x) {
@@ -15,17 +13,19 @@ public class Solution {
       return true;
     }
 
-    int t = x;
     int len = 0;
-    while (t > 0) {
-      t /= 10;
+    for (int i = x; i > 0; i /= 10) {
       len++;
     }
 
-    for (int i = 1, j = len; i < j; i++, j--) {
-      if (isPalindrome_digit(x, i) != isPalindrome_digit(x, j)) {
+    int head = len - 1;
+    int tail = 0;
+    while (head > tail) {
+      if (digit(x, head) != digit(x, tail)) {
         return false;
       }
+      head--;
+      tail++;
     }
     return true;
   }
