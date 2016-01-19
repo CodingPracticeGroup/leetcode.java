@@ -1,58 +1,33 @@
-/**
- * Definition for singly-linked list. public class ListNode { int val; ListNode next; ListNode(int
- * x) { val = x; next = null; } }
- */
 public class Solution {
-  public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-    ListNode pa = headA;
-    ListNode pb = headB;
-    while (pa != null && pb != null) {
-      pa = pa.next;
-      pb = pb.next;
+  private int len(ListNode head) {
+    int ret = 0;
+    while (head != null) {
+      ret++;
+      head = head.next;
     }
-    if (pa == null && pb == null) {
-      pa = headA;
-      pb = headB;
-      while (pa != null && pb != null) {
-        if (pa == pb)
-          return pa;
-        pa = pa.next;
-        pb = pb.next;
+    return ret;
+  }
+
+  public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    int lenA = len(headA);
+    int lenB = len(headB);
+    if (lenA < lenB) {
+      int delta = lenB - lenA;
+      for (int i = 0; i < delta; i++) {
+        headB = headB.next;
       }
-    } else if (pa == null && pb != null) {
-      int count = 0;
-      while (pb != null) {
-        pb = pb.next;
-        count++;
+    } else {
+      int delta = lenA - lenB;
+      for (int i = 0; i < delta; i++) {
+        headA = headA.next;
       }
-      pa = headA;
-      pb = headB;
-      for (int i = 0; i < count; i++) {
-        pb = pb.next;
+    }
+    while (headA != null && headB != null) {
+      if (headA == headB) {
+        return headA;
       }
-      while (pa != null && pb != null) {
-        if (pa == pb)
-          return pa;
-        pa = pa.next;
-        pb = pb.next;
-      }
-    } else if (pa != null && pb == null) {
-      int count = 0;
-      while (pa != null) {
-        pa = pa.next;
-        count++;
-      }
-      pa = headA;
-      pb = headB;
-      for (int i = 0; i < count; i++) {
-        pa = pa.next;
-      }
-      while (pa != null && pb != null) {
-        if (pa == pb)
-          return pa;
-        pa = pa.next;
-        pb = pb.next;
-      }
+      headA = headA.next;
+      headB = headB.next;
     }
     return null;
   }
