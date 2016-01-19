@@ -1,17 +1,15 @@
 public class Solution {
   public int[] plusOne(int[] digits) {
-    List<Integer> l = Arrays.stream(digits).boxed().collect(Collectors.toList());
-    Collections.reverse(l);
+    LinkedList<Integer> ret = new LinkedList<>();
     int carry = 1;
-    for (int i = 0; i < digits.length; i++) {
-      int tmp = l.get(i) + carry;
-      carry = tmp / 10;
-      l.set(i, tmp % 10);
+    for (int i = digits.length - 1; i >= 0; i--) {
+      int sum = digits[i] + carry;
+      ret.offerFirst(sum % 10);
+      carry = sum / 10;
     }
     if (carry > 0) {
-      l.add(carry);
+      ret.offerFirst(carry);
     }
-    Collections.reverse(l);
-    return l.stream().mapToInt(i -> i).toArray();
+    return ret.stream().mapToInt(x -> x).toArray();
   }
 }
