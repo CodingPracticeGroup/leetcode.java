@@ -21,4 +21,16 @@ public class Solution {
       return a1 + a2;
     }
   }
+
+  private boolean notOverlap(int A, int B, int C, int D, int E, int F, int G, int H) {
+    return (C <= E || G <= A) || (H <= B || D <= F);
+  }
+
+  public int computeArea_(int A, int B, int C, int D, int E, int F, int G, int H) {
+    int ret = (D - B) * (C - A) + (H - F) * (G - E);
+    if (!notOverlap(A, B, C, D, E, F, G, H)) {
+      ret -= (Math.min(C, G) - Math.max(A, E)) * (Math.min(D, H) - Math.max(B, F));
+    }
+    return ret;
+  }
 }
