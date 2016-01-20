@@ -9,8 +9,8 @@ public class Solution {
     }
     ListNode q = head;
     while (p.next != null) {
-      p = p.next;
       q = q.next;
+      p = p.next;
     }
     q.next = q.next.next;
     return head;
