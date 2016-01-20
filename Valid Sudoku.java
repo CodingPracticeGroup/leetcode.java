@@ -1,13 +1,14 @@
 public class Solution {
-  private boolean isValidSudoku_row(char[][] board) {
+  private boolean row(char[][] board) {
+    Set<Character> seen = new HashSet<>();
     for (int i = 0; i < 9; i++) {
-      Set<Integer> s = IntStream.range(0, 10).boxed().collect(Collectors.toSet());
+      seen.clear();
       for (int j = 0; j < 9; j++) {
         if (board[i][j] != '.') {
-          if (s.contains(board[i][j] - '0')) {
-            s.remove(board[i][j] - '0');
-          } else {
+          if (seen.contains(board[i][j])) {
             return false;
+          } else {
+            seen.add(board[i][j]);
           }
         }
       }
@@ -15,15 +16,16 @@ public class Solution {
     return true;
   }
 
-  private boolean isValidSudoku_col(char[][] board) {
+  private boolean column(char[][] board) {
+    Set<Character> seen = new HashSet<>();
     for (int i = 0; i < 9; i++) {
-      Set<Integer> s = IntStream.range(0, 10).boxed().collect(Collectors.toSet());
+      seen.clear();
       for (int j = 0; j < 9; j++) {
         if (board[j][i] != '.') {
-          if (s.contains(board[j][i] - '0')) {
-            s.remove(board[j][i] - '0');
-          } else {
+          if (seen.contains(board[j][i])) {
             return false;
+          } else {
+            seen.add(board[j][i]);
           }
         }
       }
@@ -31,17 +33,18 @@ public class Solution {
     return true;
   }
 
-  private boolean isValidSudoku_block(char[][] board) {
-    for (int i = 1; i < 9; i += 3) {
-      for (int j = 1; j < 9; j += 3) {
-        Set<Integer> s = IntStream.range(0, 10).boxed().collect(Collectors.toSet());
-        for (int k = i - 1; k <= i + 1; k++) {
-          for (int m = j - 1; m <= j + 1; m++) {
-            if (board[k][m] != '.') {
-              if (s.contains(board[k][m] - '0')) {
-                s.remove(board[k][m] - '0');
-              } else {
+  private boolean block(char[][] board) {
+    Set<Character> seen = new HashSet<>();
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        seen.clear();
+        for (int m = 0; m < 3; m++) {
+          for (int n = 0; n < 3; n++) {
+            if (board[i * 3 + m][j * 3 + n] != '.') {
+              if (seen.contains(board[i * 3 + m][j * 3 + n])) {
                 return false;
+              } else {
+                seen.add(board[i * 3 + m][j * 3 + n]);
               }
             }
           }
@@ -52,10 +55,9 @@ public class Solution {
   }
 
   public boolean isValidSudoku(char[][] board) {
-    boolean ret = true;
-    ret = ret && isValidSudoku_row(board);
-    ret = ret && isValidSudoku_col(board);
-    ret = ret && isValidSudoku_block(board);
-    return ret;
+    boolean r = row(board);
+    boolean c = column(board);
+    boolean b = block(board);
+    return r && c && b;
   }
 }
