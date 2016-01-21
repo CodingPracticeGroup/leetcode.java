@@ -1,27 +1,24 @@
 public class Solution {
-  private String countAndSay_once(String str) {
-    int j = 0; // number
-    int k = 0; // count
-    StringBuilder ret = new StringBuilder();
-    while (k < str.length()) {
-      while (k < str.length() && str.charAt(j) == str.charAt(k)) {
-        k++;
-      }
-      ret.append(k - j);
-      ret.append(str.charAt(j));
-      j = k;
-    }
-    return ret.toString();
-  }
-
   public String countAndSay(int n) {
-    String ret = "1";
+    String s = "1";
     if (n == 1) {
-      return ret;
+      return s;
     }
-    for (int i = 1; i < n; i++) {
-      ret = countAndSay_once(ret);
+    for (int i = 2; i <= n; i++) {
+      StringBuilder sb = new StringBuilder();
+      int anchor = 0;
+      while (anchor < s.length()) {
+        char c = s.charAt(anchor);
+        int count = 1;
+        while (anchor + count < s.length() && s.charAt(anchor + count) == c) {
+          count++;
+        }
+        anchor += count;
+        sb.append(count);
+        sb.append(c);
+      }
+      s = sb.toString();
     }
-    return ret;
+    return s;
   }
 }
