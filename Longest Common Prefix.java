@@ -1,20 +1,22 @@
 public class Solution {
-    public String longestCommonPrefix(String[] strs) {
-        if (strs.length==0) {
-            return "";
-        }
-        String sample = strs[0];
-        int smapleLen = sample.length();
-        while (smapleLen>0) {
-            String prefix = sample.substring(0, smapleLen);
-            if (Stream.of(strs).filter(s->s.startsWith(prefix)).count()==strs.length) {
-                break;
-            }
-            smapleLen--;
-        }
-        if (smapleLen==0) {
-            return "";
-        }
-        return strs[0].substring(0, smapleLen);
+  public String longestCommonPrefix(String[] strs) {
+    if (strs.length == 0) {
+      return "";
     }
+    int idx = 0;
+    for (int i = 1; i < strs.length; i++) {
+      if (strs[i].length() < strs[idx].length()) {
+        idx = i;
+      }
+    }
+    for (int i = 0; i < strs[idx].length(); i++) {
+      char c = strs[idx].charAt(i);
+      for (String s : strs) {
+        if (c != s.charAt(i)) {
+          return strs[idx].substring(0, i);
+        }
+      }
+    }
+    return strs[idx];
+  }
 }
