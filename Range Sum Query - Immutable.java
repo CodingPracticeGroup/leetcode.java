@@ -18,6 +18,26 @@ public class NumArray {
   }
 }
 
+public class NumArray {
+  List<Integer> sum = new ArrayList<>();
+
+  public NumArray(int[] nums) {
+    if (nums.length > 0) {
+      sum.add(nums[0]);
+      for (int i = 1; i < nums.length; i++) {
+        sum.add(sum.get(sum.size() - 1) + nums[i]);
+      }
+    }
+  }
+
+  public int sumRange(int i, int j) {
+    if (i == 0) {
+      return sum.get(j);
+    } else {
+      return sum.get(j) - sum.get(i - 1);
+    }
+  }
+}
 
 // Your NumArray object will be instantiated and called as such:
 // NumArray numArray = new NumArray(nums);
