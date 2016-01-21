@@ -1,5 +1,5 @@
 public class Solution {
-  public boolean wordPattern(String pattern, String str) {
+  public boolean wordPattern_(String pattern, String str) {
     String ss[] = str.split(" ");
     if (pattern.length() != ss.length)
       return false;
@@ -17,5 +17,23 @@ public class Solution {
     return c2s.values().stream()
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).values()
         .stream().filter(x -> x > 1).count() == 0;
+  }
+
+  public boolean wordPattern(String pattern, String str) {
+    String[] strs = str.split(" ");
+    if (pattern.length() != strs.length) {
+      return false;
+    }
+    Map<Character, String> m = new HashMap<>();
+    for (int i = 0; i < pattern.length(); i++) {
+      char c = pattern.charAt(i);
+      if (!m.containsKey(c)) {
+        m.put(c, strs[i]);
+      }
+      if (!m.get(c).equals(strs[i])) {
+        return false;
+      }
+    }
+    return m.values().stream().distinct().count() == m.size();
   }
 }
