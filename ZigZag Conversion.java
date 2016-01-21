@@ -3,47 +3,33 @@ public class Solution {
     if (numRows == 1) {
       return s;
     }
-
-    int i, j;
-    int len = s.length();
-    char[][] map = new char[numRows][len];
-    for (i = 0; i < numRows; i++) {
-      for (j = 0; j < len; j++) {
-        map[i][j] = 0;
-      }
+    char[][] board = new char[numRows][s.length()];
+    for (char[] c : board) {
+      Arrays.fill(c, '$');
     }
-
-    i = 0;
-    j = 0;
+    int r = 0;
+    int c = 0;
     boolean down = true;
-    for (int k = 0; k < len; k++) {
-      char c = s.charAt(k);
-      map[i][j] = c;
-
-      if (down) {
-        if (i == numRows - 1) {
-          down = false;
-          i--;
-          j++;
-        } else {
-          i++;
-        }
+    for (int i = 0; i < s.length(); i++) {
+      char ch = s.charAt(i);
+      board[r][c] = ch;
+      if (down) { // for next
+        r++;
       } else {
-        if (i == 0) {
-          down = true;
-          i++;
-        } else {
-          i--;
-          j++;
-        }
+        r--;
+        c++;
+      }
+      if (r == 0) { // for next
+        down = true;
+      } else if (r == numRows - 1) {
+        down = false;
       }
     }
-
     StringBuilder sb = new StringBuilder();
-    for (i = 0; i < numRows; i++) {
-      for (j = 0; j < len; j++) {
-        if (map[i][j] != 0) {
-          sb.append(map[i][j]);
+    for (int i = 0; i < numRows; i++) {
+      for (int j = 0; j < s.length(); j++) {
+        if (board[i][j] != '$') {
+          sb.append(board[i][j]);
         }
       }
     }
