@@ -1,28 +1,32 @@
 public class Solution {
   public boolean isPalindrome(ListNode head) {
-    int count = 0;
+    if (head == null) {
+      return true;
+    }
+    int len = 0;
     for (ListNode p = head; p != null; p = p.next) {
-      count++;
+      len++;
     }
-    int half = count / 2;
+    ListNode p = head;
+    for (int i = 0; i < len / 2 - (len % 2 == 0 ? 1 : 0); i++) {
+      p = p.next;
+    }
     ListNode myhead = new ListNode(0);
-    myhead.next = head;
-    ListNode list2 = new ListNode(0);
-    for (int i = 0; i < half; i++) {
-      ListNode t = myhead.next;
-      myhead.next = t.next;
-      t.next = list2.next;
-      list2.next = t;
+    while (p.next != null) {
+      ListNode tmp = p.next;
+      p.next = p.next.next;
+      tmp.next = myhead.next;
+      myhead.next = tmp;
     }
-    if (count % 2 != 0) {
-      myhead.next = myhead.next.next;
-    }
-    while (list2.next != null) {
-      if (list2.next.val != myhead.next.val) {
+
+    ListNode orig = head;
+    ListNode my = myhead.next;
+    while (my != null) {
+      if (my.val != orig.val) {
         return false;
       }
-      list2 = list2.next;
-      myhead = myhead.next;
+      my = my.next;
+      orig = orig.next;
     }
     return true;
   }
