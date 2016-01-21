@@ -21,4 +21,29 @@ public class Solution {
     }
     return ret;
   }
+
+  public int countPrimes_(int n) {
+    if (n <= 2) {
+      return 0;
+    }
+    boolean dp[] = new boolean[n];
+    Arrays.fill(dp, true);
+    dp[0] = false;
+    dp[1] = false;
+    int termination = (int) Math.sqrt(n);
+    for (int i = 2; i <= termination; i++) {
+      if (dp[i]) {
+        for (int j = i + i; j < n; j += i) {
+          dp[j] = false;
+        }
+      }
+    }
+    int ret = 0;
+    for (boolean b : dp) {
+      if (b) {
+        ret++;
+      }
+    }
+    return ret;
+  }
 }
