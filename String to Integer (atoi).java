@@ -1,53 +1,46 @@
 public class Solution {
   public int myAtoi(String str) {
     str = str.trim();
-    int len = str.length();
-    if (len == 0) {
+    if (str.length() == 0) {
       return 0;
     }
 
-    boolean positive = true;
+    boolean negative = false;
     if (str.charAt(0) == '-') {
-      positive = false;
       str = str.substring(1);
-      len = str.length();
+      negative = true;
     } else if (str.charAt(0) == '+') {
       str = str.substring(1);
-      len = str.length();
     }
-
-    boolean digitExists = false;
-    int i = 0;
-    while (i < len) {
-      if (str.charAt(i) >= '0' && str.charAt(i) <= '9') {
-        digitExists = true;
-        i++;
-      } else {
+    for (int i = 0; i < str.length(); i++) {
+      if (!Character.isDigit(str.charAt(i))) {
+        str = str.substring(0, i);
         break;
       }
     }
-    if (!digitExists) {
+    if (str.length() == 0) {
       return 0;
     }
 
-    str = str.substring(0, i);
-    if (str.length() > String.valueOf(Integer.MIN_VALUE).length()) {
-      if (positive) {
-        return Integer.MAX_VALUE;
-      } else {
+    if (str.length() > String.valueOf(Integer.MAX_VALUE).length()) {
+      if (negative) {
         return Integer.MIN_VALUE;
+      } else {
+        return Integer.MAX_VALUE;
       }
     }
 
-    long tmp = Long.valueOf(str);
-    if (!positive) {
-      tmp = -tmp;
+    long l = Long.parseLong(str);
+    if (negative) {
+      l = -l;
     }
-    if (tmp > Integer.MAX_VALUE) {
-      return Integer.MAX_VALUE;
-    } else if (tmp < Integer.MIN_VALUE) {
+
+    if (l < Integer.MIN_VALUE) {
       return Integer.MIN_VALUE;
+    } else if (l > Integer.MAX_VALUE) {
+      return Integer.MAX_VALUE;
     }
-    return (int) tmp;
+
+    return (int) l;
   }
 }
