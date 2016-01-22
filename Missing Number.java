@@ -7,4 +7,28 @@ public class Solution {
     }
     return total;
   }
+
+  private int ji(int[] nums, int idx, int k) {
+    if (0 <= idx && idx <= nums.length - 1) {
+      int ret = nums[idx];
+      nums[idx] = k;
+      return ret;
+    } else {
+      return -1;
+    }
+  }
+
+  public int missingNumber_(int[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+      if (nums[i] != i) { // nums[i] should not be here, move nums[i] to tmp
+        for (int p = ji(nums, i, -1); -1 != p; p = ji(nums, p, p));
+      }
+    }
+    for (int i = 0; i < nums.length; i++) {
+      if (nums[i] == -1) {
+        return i;
+      }
+    }
+    return nums.length;
+  }
 }
