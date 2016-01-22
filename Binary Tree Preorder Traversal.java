@@ -17,4 +17,21 @@ public class Solution {
     }
     return ret;
   }
+
+  public List<Integer> preorderTraversal_(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    TreeNode current = root;
+    while (!stack.isEmpty() || current != null) {
+      while (current != null) {
+        stack.push(current);
+        ret.add(current.val);
+        current = current.left;
+      }
+      current = stack.pop().right;
+    }
+
+    return ret;
+  }
 }

@@ -1,10 +1,11 @@
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class Solution {
-  public int maxProduct(String[] words) {
+  public int maxProduct__(String[] words) {
     Map<Character, Set<String>> a2z = new HashMap<>();
     for (char c = 'a'; c <= 'z'; c++) {
       a2z.put(c, new HashSet<String>());
@@ -31,5 +32,56 @@ public class Solution {
       }
     }
     return max;
+  }
+
+  public int maxProduct_(String[] words) {
+    Map<Character, Set<Integer>> cs = new HashMap<>(); // char idx_set
+    for (char c = 'a'; c <= 'z'; c++) {
+      cs.put(c, new HashSet<Integer>());
+    }
+    for (int i = 0; i < words.length; i++) {
+      for (int j = 0; j < words[i].length(); j++) {
+        char c = words[i].charAt(j);
+        cs.get(c).add(i);
+      }
+    }
+
+    int ret = 0;
+    for (int i = 0; i < words.length; i++) {
+      for (int j = i + 1; j < words.length; j++) {
+        boolean b = true;
+        for (char c = 'a'; c <= 'z'; c++) {
+          Set<Integer> s = cs.get(c);
+          if (s.contains(i) && s.contains(j)) {
+            b = false;
+            break;
+          }
+        }
+        if (b) {
+          ret = Math.max(ret, words[i].length() * words[j].length());
+        }
+      }
+    }
+    return ret;
+  }
+
+  public int maxProduct(String[] words) {
+    int[] k = new int[words.length];
+    Arrays.fill(k, 0);
+    for (int i = 0; i < words.length; i++) {
+      for (int j = 0; j < words[i].length(); j++) {
+        k[i] |= 1 << (words[i].charAt(j) - 'a');
+      }
+    }
+
+    int ret = 0;
+    for (int i = 0; i < words.length; i++) {
+      for (int j = i + 1; j < words.length; j++) {
+        if ((k[i] & k[j]) == 0) {
+          ret = Math.max(ret, words[i].length() * words[j].length());
+        }
+      }
+    }
+    return ret;
   }
 }
