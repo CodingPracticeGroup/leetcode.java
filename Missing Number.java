@@ -1,5 +1,5 @@
 public class Solution {
-  public int missingNumber(int[] nums) {
+  public int missingNumber__(int[] nums) {
     int n = nums.length;
     int total = (1 + n) * n / 2;
     for (int i : nums) {
@@ -30,5 +30,9 @@ public class Solution {
       }
     }
     return nums.length;
+  }
+
+  public int missingNumber(int[] nums) {
+    return (0 + nums.length) * (nums.length + 1) / 2 - Arrays.stream(nums).sum();
   }
 }
