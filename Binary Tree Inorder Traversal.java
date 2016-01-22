@@ -14,4 +14,22 @@ public class Solution {
     }
     return ret;
   }
+
+  public List<Integer> inorderTraversal_(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    TreeNode p = root;
+    while (!stack.isEmpty() || p != null) {
+      while (p != null) {
+        stack.push(p);
+        p = p.left;
+      }
+      p = stack.pop();
+      ret.add(p.val);
+      p = p.right;
+    }
+
+    return ret;
+  }
 }
