@@ -20,11 +20,35 @@ public class Solution {
     stack.pollLast();
   }
 
-  public List<String> binaryTreePaths(TreeNode root) {
+  public List<String> binaryTreePaths_(TreeNode root) {
     List<String> ret = new ArrayList<>();
     if (root == null)
       return ret;
     binaryTreePaths_bt(root, ret, new ArrayDeque<TreeNode>());
+    return ret;
+  }
+
+  public List<String> binaryTreePaths(TreeNode root) {
+    List<String> ret = new ArrayList<>();
+    if (root == null) {
+      return ret;
+    }
+    if (root.left == null && root.right == null) {
+      ret.add(String.valueOf(root.val));
+      return ret;
+    }
+    if (root.left != null) {
+      List<String> left = binaryTreePaths(root.left);
+      for (String s : left) {
+        ret.add(root.val + "->" + s);
+      }
+    }
+    if (root.right != null) {
+      List<String> right = binaryTreePaths(root.right);
+      for (String s : right) {
+        ret.add(root.val + "->" + s);
+      }
+    }
     return ret;
   }
 }
