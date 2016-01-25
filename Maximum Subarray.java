@@ -11,4 +11,21 @@ public class Solution {
     }
     return max;
   }
+
+  public int maxSubArray_(int[] nums) {
+    if (Arrays.stream(nums).filter(x -> x > 0).count() == 0) {
+      return Arrays.stream(nums).max().getAsInt();
+    }
+    int ret = 0;
+    int sum = 0;
+    for (int i : nums) {
+      sum += i; // (~, i]
+      if (sum < 0) {
+        sum = 0; // remove negative impact
+      } else {
+        ret = Math.max(ret, sum);
+      }
+    }
+    return ret;
+  }
 }
