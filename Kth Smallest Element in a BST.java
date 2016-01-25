@@ -35,4 +35,6 @@ public class Solution {
     }
     return -1;
   }
+  
+  //如果BST节点TreeNode的属性可以扩展，则再添加一个属性leftCnt，记录左子树的节点个数
 }
