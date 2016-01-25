@@ -1,13 +1,16 @@
 public class Solution {
   public int singleNumber(int[] nums) {
-    int one = 0, two = 0, three = -1;
+    int one = 0;
+    int two = 0;
+    int three = -1; // last round, all 1, so that can accumulate new int
     for (int i = 0; i < nums.length; i++) {
-      int one_ = one;
-      int two_ = two;
-      int three_ = three;
-      one = (one_ | (nums[i] & three_)) & (~(one_ & nums[i]));
-      two = (two_ | (nums[i] & one_)) & (~(two_ & nums[i]));
-      three = (three_ | (nums[i] & two_)) & (~(three_ & nums[i]));
+      int tmp1 = one;
+      int tmp2 = two;
+      int tmp3 = three;
+
+      one = (tmp1 | (tmp3 & nums[i])) & (~(tmp1 & nums[i])); // one -> tmp1 & nums[i] -> two
+      two = (tmp2 | (tmp1 & nums[i])) & (~(tmp2 & nums[i]));
+      three = (tmp3 | (tmp2 & nums[i])) & (~(tmp3 & nums[i]));
     }
     return one;
   }
