@@ -10,4 +10,16 @@ public class Solution {
     }
     return max_profit;
   }
+
+  public int maxProfit_(int[] prices) {
+    int ret = 0;
+    int minIdx = 0; // last
+    for (int i = 1; i < prices.length; i++) { // scan
+      ret = Math.max(ret, prices[i] - prices[minIdx]);
+      if (prices[i] < prices[minIdx]) {
+        minIdx = i;
+      }
+    }
+    return ret;
+  }
 }
