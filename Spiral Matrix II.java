@@ -1,32 +1,30 @@
 public class Solution {
-  private void generateMatrix(int n, int k, int[][] board) {
-    int start = 1;
-    if (k > 0) {
-      start = board[k][k - 1] + 1;
+  private int fill(int[][] ret, int idx, int len, int d) {
+    if (len == 1) {
+      ret[idx][idx] = d++;
+      return d;
     }
-    if (n - k - k == 1) {
-      board[k][k] = start;
-    } else {
-      for (int i = k; i < n - k - 1; i++) {
-        board[k][i] = start++;
-      }
-      for (int i = k; i < n - k - 1; i++) {
-        board[i][n - k - 1] = start++;
-      }
-      for (int i = n - k - 1; i > k; i--) {
-        board[n - k - 1][i] = start++;
-      }
-      for (int i = n - k - 1; i > k; i--) {
-        board[i][k] = start++;
-      }
+    for (int i = 0; i < len - 1; i++) {
+      ret[idx][idx + i] = d++;
     }
+    for (int i = 0; i < len - 1; i++) {
+      ret[idx + i][idx + len - 1] = d++;
+    }
+    for (int i = 0; i < len - 1; i++) {
+      ret[idx + len - 1][idx + len - 1 - i] = d++;
+    }
+    for (int i = 0; i < len - 1; i++) {
+      ret[idx + len - 1 - i][idx] = d++;
+    }
+    return d;
   }
 
   public int[][] generateMatrix(int n) {
-    int[][] board = new int[n][n];
-    for (int i = 0; i < n / 2 + n % 2; i++) {
-      generateMatrix(n, i, board);
+    int[][] ret = new int[n][n];
+    int d = 1;
+    for (int i = 0; i < (n + 1) / 2; i++) {
+      d = fill(ret, i, n - i * 2, d);
     }
-    return board;
+    return ret;
   }
 }
