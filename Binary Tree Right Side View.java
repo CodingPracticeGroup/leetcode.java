@@ -16,3 +16,24 @@ public class Solution {
     return ret;
   }
 }
+------------------
+public class Solution {
+  private void r(TreeNode root, List<Integer> ret, Deque<TreeNode> stack) {
+    if (root == null) {
+      return;
+    }
+    stack.push(root);
+    if (stack.size() > ret.size()) {
+      ret.add(stack.peek().val);
+    }
+    r(root.right, ret, stack);
+    r(root.left, ret, stack);
+    stack.pop();
+  }
+
+  public List<Integer> rightSideView(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    r(root, ret, new ArrayDeque<TreeNode>());
+    return ret;
+  }
+}
