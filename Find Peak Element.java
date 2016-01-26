@@ -26,3 +26,29 @@ public class Solution {
     return findPeakElement_range(nums, 0, nums.length);
   }
 }
+
+public class Solution {
+  public int findPeakElement(int[] nums) {
+    int low = 0;
+    int high = nums.length - 1;
+    while (high - low >= 2) {
+      int mid = low + (high - low) / 2;
+      if (nums[mid - 1] < nums[mid] && nums[mid] < nums[mid + 1]) {
+        low = mid + 1;
+      } else if (nums[mid - 1] > nums[mid] && nums[mid] > nums[mid + 1]) {
+        high = mid - 1;
+      } else if (nums[mid - 1] > nums[mid] && nums[mid] < nums[mid + 1]) {
+        low = mid + 1; // high = mid-1;
+      } else {
+        return mid;
+      }
+    }
+    int ret = low;
+    for (int i = low; i <= high; i++) {
+      if (nums[i] > nums[ret]) {
+        ret = i;
+      }
+    }
+    return ret;
+  }
+}
