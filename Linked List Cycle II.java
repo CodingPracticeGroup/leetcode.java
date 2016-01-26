@@ -17,3 +17,32 @@ public class Solution {
     return null;
   }
 }
+---------
+public class Solution {
+  public ListNode detectCycle(ListNode head) {
+    if (head == null || head.next == null) {
+      return null;
+    }
+    ListNode s1 = head;
+    ListNode s2 = head.next;
+    while (s1 != s2) {
+      if (s1 != null) {
+        s1 = s1.next;
+      } else {
+        return null;
+      }
+      if (s2 != null && s2.next != null) {
+        s2 = s2.next.next;
+      } else {
+        return null;
+      }
+    }
+    s1 = s1.next;
+    s2 = head;
+    while (s1 != s2) {
+      s1 = s1.next;
+      s2 = s2.next;
+    }
+    return s1;
+  }
+}
