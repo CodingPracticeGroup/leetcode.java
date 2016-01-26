@@ -27,3 +27,25 @@ public class Solution {
     return window.get(n - 1);
   }
 }
+-----------
+public class Solution {
+  public int nthSuperUglyNumber(int n, int[] primes) {
+    int dp[] = new int[n];
+    dp[0] = 1;
+    int idx[] = new int[primes.length];
+    Arrays.fill(idx, 0);
+    for (int i = 1; i < n; i++) {
+      int p = 0;
+      for (int j = 0; j < primes.length; j++) {
+        while (dp[idx[j]] * primes[j] <= dp[i - 1]) {
+          idx[j]++;
+        }
+        if (dp[idx[j]] * primes[j] < dp[idx[p]] * primes[p]) {
+          p = j;
+        }
+      }
+      dp[i] = dp[idx[p]] * primes[p];
+    }
+    return dp[n - 1];
+  }
+}
