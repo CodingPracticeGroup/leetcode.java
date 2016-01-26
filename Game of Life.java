@@ -32,7 +32,7 @@ public class Solution {
     }
   }
 
-  public void gameOfLife(int[][] board) {
+  public void gameOfLife_(int[][] board) {
     int m = board.length;
     if (m == 0)
       return;
@@ -52,6 +52,44 @@ public class Solution {
         mem[1][j] = mem[0][j];
       }
       Arrays.fill(mem[0], -1);
+    }
+  }
+
+  public void gameOfLife(int[][] board) {
+    int n = board[0].length;
+    int cache[][] = new int[2][n];
+    Arrays.fill(cache[0], 0);
+    for (int i = 0; i < board.length; i++) {
+      for (int j = 0; j < n; j++) {
+        cache[1][j] = board[i][j];
+        int alive = 0;
+        alive += j - 1 >= 0 ? cache[0][j - 1] : 0;
+        alive += cache[0][j];
+        alive += j + 1 < n ? cache[0][j + 1] : 0;
+
+        alive += j - 1 >= 0 ? cache[1][j - 1] : 0;
+        alive += j + 1 < n ? board[i][j + 1] : 0;
+
+        alive += i + 1 < board.length ? (j - 1 >= 0 ? board[i + 1][j - 1] : 0) : 0;
+        alive += i + 1 < board.length ? (board[i + 1][j]) : 0;
+        alive += i + 1 < board.length ? (j + 1 < n ? board[i + 1][j + 1] : 0) : 0;
+        if (board[i][j] == 1) {
+          if (alive < 2) {
+            board[i][j] = 0;
+          } else if (alive == 2 || alive == 3) {
+            board[i][j] = 1;
+          } else if (alive > 3) {
+            board[i][j] = 0;
+          }
+        } else {
+          if (alive == 3) {
+            board[i][j] = 1;
+          }
+        }
+      }
+      for (int k = 0; k < n; k++) {
+        cache[0][k] = cache[1][k];
+      }
     }
   }
 }
