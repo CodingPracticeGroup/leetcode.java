@@ -18,4 +18,28 @@ public class Solution {
     combine_bt(n, k, 1, new ArrayDeque<Integer>(), ret);
     return ret;
   }
+
+  private List<List<Integer>> c(int n, int k, int start) {
+    List<List<Integer>> ret = new LinkedList<>();
+    if (k == 1) {
+      for (int i = start; i <= n; i++) { // pick i
+        List<Integer> l = new LinkedList<>();
+        l.add(i);
+        ret.add(l);
+      }
+      return ret;
+    }
+    for (int i = start; i <= n; i++) { // pick i
+      List<List<Integer>> r = c(n, k - 1, i + 1);
+      for (List<Integer> l : r) {
+        l.add(0, i);
+      }
+      ret.addAll(r);
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> combine_(int n, int k) {
+    return c(n, k, 1);
+  }
 }
