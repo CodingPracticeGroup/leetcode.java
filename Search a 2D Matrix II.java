@@ -31,3 +31,29 @@ public class Solution {
     return searchMatrix_block(matrix, target, 0, m - 1, 0, n - 1);
   }
 }
+----------------
+public class Solution {
+  private boolean search(int[][] matrix, int target, int top, int bottom, int left, int right) {
+    if (top >= bottom || left >= right) {
+      return false;
+    }
+    // [top, bottom), [left, right)
+    int mid_lr = left + (right - left) / 2;
+    int mid_tb = top + (bottom - top) / 2;
+    if (matrix[mid_tb][mid_lr] < target) { // cannot be in top left
+      return search(matrix, target, mid_tb + 1, bottom, left, mid_lr + 1)
+          || search(matrix, target, mid_tb + 1, bottom, mid_lr + 1, right)
+          || search(matrix, target, top, mid_tb + 1, mid_lr + 1, right);
+    } else if (matrix[mid_tb][mid_lr] > target) { // cannot be in bottom right
+      return search(matrix, target, top, mid_tb, left, mid_lr)
+          || search(matrix, target, top, mid_tb, mid_lr, right)
+          || search(matrix, target, mid_tb, bottom, left, mid_lr);
+    } else {
+      return true;
+    }
+  }
+
+  public boolean searchMatrix(int[][] matrix, int target) {
+    return search(matrix, target, 0, matrix.length, 0, matrix[0].length);
+  }
+}
