@@ -34,3 +34,29 @@ public class Solution {
     return info[0];
   }
 }
+-----------
+public class Solution {
+  private void sn(TreeNode root, int[] ret, LinkedList<TreeNode> stack) {
+    if (root == null) {
+      return;
+    }
+    stack.offerLast(root);
+    if (root.left == null && root.right == null) {
+      StringBuilder sb = new StringBuilder();
+      for (TreeNode tn : stack) {
+        sb.append(tn.val);
+      }
+      ret[0] += Integer.parseInt(sb.toString());
+    } else {
+      sn(root.left, ret, stack);
+      sn(root.right, ret, stack);
+    }
+    stack.pollLast();
+  }
+
+  public int sumNumbers(TreeNode root) {
+    int ret[] = new int[1];
+    sn(root, ret, new LinkedList<TreeNode>());
+    return ret[0];
+  }
+}
