@@ -15,3 +15,26 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+----------
+public class Solution {
+  private Set<List<Integer>> s(int[] nums, int start) {
+    Set<List<Integer>> ret = new HashSet<>();
+    ret.add(new ArrayList<Integer>());
+    if (start >= nums.length) {
+      return ret;
+    }
+    for (int i = start; i < nums.length; i++) { // pick nums[i]
+      Set<List<Integer>> r = s(nums, i + 1);
+      for (List<Integer> l : r) {
+        l.add(0, nums[i]);
+      }
+      ret.addAll(r);
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> subsetsWithDup(int[] nums) {
+    Arrays.sort(nums);
+    return new ArrayList<List<Integer>>(s(nums, 0));
+  }
+}
