@@ -34,3 +34,34 @@ public class Solution {
     return ret;
   }
 }
+---------
+public class Solution {
+  private Set<List<Integer>> c(int[] candidates, int target, int start) {
+    Set<List<Integer>> ret = new HashSet<>();
+    if (start >= candidates.length) {
+      return ret;
+    }
+    if (start < candidates.length && candidates[start] > target) {
+      return ret;
+    }
+    if (start < candidates.length && target == candidates[start]) {
+      List<Integer> l = new ArrayList<>();
+      l.add(candidates[start]);
+      ret.add(l);
+      return ret;
+    }
+    Set<List<Integer>> s_start = c(candidates, target - candidates[start], start); // to be
+    for (List<Integer> l : s_start) {
+      l.add(0, candidates[start]);
+    }
+    Set<List<Integer>> s_start1 = c(candidates, target, start + 1); // not to be
+    ret.addAll(s_start);
+    ret.addAll(s_start1);
+    return ret;
+  }
+
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    Arrays.sort(candidates);
+    return new ArrayList<List<Integer>>(c(candidates, target, 0));
+  }
+}
