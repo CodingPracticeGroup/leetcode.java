@@ -35,3 +35,27 @@ public class Solution {
     return Arrays.stream(dp).max().getAsInt();
   }
 }
+-------------
+http://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/
+public class Solution {
+  public int lengthOfLIS(int[] nums) {
+    if (nums.length == 0) {
+      return 0;
+    }
+    int[] t = new int[nums.length];
+    Arrays.fill(t, -1);
+    t[0] = nums[0];
+    int write = 1; // init
+    for (int i = 1; i < nums.length; i++) {
+      if (nums[i] > t[write - 1]) { // extend
+        t[write++] = nums[i];
+      } else { // replace
+        int idx = Arrays.binarySearch(t, 0, write, nums[i]);
+        if (idx < 0) {
+          t[-idx - 1] = nums[i];
+        }
+      }
+    }
+    return write;
+  }
+}
