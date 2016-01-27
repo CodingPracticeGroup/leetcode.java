@@ -18,3 +18,31 @@ public class Solution {
     return sortedListToBST_range(arr, 0, arr.size());
   }
 }
+-------------
+public class Solution {
+  public TreeNode sortedListToBST(ListNode head) {
+    if (head == null) {
+      return null;
+    }
+    if (head.next == null) {
+      return new TreeNode(head.val);
+    }
+    ListNode s1 = head;
+    ListNode s2 = head.next;
+    while (s2 != null && s2.next != null) {
+      if (s2.next.next == null) {
+        break;
+      }
+      s1 = s1.next;
+      s2 = s2.next.next;
+    }
+    ListNode root = s1.next;
+    s1.next = null;
+    s2 = root.next;
+    root.next = null;
+    TreeNode ret = new TreeNode(root.val);
+    ret.left = sortedListToBST(head);
+    ret.right = sortedListToBST(s2);
+    return ret;
+  }
+}
