@@ -28,3 +28,28 @@ public class Solution {
     return ret;
   }
 }
+----------
+public class Solution {
+  private Set<List<Integer>> s(int[] nums, int start) {
+    Set<List<Integer>> ret = new HashSet<>();
+    if (start == nums.length) {
+      ret.add(new ArrayList<Integer>());
+      return ret;
+    }
+    for (int i = start; i < nums.length; i++) { // pick nums[i]
+      Set<List<Integer>> r = s(nums, i + 1);
+      ret.addAll(r);
+      for (List<Integer> l : r) {
+        List<Integer> al = new ArrayList<>(l);
+        al.add(0, nums[i]);
+        ret.add(al);
+      }
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    Arrays.sort(nums);
+    return new ArrayList<List<Integer>>(s(nums, 0));
+  }
+}
