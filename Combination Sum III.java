@@ -24,3 +24,29 @@ public class Solution {
     return ret;
   }
 }
+---------
+public class Solution {
+    private List<List<Integer>> c (int k, int n, int start) {
+        List<List<Integer>> ret = new ArrayList<>();
+        if (k==0 || n==0 || start>9) {
+            if (k==0 && n==0) {
+                List<Integer> l = new ArrayList<>();
+                ret.add(l);
+            }
+            return ret;
+        }
+        for (int i=start; i<=9; i++) {
+            //List<List<Integer>> r0 = c(k, n, i+1); // not to be
+            List<List<Integer>> r1 = c(k-1, n-i, i+1); // to be
+            for (List<Integer> l : r1) {
+                l.add(0, i);
+            }
+            //ret.addAll(r0);
+            ret.addAll(r1);
+        }
+        return ret;
+    }
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        return c (k, n ,1);
+    }
+}
