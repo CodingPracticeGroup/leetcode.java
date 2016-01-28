@@ -19,3 +19,32 @@ public class Solution {
     return leftHead.next;
   }
 }
+---------
+public class Solution {
+  public ListNode partition(ListNode head, int x) {
+    ListNode myhead = new ListNode(0);
+    myhead.next = head;
+    ListNode tail = myhead;
+    ListNode second = new ListNode(0);
+    while (tail.next != null) {
+      while (tail.next != null && tail.next.val >= x) {
+        ListNode tn = tail.next;
+        tail.next = tail.next.next;
+
+        tn.next = second.next;
+        second.next = tn;
+      }
+      if (tail.next != null) {
+        tail = tail.next;
+      }
+    }
+    while (second.next != null) {
+      ListNode tn = second.next;
+      second.next = second.next.next;
+
+      tn.next = tail.next;
+      tail.next = tn;
+    }
+    return myhead.next;
+  }
+}
