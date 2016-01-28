@@ -30,3 +30,35 @@ public class Solution {
     return ret;
   }
 }
+-----------
+public class Solution {
+  public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root == null) {
+      return ret;
+    }
+    Deque<TreeNode> q = new ArrayDeque<>();
+    q.offer(root);
+    boolean reverse = false;
+    while (!q.isEmpty()) {
+      LinkedList<Integer> l = new LinkedList<>();
+      int count = q.size();
+      for (int i = 0; i < count; i++) {
+        TreeNode tn = q.poll();
+        l.add(tn.val);
+        if (tn.left != null) {
+          q.offer(tn.left);
+        }
+        if (tn.right != null) {
+          q.offer(tn.right);
+        }
+      }
+      if (reverse) {
+        Collections.reverse(l);
+      }
+      reverse = !reverse;
+      ret.add(l);
+    }
+    return ret;
+  }
+}
