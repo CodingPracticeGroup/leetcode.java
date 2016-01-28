@@ -33,3 +33,35 @@ public class Solution {
     }
   }
 }
+-----------
+public class Solution {
+  private void path(TreeNode root, TreeNode p, TreeNode q, LinkedList<TreeNode> pp,
+      LinkedList<TreeNode> qq, Deque<TreeNode> stack) {
+    if (root == null) {
+      return;
+    }
+    stack.offerLast(root);
+    if (root == p) {
+      pp.addAll(stack);
+    }
+    if (root == q) {
+      qq.addAll(stack);
+    }
+    path(root.left, p, q, pp, qq, stack);
+    path(root.right, p, q, pp, qq, stack);
+    stack.pollLast();
+  }
+
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    LinkedList<TreeNode> pp = new LinkedList<>();
+    LinkedList<TreeNode> qq = new LinkedList<>();
+    path(root, p, q, pp, qq, new ArrayDeque<TreeNode>());
+    TreeNode ret = null;
+    while (pp.peekFirst() == qq.peekFirst()) {
+      ret = pp.peekFirst();
+      pp.pollFirst();
+      qq.pollFirst();
+    }
+    return ret;
+  }
+}
