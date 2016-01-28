@@ -24,3 +24,27 @@ public class Solution {
     return ret;
   }
 }
+---------
+public class Solution {
+  public List<List<Integer>> pathSum(TreeNode root, int sum) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root == null) {
+      return ret;
+    }
+    if (root.left == null && root.right == null && sum == root.val) {
+      List<Integer> l = new ArrayList<>();
+      l.add(root.val);
+      ret.add(l);
+      return ret;
+    }
+    for (List<Integer> l : pathSum(root.left, sum - root.val)) {
+      l.add(0, root.val);
+      ret.add(l);
+    }
+    for (List<Integer> l : pathSum(root.right, sum - root.val)) {
+      l.add(0, root.val);
+      ret.add(l);
+    }
+    return ret;
+  }
+}
