@@ -33,3 +33,34 @@ public class Solution {
     return letterCombinations_recursion(map, arr, 0, "");
   }
 }
+------------
+public class Solution {
+  char[] digit = new char[] {'2', '3', '4', '5', '6', '7', '8', '9', '0'};
+  char[][] letters =
+      new char[][] {{'a', 'b', 'c'}, {'d', 'e', 'f'}, {'g', 'h', 'i'}, {'j', 'k', 'l'},
+          {'m', 'n', 'o'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v'}, {'w', 'x', 'y', 'z'}, {' '}};
+
+  public List<String> letterCombinations(String digits) {
+    List<String> ret = new ArrayList<>();
+    if (digits.length() == 0) {
+      return ret;
+    }
+    int idx = Arrays.binarySearch(digit, digits.charAt(0));
+    if (idx >= 0) {
+      List<String> r = letterCombinations(digits.substring(1));
+      for (String s : r) {
+        for (char c : letters[idx]) {
+          ret.add(c + s);
+        }
+      }
+      if (ret.isEmpty()) {
+        for (char c : letters[idx]) {
+          ret.add(c + "");
+        }
+      }
+      return ret;
+    } else {
+      return letterCombinations(digits.substring(1));
+    }
+  }
+}
