@@ -27,3 +27,24 @@ public class Solution {
     return myHead.next;
   }
 }
+-----------
+public class Solution {
+  public ListNode insertionSortList(ListNode head) {
+    ListNode myhead = new ListNode(Integer.MIN_VALUE);
+    myhead.next = head;
+    for (ListNode p = head; p != null && p.next != null; p = p.next) {
+      while (p.next != null && p.val > p.next.val) {
+        ListNode tn = p.next;
+        p.next = p.next.next;
+
+        ListNode q = myhead;
+        while (q.next != p && q.next.val < tn.val) {
+          q = q.next;
+        }
+        tn.next = q.next;
+        q.next = tn;
+      }
+    }
+    return myhead.next;
+  }
+}
