@@ -12,3 +12,47 @@ public class Solution {
     return new int[] {left, right};
   }
 }
+-----------
+public class Solution {
+  private int l(int[] n, int t) {
+    int low = 0;
+    int high = n.length - 1;
+    while (low < high) {
+      int mid = low + (high - low) / 2;
+      if (n[mid] < t) {
+        low = mid + 1;
+      } else if (n[mid] > t) {
+        high = mid - 1;
+      } else {
+        high = mid;
+      }
+    }
+    if (n[low] == t)
+      return low;
+    else
+      return -1;
+  }
+
+  private int r(int[] n, int t) {
+    int low = 0;
+    int high = n.length - 1;
+    while (low < high) {
+      int mid = low + (int) Math.ceil((high - low) / 2.0);
+      if (n[mid] < t) {
+        low = mid + 1;
+      } else if (n[mid] > t) {
+        high = mid - 1;
+      } else {
+        low = mid;
+      }
+    }
+    if (n[high] == t)
+      return high;
+    else
+      return -1;
+  }
+
+  public int[] searchRange(int[] nums, int target) {
+    return new int[] {l(nums, target), r(nums, target)};
+  }
+}
