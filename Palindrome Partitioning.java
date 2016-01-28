@@ -36,3 +36,38 @@ public class Solution {
     return partition_range(s, 0, s.length());
   }
 }
+---------
+public class Solution {
+  private boolean check(String s, int len) {
+    int i = 0;
+    int j = len - 1;
+    while (i < j) {
+      if (s.charAt(i++) != s.charAt(j--)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public List<List<String>> partition(String s) {
+    List<List<String>> ret = new ArrayList<>();
+    if (s.length() == 0) {
+      return ret;
+    }
+    if (check(s, s.length())) {
+      List<String> l = new ArrayList<>();
+      l.add(s);
+      ret.add(l);
+    }
+    for (int len = 1; len < s.length(); len++) {
+      if (check(s, len)) {
+        List<List<String>> r = partition(s.substring(len));
+        for (List<String> l : r) {
+          l.add(0, s.substring(0, len));
+          ret.add(l);
+        }
+      }
+    }
+    return ret;
+  }
+}
