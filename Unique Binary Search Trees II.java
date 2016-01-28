@@ -40,3 +40,34 @@ public class Solution {
     return generateTrees_range(1, n + 1);
   }
 }
+------------
+public class Solution {
+  private List<TreeNode> g(int start, int end) { // inclusive
+    List<TreeNode> ret = new ArrayList<>();
+    if (start > end) {
+      ret.add(null);
+      return ret;
+    } else {
+      for (int i = start; i <= end; i++) { // pick root
+        List<TreeNode> left = g(start, i - 1);
+        List<TreeNode> right = g(i + 1, end);
+        for (TreeNode l : left) {
+          for (TreeNode r : right) {
+            TreeNode root = new TreeNode(i);
+            root.left = l;
+            root.right = r;
+            ret.add(root);
+          }
+        }
+      }
+      return ret;
+    }
+  }
+
+  public List<TreeNode> generateTrees(int n) {
+    if (n < 1) {
+      return new ArrayList<TreeNode>();
+    }
+    return g(1, n);
+  }
+}
