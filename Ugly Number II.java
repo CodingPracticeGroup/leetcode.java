@@ -29,3 +29,26 @@ public class Solution {
     return dp[n - 1];
   }
 }
+-------------
+public class Solution {
+  public int nthUglyNumber(int n) {
+    int dp[] = new int[n];
+    dp[0] = 1;
+    int l2 = 0;
+    int l3 = 0;
+    int l5 = 0;
+    for (int i = 1; i < n; i++) {
+      while (dp[l2] * 2 <= dp[i - 1]) { // lazy update
+        l2++;
+      }
+      while (dp[l3] * 3 <= dp[i - 1]) {
+        l3++;
+      }
+      while (dp[l5] * 5 <= dp[i - 1]) {
+        l5++;
+      }
+      dp[i] = Math.min(Math.min(dp[l2] * 2, dp[l3] * 3), dp[l5] * 5);
+    }
+    return dp[n - 1];
+  }
+}
