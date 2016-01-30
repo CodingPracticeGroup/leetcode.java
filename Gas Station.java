@@ -15,3 +15,22 @@ public class Solution {
     return idx;
   }
 }
+--------------
+public class Solution {
+  public int canCompleteCircuit(int[] gas, int[] cost) {
+    if (Arrays.stream(cost).sum() > Arrays.stream(gas).sum()) {
+      return -1;
+    }
+    int tank = 0;
+    int ret = 0;
+    for (int i = 0; i < gas.length; i++) {
+      tank += gas[i];
+      tank -= cost[i];
+      if (tank < 0) {
+        tank = 0; // always >=0
+        ret = i + 1; // ret idx starts when tank ==0
+      }
+    }
+    return ret;
+  }
+}
