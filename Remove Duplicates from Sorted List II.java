@@ -18,3 +18,21 @@ public class Solution {
     return myHead.next;
   }
 }
+-------------
+public class Solution {
+  public ListNode deleteDuplicates(ListNode head) {
+    ListNode myhead = new ListNode(0);
+    myhead.next = head;
+    for (ListNode p = myhead; p != null && p.next != null;) {
+      int v = p.next.val;
+      if (p.next.next != null && p.next.next.val == v) { // duplicate
+        while (p.next != null && p.next.val == v) { // remove all
+          p.next = p.next.next;
+        }
+      } else {
+        p = p.next;
+      }
+    }
+    return myhead.next;
+  }
+}
