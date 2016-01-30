@@ -19,3 +19,28 @@ public class Solution {
     return myHead.next;
   }
 }
+----------------
+public class Solution {
+  public ListNode reverseBetween(ListNode head, int m, int n) {
+    ListNode myhead = new ListNode(0);
+    myhead.next = head;
+    ListNode p = myhead;
+    for (int i = 1; i < m; i++) {
+      p = p.next;
+    }
+
+    ListNode tail = p.next;
+    ListNode second = new ListNode(0);
+    for (int i = m; i <= n; i++) {
+      ListNode q = p.next;
+      p.next = q.next;
+
+      q.next = second.next;
+      second.next = q;
+    }
+
+    tail.next = p.next;
+    p.next = second.next;
+    return myhead.next;
+  }
+}
