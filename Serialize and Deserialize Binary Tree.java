@@ -57,3 +57,48 @@ public class Codec {
     return deserialize_(d, 0, d.length, 0);
   }
 }
+------------------
+public class Codec {
+
+  // Encodes a tree to a single string.
+  public String serialize(TreeNode root) {
+    if (root == null) {
+      return "";
+    }
+    String left = serialize(root.left);
+    String right = serialize(root.right);
+    return root.val + "," + left.length() + "," + right.length() + "," + left + "," + right;
+  }
+
+  // Decodes your encoded data to tree.
+  public TreeNode deserialize(String data) {
+    if (data.equals("")) {
+      return null;
+    }
+    int idx = 0;
+    while (data.charAt(idx) != ',') {
+      idx++;
+    }
+    int rootval = Integer.parseInt(data.substring(0, idx));
+    idx++;
+    int last = idx;
+    while (data.charAt(idx) != ',') {
+      idx++;
+    }
+    int leftlen = Integer.parseInt(data.substring(last, idx));
+    idx++;
+    last = idx;
+    while (data.charAt(idx) != ',') {
+      idx++;
+    }
+    int rightlen = Integer.parseInt(data.substring(last, idx));
+    idx++;
+    String left = data.substring(idx, idx + leftlen);
+    String right = data.substring(idx + leftlen + 1, idx + leftlen + 1 + rightlen);
+
+    TreeNode ret = new TreeNode(rootval);
+    ret.left = deserialize(left);
+    ret.right = deserialize(right);
+    return ret;
+  }
+}
