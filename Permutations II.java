@@ -30,3 +30,33 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+-------------
+public class Solution {
+  private Set<List<Integer>> p(Map<Integer, Long> m) {
+    Set<List<Integer>> ret = new HashSet<>();
+    if (m.isEmpty()) {
+      ret.add(new ArrayList<>());
+      return ret;
+    }
+    for (Integer i : m.keySet()) {
+      Map<Integer, Long> mm = new HashMap<>(m);
+      if (mm.get(i) == 1) {
+        mm.remove(i);
+      } else {
+        mm.put(i, mm.get(i) - 1);
+      }
+      Set<List<Integer>> r = p(mm);
+      for (List<Integer> l : r) {
+        l.add(i);
+        ret.add(l);
+      }
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> permuteUnique(int[] nums) {
+    Map<Integer, Long> m = Arrays.stream(nums).boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    return new ArrayList<List<Integer>>(p(m));
+  }
+}
