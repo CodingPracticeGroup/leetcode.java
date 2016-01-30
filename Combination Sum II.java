@@ -23,3 +23,28 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+-----------
+public class Solution {
+  private Set<List<Integer>> c(int[] candidates, int start, int target) {
+    Set<List<Integer>> ret = new HashSet<>();
+    if (target == 0) { // found
+      ret.add(new LinkedList<Integer>());
+      return ret;
+    }
+    for (int i = start; i < candidates.length; i++) { // explore
+      if (target - candidates[i] >= 0) { // prune
+        Set<List<Integer>> r = c(candidates, i + 1, target - candidates[i]);
+        for (List<Integer> l : r) {
+          l.add(0, candidates[i]);
+          ret.add(l);
+        }
+      }
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+    Arrays.sort(candidates);
+    return new ArrayList<List<Integer>>(c(candidates, 0, target));
+  }
+}
