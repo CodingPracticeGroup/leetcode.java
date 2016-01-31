@@ -1,8 +1,5 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class TrieNode {
-  Map<Character, TrieNode> children;
+  Map<Character, TrieNode> children = null;
 
   // Initialize your data structure here.
   public TrieNode() {
