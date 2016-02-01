@@ -28,3 +28,44 @@ public class Solution {
         .collect(Collectors.toList());
   }
 }
+--------------------
+public class Solution {
+  public List<Integer> majorityElement(int[] nums) {
+    int sizeLimit = 3 - 1;
+    Map<Integer, Integer> count = new HashMap<>();
+    for (int i : nums) {
+      if (count.containsKey(i)) {
+        count.put(i, count.get(i) + 1);
+      } else {
+        count.put(i, 1);
+      }
+      while (count.size() > sizeLimit) {
+        Set<Integer> tabu = new HashSet<>();
+        for (Integer j : count.keySet()) {
+          count.put(j, count.get(j) - 1);
+          if (count.get(j) == 0) {
+            tabu.add(j);
+          }
+        }
+        for (Integer j : tabu) {
+          count.remove(j);
+        }
+      }
+    }
+    for (Integer j : count.keySet()) {
+      count.put(j, 0);
+    }
+    for (int i : nums) {
+      if (count.containsKey(i)) {
+        count.put(i, count.get(i) + 1);
+      }
+    }
+    List<Integer> ret = new ArrayList<>();
+    for (Integer i : count.keySet()) {
+      if (count.get(i) > nums.length / 3) {
+        ret.add(i);
+      }
+    }
+    return ret;
+  }
+}
