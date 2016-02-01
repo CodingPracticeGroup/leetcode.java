@@ -14,3 +14,42 @@ public class Solution {
     return 0;
   }
 }
+---------------
+public class Solution {
+  public int hIndex(int[] citations) {
+    Arrays.sort(citations);
+    int idx = citations.length - 1;
+    for (int h = citations.length; h >= 1; h--) {
+      if (citations[citations.length - h] >= h) {
+        return h;
+      }
+    }
+    return 0;
+  }
+}
+-------------
+public class Solution {
+  public int hIndex(int[] citations) {
+    int length = citations.length;
+    if (length == 0) {
+      return 0;
+    }
+
+    int[] array2 = new int[length + 1];
+    for (int i = 0; i < length; i++) {
+      if (citations[i] > length) {
+        array2[length] += 1;
+      } else {
+        array2[citations[i]] += 1;
+      }
+    }
+    int t = 0;
+    for (int i = length; i >= 0; i--) {
+      t = t + array2[i];
+      if (t >= i) {
+        return i;
+      }
+    }
+    return 0;
+  }
+}
