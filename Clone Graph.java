@@ -20,3 +20,26 @@ public class Solution {
     return visited_map.get(node);
   }
 }
+----------
+public class Solution {
+  public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+    if (node == null) {
+      return null;
+    }
+    Map<UndirectedGraphNode, UndirectedGraphNode> visited = new HashMap<>();
+    Deque<UndirectedGraphNode> queue = new ArrayDeque<>();
+    visited.put(node, new UndirectedGraphNode(node.label));
+    queue.offer(node);
+    while (!queue.isEmpty()) {
+      UndirectedGraphNode n = queue.poll();
+      for (UndirectedGraphNode nn : n.neighbors) {
+        if (!visited.containsKey(nn)) {
+          visited.put(nn, new UndirectedGraphNode(nn.label));
+          queue.offer(nn);
+        }
+        visited.get(n).neighbors.add(visited.get(nn));
+      }
+    }
+    return visited.get(node);
+  }
+}
