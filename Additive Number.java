@@ -36,3 +36,38 @@ public class Solution {
     return false;
   }
 }
+--------------
+public class Solution {
+  private boolean is(String num, int start, long first, long second) {
+    if (start >= num.length()) {
+      return true;
+    }
+    String sum = String.valueOf(first + second);
+    if (num.charAt(start) == '0' && first + second != 0) {
+      return false;
+    }
+    if (num.startsWith(sum, start)) {
+      return is(num, start + sum.length(), second, first + second);
+    }
+    return false;
+  }
+
+  public boolean isAdditiveNumber(String num) {
+    for (int i = 1; i < num.length(); i++) {
+      long first = Long.parseLong(num.substring(0, i));
+      if (num.charAt(0) == '0' && first != 0) {
+        continue;
+      }
+      for (int j = i + 1; j < num.length(); j++) {
+        long second = Long.parseLong(num.substring(i, j));
+        if (num.charAt(i) == '0' && second != 0) {
+          continue;
+        }
+        if (is(num, j, first, second)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+}
