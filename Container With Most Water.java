@@ -16,3 +16,32 @@ public class Solution {
     return max;
   }
 }
+--------------
+public class Solution {
+  public int maxArea(int[] height) {
+    int low = 0;
+    int high = height.length - 1;
+    int ret = 0;
+    while (low < high) {
+      int h = Math.min(height[low], height[high]);
+      ret = Math.max(ret, h * (high - low));
+      if (height[low] < height[high]) {
+        while (low < high && height[low] <= h) {
+          low++;
+        }
+      } else if (height[low] > height[high]) {
+        while (low < high && height[high] <= h) {
+          high--;
+        }
+      } else {
+        while (low < high && height[low] <= h) {
+          low++;
+        }
+        while (low < high && height[high] <= h) {
+          high--;
+        }
+      }
+    }
+    return ret;
+  }
+}
