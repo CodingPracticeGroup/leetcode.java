@@ -23,3 +23,31 @@ public class Solution {
         return sb.toString();
     }
 }
+----------------
+public class Solution {
+  public String getPermutation(int n, int k) {
+    k--;
+    LinkedList<Integer> l = new LinkedList<>(); // numbers
+    l.offerLast(1);
+    LinkedList<Integer> f = new LinkedList<>(); // factorial
+    f.offerLast(1);
+    for (int i = 2; i <= n; i++) {
+      l.offerLast(l.peekLast() + 1);
+      f.offerLast(f.peekLast() * i);
+    }
+    f.pollLast();
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 1; i < n; i++) {
+      // Collections.sort(l);
+      int idx = k / f.peekLast();
+      k = k % f.peekLast();
+      sb.append(l.get(idx));
+
+      l.remove(idx);
+      f.pollLast();
+    }
+    sb.append(l.pollLast());
+    return sb.toString();
+  }
+}
