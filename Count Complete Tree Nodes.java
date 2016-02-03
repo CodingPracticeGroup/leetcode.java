@@ -27,3 +27,30 @@ public class Solution {
     }
   }
 }
+-------------
+public class Solution {
+  private int cn(TreeNode root, int leftHeight, int rightHeight) {
+    if (root == null) {
+      return 0;
+    }
+    if (leftHeight == -1) {
+      for (TreeNode l = root; l != null; l = l.left) {
+        leftHeight++;
+      }
+    }
+    if (rightHeight == -1) {
+      for (TreeNode l = root; l != null; l = l.right) {
+        rightHeight++;
+      }
+    }
+    if (leftHeight == rightHeight) {
+      return (1 << (rightHeight + 1)) - 1; // Math.pow long time
+    } else {
+      return 1 + cn(root.left, leftHeight - 1, -1) + cn(root.right, -1, rightHeight - 1);
+    }
+  }
+
+  public int countNodes(TreeNode root) {
+    return cn(root, -1, -1);
+  }
+}
