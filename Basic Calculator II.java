@@ -33,3 +33,40 @@ public class Solution {
     return ret;
   }
 }
+--------------
+public class Solution {
+  public int calculate(String s) {
+    s = s.replaceAll("\\s+", "");
+    s = s.trim();
+
+    s = s.replaceAll("\\+", " \\+ ");
+    s = s.replaceAll("\\-", " \\- ");
+    s = s.replaceAll("\\*", " \\* ");
+    s = s.replaceAll("\\/", " \\/ ");
+
+    String[] strs = s.split(" ");
+
+    Deque<String> stack = new ArrayDeque<>();
+    for (int i = 0; i < strs.length; i++) {
+      if (strs[i].equals("*")) {
+        stack.offerLast(
+            String.valueOf(Integer.valueOf(stack.pollLast()) * Integer.valueOf(strs[++i])));
+      } else if (strs[i].equals("/")) {
+        stack.offerLast(
+            String.valueOf(Integer.valueOf(stack.pollLast()) / Integer.valueOf(strs[++i])));
+      } else {
+        stack.offerLast(strs[i]);
+      }
+    }
+    int ret = Integer.parseInt(stack.pollFirst());
+    while (!stack.isEmpty()) {
+      String str = stack.pollFirst();
+      if (str.equals("+")) {
+        ret += Integer.parseInt(stack.pollFirst());
+      } else if (str.equals("-")) {
+        ret -= Integer.parseInt(stack.pollFirst());
+      }
+    }
+    return ret;
+  }
+}
