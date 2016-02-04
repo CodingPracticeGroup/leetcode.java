@@ -26,3 +26,36 @@ public class Solution {
     return t;
   }
 }
+--------
+public class Solution {
+  public ListNode rotateRight(ListNode head, int k) {
+    int len = 0;
+    for (ListNode ln = head; ln != null; ln = ln.next) {
+      len++;
+    }
+    if (len == 0) {
+      return head;
+    }
+    k %= len;
+    if (k == 0) {
+      return head;
+    }
+
+    ListNode ln = head;
+    for (int i = 1; i < len - k; i++) {
+      ln = ln.next;
+    }
+
+    ListNode tail = ln;
+    ln = ln.next;
+    tail.next = null;
+
+    ListNode n = ln;
+    while (n.next != null) {
+      n = n.next;
+    }
+    n.next = head;
+
+    return ln;
+  }
+}
