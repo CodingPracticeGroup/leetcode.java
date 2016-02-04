@@ -32,3 +32,33 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+------------
+public class Solution {
+  public List<List<Integer>> fourSum(int[] nums, int target) {
+    Set<List<Integer>> ret = new HashSet<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length; i++) {
+      for (int j = i + 1; j < nums.length; j++) {
+        int low = j + 1;
+        int high = nums.length - 1;
+        while (low < high) {
+          if (nums[i] + nums[j] + nums[low] + nums[high] < target) {
+            low++;
+          } else if (nums[i] + nums[j] + nums[low] + nums[high] > target) {
+            high--;
+          } else {
+            List<Integer> list = new ArrayList<>();
+            list.add(nums[i]);
+            list.add(nums[j]);
+            list.add(nums[low]);
+            list.add(nums[high]);
+            ret.add(list);
+            low++;
+            high--;
+          }
+        }
+      }
+    }
+    return new ArrayList<List<Integer>>(ret);
+  }
+}
