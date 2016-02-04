@@ -39,3 +39,44 @@ public class Solution {
     return ret;
   }
 }
+----------------
+public class Solution {
+  private boolean valid(String s) {
+    if (s.length() > 1 && s.charAt(0) == '0') {
+      return false;
+    }
+    if (s.length() > 3 || s.length() <= 0) {
+      return false;
+    }
+    int i = Integer.parseInt(s);
+    if (i < 0 || i > 255) {
+      return false;
+    }
+    return true;
+  }
+
+  public List<String> restoreIpAddresses(String s) {
+    List<String> ret = new ArrayList<>();
+    for (int i = 1; i <= s.length(); i++) {
+      String s1 = s.substring(0, i);
+      if (!valid(s1)) {
+        continue;
+      }
+      for (int j = i + 1; j <= s.length(); j++) {
+        String s2 = s.substring(i, j);
+        if (!valid(s2)) {
+          continue;
+        }
+        for (int k = j + 1; k <= s.length(); k++) {
+          String s3 = s.substring(j, k);
+          String s4 = s.substring(k);
+          if (!valid(s3) || !valid(s4)) {
+            continue;
+          }
+          ret.add(s1 + "." + s2 + "." + s3 + "." + s4);
+        }
+      }
+    }
+    return ret;
+  }
+}
