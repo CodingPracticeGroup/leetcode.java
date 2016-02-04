@@ -43,3 +43,43 @@ public class Solution {
     return false;
   }
 }
+-------------
+public class Solution {
+  int dirs[][] = new int[][] {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+
+  private boolean dfs(char[][] b, int i, int j, String word, int startPos) {
+    if (startPos == word.length() - 1) {
+      if (b[i][j] == word.charAt(startPos)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    if (b[i][j] != word.charAt(startPos)) {
+      return false;
+    }
+    b[i][j] ^= -1;
+    for (int[] dir : dirs) {
+      if (i + dir[0] >= 0 && i + dir[0] < b.length && j + dir[1] >= 0 && j + dir[1] < b[0].length) {
+        if (dfs(b, i + dir[0], j + dir[1], word, startPos + 1)) {
+          return true;
+        }
+      }
+    }
+    b[i][j] ^= -1;
+    return false;
+  }
+
+  public boolean exist(char[][] board, String word) {
+    int m = board.length;
+    int n = board[0].length;
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        if (dfs(board, i, j, word, 0)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+}
