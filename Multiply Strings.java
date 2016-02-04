@@ -23,3 +23,28 @@ public class Solution {
         .get();
   }
 }
+-----------
+public class Solution {
+  public String multiply(String num1, String num2) {
+    int[] t = new int[num1.length() + num2.length() - 1];
+    Arrays.fill(t, 0);
+    for (int i = num1.length() - 1; i >= 0; i--) {
+      for (int j = num2.length() - 1; j >= 0; j--) {
+        t[i + j] += (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+      }
+    }
+    StringBuilder sb = new StringBuilder();
+    int carry = 0;
+    for (int i = t.length - 1; i >= 0; i--) {
+      sb.insert(0, "" + ((carry + t[i]) % 10));
+      carry = (carry + t[i]) / 10;
+    }
+    if (carry > 0) {
+      sb.insert(0, "" + carry);
+    }
+    while (sb.length() > 1 && sb.charAt(0) == '0') {
+      sb.deleteCharAt(0);
+    }
+    return sb.toString();
+  }
+}
