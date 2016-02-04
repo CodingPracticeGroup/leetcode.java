@@ -21,3 +21,33 @@ public class Solution {
     return s.substring(maxi, maxj + 1);
   }
 }
+------------
+public class Solution {
+  private int[] check(String s, int i, int j) {
+    while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
+      i--;
+      j++;
+    }
+    return new int[] {i + 1, j - 1};
+  }
+
+  public String longestPalindrome(String s) {
+    int c1 = 0;
+    int c2 = 0;
+    for (int i = 0; i < s.length(); i++) {
+      int l[] = check(s, i, i);
+      if (c2 - c1 < l[1] - l[0]) {
+        c1 = l[0];
+        c2 = l[1];
+      }
+    }
+    for (int i = 0; i + 1 < s.length(); i++) {
+      int l[] = check(s, i, i + 1);
+      if (c2 - c1 < l[1] - l[0]) {
+        c1 = l[0];
+        c2 = l[1];
+      }
+    }
+    return s.substring(c1, c2 + 1);
+  }
+}
