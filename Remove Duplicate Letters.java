@@ -47,3 +47,33 @@ public class Solution {
     return sb.toString();
   }
 }
+------------------
+public class Solution {
+  public String removeDuplicateLetters(String s) {
+    if (s.equals("")) {
+      return s;
+    }
+    int last[] = new int[26];
+    Arrays.fill(last, -1);
+
+    int min = s.length() - 1; // find min last
+    for (int i = s.length() - 1; i >= 0; i--) {
+      char c = s.charAt(i);
+      if (last[c - 'a'] == -1) {
+        last[c - 'a'] = i;
+        min = Math.min(min, i);
+      }
+    }
+
+    int minIdx = 0; // find min char in [0, min last]
+    for (int i = 0; i <= min; i++) {
+      char c = s.charAt(i);
+      if (s.charAt(minIdx) > c) {
+        minIdx = i;
+      }
+    }
+
+    return s.charAt(minIdx)
+        + removeDuplicateLetters(s.substring(minIdx).replaceAll("" + s.charAt(minIdx), ""));
+  }
+}
