@@ -28,3 +28,17 @@ public class Solution {
         .map(i -> i + 1).sorted().toArray();
   }
 }
+------------
+public class Solution {
+  public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> m = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+      if (m.containsKey(target - nums[i])) {
+        return new int[] {m.get(target - nums[i]) + 1, i + 1};
+      } else {
+        m.put(nums[i], i);
+      }
+    }
+    return null;
+  }
+}
