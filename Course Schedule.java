@@ -34,6 +34,7 @@ public class Solution {
 ----------------
 /*******************
 cannot pass large test
+see Course Schedule II
 *******************/
 public class Solution {
   public boolean canFinish(int numCourses, int[][] prerequisites) {
