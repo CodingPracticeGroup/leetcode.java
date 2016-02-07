@@ -45,3 +45,44 @@ Course Schedule IIpublic class Solution {
       return new int[0];
   }
 }
+--------------------------
+public class Solution {
+  public int[] findOrder(int numCourses, int[][] prerequisites) {
+    int indegree[] = new int[numCourses]; // indegree==0: leaf
+    Arrays.fill(indegree, 0);
+    Map<Integer, Set<Integer>> parents = new HashMap<>();
+    for (int i = 0; i < numCourses; i++) {
+      parents.put(i, new HashSet<Integer>());
+    }
+    for (int[] e : prerequisites) {
+      if (parents.get(e[1]).add(e[0])) { // duplicates
+        indegree[e[0]]++;
+      }
+    }
+
+    int[] ret = new int[numCourses];
+    int idx = 0;
+    Deque<Integer> queue = new ArrayDeque<>(); // bfs: leaf->root
+    queue.addAll(IntStream.range(0, numCourses).filter(x -> indegree[x] == 0).boxed()
+        .collect(Collectors.toSet()));
+    while (!queue.isEmpty()) {
+      int node = queue.poll();
+      ret[idx++] = node; // topo order
+      for (Integer i : parents.get(node)) {
+        indegree[i]--;
+        if (indegree[i] == 0) { // mark
+          queue.offer(i);
+        }
+      }
+    }
+    if (IntStream.range(0, numCourses).filter(x -> indegree[x] == 0).count() != numCourses) { // cycle
+      return new int[] {};
+    }
+    for (int i = 0; i < numCourses; i++) { // islands
+      if (!parents.containsKey(i)) {
+        ret[idx++] = i;
+      }
+    }
+    return ret;
+  }
+}
