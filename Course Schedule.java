@@ -32,38 +32,42 @@ public class Solution {
   }
 }
 ----------------
-/*******************
-cannot pass large test
-see Course Schedule II
-*******************/
 public class Solution {
   public boolean canFinish(int numCourses, int[][] prerequisites) {
-    Map<Integer, Set<Integer>> m = new HashMap<>();
-    for (int[] a : prerequisites) {
-      if (!m.containsKey(a[0])) {
-        m.put(a[0], new HashSet<Integer>());
+    int[] in = new int[numCourses]; // in degree
+    Arrays.fill(in, 0);
+
+    Map<Integer, Set<Integer>> g = new HashMap<>(); // graph
+    for (int i = 0; i < numCourses; i++) {
+      g.put(i, new HashSet<Integer>());
+    }
+    for (int[] e : prerequisites) {
+      if (g.get(e[0]).add(e[1])) { // duplicates
+        in[e[1]]++;
       }
-      m.get(a[0]).add(a[1]);
     }
 
-    while (!m.isEmpty()) {
-      Set<Integer> nodes = m.keySet().stream().filter(i -> {
-        for (Set<Integer> ss : m.values()) {
-          if (ss.contains(i)) {
-            return false;
-          }
+    Deque<Integer> q = new ArrayDeque<>(); // leaf
+    for (int i = 0; i < numCourses; i++) {
+      if (in[i] == 0) {
+        q.offer(i);
+      }
+    }
+    while (!q.isEmpty()) {
+      int node = q.poll(); // cut leaf
+      for (Integer peer : g.get(node)) {
+        in[peer]--;
+        if (in[peer] == 0) {
+          q.offer(peer);
         }
-        return true;
-      }).collect(Collectors.toSet());
-      if (nodes.isEmpty()) {
+      }
+    }
+
+    for (int i = 0; i < numCourses; i++) {
+      if (in[i] > 0) {
         return false;
-      } else {
-        for (Integer h : nodes) {
-          m.remove(h);
-        }
       }
     }
-
     return true;
   }
 }
@@ -98,6 +102,51 @@ public class Solution {
       if (!visited.contains(i)) {
         if (hascycle(numCourses, prerequisites, i, new ArrayDeque<Integer>(), visited)) {
           return false;
+        }
+      }
+    }
+    return true;
+  }
+}
+--------------
+public class Solution {
+  public boolean canFinish(int numCourses, int[][] prerequisites) {
+    Map<Integer, Set<Integer>> g = new HashMap<>(); // 邻接链表，等同于int[][] prerequisites，只读
+    for (int i = 0; i < numCourses; i++) {
+      g.put(i, new HashSet<Integer>());
+    }
+    for (int[] e : prerequisites) {
+      g.get(e[0]).add(e[1]); // duplicates
+    }
+
+    boolean visited[] = new boolean[numCourses]; // mark
+    Arrays.fill(visited, false);
+    for (int i = 0; i < numCourses; i++) { // forest
+      if (visited[i]) {
+        continue;
+      }
+
+      Deque<Integer> path = new ArrayDeque<>(); // stack
+      visited[i] = true; // mark
+      path.push(i); // push
+      while (!path.isEmpty()) {
+        int node = path.peek(); // path
+        boolean pop = true;
+        for (Integer p : g.get(node)) {
+          if (!visited[p]) { // prune
+            visited[p] = true; // mark
+            path.push(p); // push
+            pop = false;
+          } else { // cycle
+            for (Integer j : path) {
+              if (j == p) {
+                return false;
+              }
+            }
+          }
+        }
+        if (pop) { // pop
+          path.pop();
         }
       }
     }
