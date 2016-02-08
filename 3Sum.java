@@ -35,3 +35,28 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+----
+public class Solution {
+  public List<List<Integer>> threeSum(int[] nums) {
+    Arrays.sort(nums);
+    Set<List<Integer>> ret = new HashSet<>();
+    for (int i = 0; i < nums.length; i++) {
+      int low = i + 1;
+      int high = nums.length - 1;
+      while (low < high) {
+        if (nums[i] + nums[low] + nums[high] < 0) {
+          low++;
+        } else if (nums[i] + nums[low] + nums[high] > 0) {
+          high--;
+        } else {
+          List<Integer> l = new ArrayList<>();
+          l.add(nums[i]);
+          l.add(nums[low++]);
+          l.add(nums[high--]);
+          ret.add(l);
+        }
+      }
+    }
+    return new ArrayList<List<Integer>>(ret);
+  }
+}
