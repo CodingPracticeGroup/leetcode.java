@@ -48,3 +48,44 @@ public class NumArray {
 // numArray.sumRange(0, 1);
 // numArray.update(1, 10);
 // numArray.sumRange(1, 2);
+--------------------
+public class NumArray {
+  int[] bit = null; // (Binary Indexed Trees)
+
+  public NumArray(int[] nums) {
+    bit = new int[nums.length + 1]; // start from 1
+    Arrays.fill(bit, 0);
+
+    for (int i = 0; i < nums.length; i++) {
+      update(i, nums[i]);
+    }
+  }
+
+  void update(int i, int val) {
+    int old = sumRange(i, i);
+    int delta = val - old;
+
+    i++; // start from 1
+
+    for (int j = i; j < bit.length; j += Integer.lowestOneBit(j)) {
+      bit[j] += delta;
+    }
+  }
+
+  public int sumRange(int i, int j) { // inclusive
+    i++; // start from 1
+    j++; // start from 1
+
+    int sumi1 = 0;
+    for (int k = i - 1; k > 0; k -= Integer.lowestOneBit(k)) {
+      sumi1 += bit[k];
+    }
+
+    int sumj = 0;
+    for (int k = j; k > 0; k -= Integer.lowestOneBit(k)) {
+      sumj += bit[k];
+    }
+
+    return sumj - sumi1;
+  }
+}
