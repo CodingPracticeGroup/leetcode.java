@@ -63,3 +63,60 @@ public class Solution {
     }
   }
 }
+---------------
+public class Solution {
+  int[][] dirs = new int[][] {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+
+  private void mark1(char[][] board, int i, int j) {
+    Deque<int[]> queue = new ArrayDeque<>();
+    board[i][j] = '$';
+    queue.offer(new int[] {i, j});
+    while (!queue.isEmpty()) {
+      int[] node = queue.poll();
+      for (int[] dir : dirs) {
+        int x = node[0] + dir[0];
+        int y = node[1] + dir[1];
+        if (x >= 0 && x < board.length && y >= 0 && y < board[0].length && board[x][y] == 'O') {
+          board[x][y] = '$';
+          queue.offer(new int[] {x, y});
+        }
+      }
+    }
+  }
+
+  public void solve(char[][] board) {
+    int m = board.length;
+    if (m == 0)
+      return;
+    int n = board[0].length;
+    if (n == 0)
+      return;
+
+    for (int i = 0; i < m; i++) {
+      if (board[i][0] == 'O') {
+        mark1(board, i, 0);
+      }
+      if (board[i][n - 1] == 'O') {
+        mark1(board, i, n - 1);
+      }
+    }
+    for (int j = 0; j < n; j++) {
+      if (board[0][j] == 'O') {
+        mark1(board, 0, j);
+      }
+      if (board[m - 1][j] == 'O') {
+        mark1(board, m - 1, j);
+      }
+    }
+
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        if (board[i][j] == '$') {
+          board[i][j] = 'O';
+        } else {
+          board[i][j] = 'X';
+        }
+      }
+    }
+  }
+}
