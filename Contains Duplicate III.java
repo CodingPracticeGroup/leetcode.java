@@ -26,3 +26,40 @@ public class Solution {
     return false;
   }
 }
+-------------
+public class Solution {
+  public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+    if (nums.length < 2 || k < 1) {
+      return false;
+    }
+
+    TreeMap<Integer, Integer> vc = new TreeMap<>();
+    vc.put(nums[0], 1);
+    for (int i = 1; i < nums.length; i++) {
+      if (i - k - 1 >= 0) {
+        vc.put(nums[i - k - 1], vc.get(nums[i - k - 1]) - 1);
+        if (vc.get(nums[i - k - 1]) == 0) {
+          vc.remove(nums[i - k - 1]);
+        }
+      }
+
+      Integer floor = vc.floorKey(nums[i]);
+      if (floor == null) {
+        floor = vc.firstKey();
+      }
+      Integer ceiling = vc.ceilingKey(nums[i]);
+      if (ceiling == null) {
+        ceiling = vc.lastKey();
+      }
+      if (Math.abs((long) nums[i] - floor) <= t || Math.abs((long) nums[i] - ceiling) <= t) {
+        return true;
+      }
+
+      if (!vc.containsKey(nums[i])) {
+        vc.put(nums[i], 0);
+      }
+      vc.put(nums[i], vc.get(nums[i]) + 1);
+    }
+    return false;
+  }
+}
