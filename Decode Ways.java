@@ -36,3 +36,43 @@ public class Solution {
     return dp[s.length()];
   }
 }
+-----------------------
+public class Solution {
+  public int numDecodings(String s) {
+    if (s.length() == 0) {
+      return 0;
+    }
+
+    int dp[] = new int[s.length()];
+    Arrays.fill(dp, 0);
+
+    int i0 = Integer.parseInt(s.substring(0, 1));
+    if (i0 > 0) {
+      dp[0] = 1;
+    }
+
+    if (s.length() >= 2) {
+      int i1 = Integer.parseInt(s.substring(1, 2));
+      if (i1 > 0) {
+        dp[1] += dp[0];
+      }
+      int i01 = Integer.parseInt(s.substring(0, 2));
+      if (i01 >= 10 && i01 <= 26) {
+        dp[1] += 1;
+      }
+    }
+
+    for (int i = 2; i < s.length(); i++) {
+      int j = Integer.parseInt(s.substring(i, i + 1));
+      if (j > 0) {
+        dp[i] += dp[i - 1];
+      }
+      j = Integer.parseInt(s.substring(i - 1, i + 1));
+      if (j >= 10 && j <= 26) {
+        dp[i] += dp[i - 2];
+      }
+    }
+
+    return dp[s.length() - 1];
+  }
+}
