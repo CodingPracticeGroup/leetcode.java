@@ -63,3 +63,33 @@ public class Solution {
     return false;
   }
 }
+----------------
+public class Solution {
+  private long id(int i, int t) {
+    long d = (long) i - Integer.MIN_VALUE;
+    return d / (t + 1);
+  }
+
+  public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+    if (nums.length < 2 || k < 1 || t < 0) {
+      return false;
+    }
+    Map<Long, Integer> m = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+      if (i - k - 1 >= 0) {
+        long id = id(nums[i - k - 1], t);
+        m.remove(id);
+      }
+
+      long id = id(nums[i], t);
+      if (m.containsKey(id)
+          || (m.containsKey(id + 1) && Math.abs((long) nums[i] - m.get(id + 1)) <= t)
+          || (m.containsKey(id - 1) && Math.abs((long) nums[i] - m.get(id - 1)) <= t)) {
+        return true;
+      }
+
+      m.put(id, nums[i]);
+    }
+    return false;
+  }
+}
