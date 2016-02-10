@@ -81,3 +81,51 @@ public class Solution {
     return ret;
   }
 }
+-------------
+public class Solution {
+  private boolean check(int[] stack, int row) {
+    for (int i = 0; i < row; i++) {
+      if (stack[i] == stack[row]) {
+        return false;
+      }
+      if (stack[i] + i == stack[row] + row) {
+        return false;
+      }
+      if (stack[i] - i == stack[row] - row) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void dfs(List<List<String>> ret, int[] stack, int row) {
+    if (row == stack.length) {
+      List<String> l = new ArrayList<>();
+      for (int i = 0; i < stack.length; i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < stack[i]; j++) {
+          sb.append('.');
+        }
+        sb.append('Q');
+        for (int j = stack[i] + 1; j < stack.length; j++) {
+          sb.append('.');
+        }
+        l.add(sb.toString());
+      }
+      ret.add(l);
+      return;
+    }
+    for (int i = 0; i < stack.length; i++) {
+      stack[row] = i;
+      if (check(stack, row)) {
+        dfs(ret, stack, row + 1);
+      }
+    }
+  }
+
+  public List<List<String>> solveNQueens(int n) {
+    List<List<String>> ret = new ArrayList<>();
+    dfs(ret, new int[n], 0);
+    return ret;
+  }
+}
