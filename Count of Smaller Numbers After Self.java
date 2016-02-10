@@ -43,3 +43,33 @@ public class Solution {
     return ret;
   }
 }
+--------------
+public class Solution {
+  public List<Integer> countSmaller(int[] nums) {
+    LinkedList<Integer> ret = new LinkedList<>();
+    if (nums.length == 0) {
+      return ret;
+    }
+    ret.offerFirst(0);
+    for (int i = nums.length - 2; i >= 0; i--) {
+      // Arrays.sort(nums, i + 1, nums.length); // cannot pass large test
+      int idx = Arrays.binarySearch(nums, i + 1, nums.length, nums[i]);
+      if (idx >= 0) {
+        while (idx - 1 > i && nums[idx] == nums[idx - 1]) {
+          idx--;
+        }
+      } else {
+        idx = -idx - 1;
+      }
+      ret.offerFirst(idx - i - 1);
+
+      idx--;
+      int tmp = nums[i];
+      for (int j = i; j < idx; j++) {
+        nums[j] = nums[j + 1];
+      }
+      nums[idx] = tmp;
+    }
+    return ret;
+  }
+}
