@@ -26,3 +26,20 @@ public class Solution {
     return -1;
   }
 }
+--------------
+public class Solution {
+  public int findDuplicate(int[] nums) {
+    int slow = 0;
+    int fast = 0; // must not in the cycle
+    do {
+      slow = nums[slow];
+      fast = nums[nums[fast]];
+    } while (slow != fast);
+    fast = 0; // move to start point
+    do {
+      slow = nums[slow];
+      fast = nums[fast];
+    } while (slow != fast);
+    return slow; // they are duplicates
+  }
+}
