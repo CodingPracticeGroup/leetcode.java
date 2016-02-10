@@ -14,7 +14,7 @@ public class Solution {
       Arrays.fill(dp_, -1);
     }
     for (int i = 0; i + 1 < nums.length + 2; i++) {
-      dp[i][i + 1] = 0;
+      dp[i][i + 1] = 0; // the first balloon
     }
 
     for (int len = 2; len < nums.length + 2; len++) {
@@ -28,5 +28,33 @@ public class Solution {
     }
 
     return dp[0][nums.length + 1];
+  }
+}
+--------------------
+public class Solution {
+  private int mc(int[] nums, int low, int high, int[][] mem) {
+    if (low > high) {
+      return 0;
+    }
+    if (mem[low][high] >= 0) {
+      return mem[low][high];
+    }
+    int ret = 0;
+    for (int i = low; i <= high; i++) { // the last balloon
+      int left = low - 1 < 0 ? 1 : nums[low - 1];
+      int right = high + 1 >= nums.length ? 1 : nums[high + 1];
+      ret = Math.max(ret,
+          nums[i] * left * right + mc(nums, low, i - 1, mem) + mc(nums, i + 1, high, mem));
+    }
+    mem[low][high] = ret;
+    return ret;
+  }
+
+  public int maxCoins(int[] nums) {
+    int mem[][] = new int[nums.length][nums.length];
+    for (int i = 0; i < nums.length; i++) {
+      Arrays.fill(mem[i], -1);
+    }
+    return mc(nums, 0, nums.length - 1, mem);
   }
 }
