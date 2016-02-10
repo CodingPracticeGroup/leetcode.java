@@ -17,3 +17,28 @@ public class Solution {
         return findMin_range(nums, 0, nums.length);
     }
 }
+-------------------
+public class Solution {
+  private int fm(int[] nums, int low, int high) {
+    if (low == high) {
+      return nums[low];
+    } else if (low > high) {
+      return Integer.MAX_VALUE;
+    }
+    int mid = low + (high - low) / 2;
+    if (nums[low] > nums[mid]) { // pivot here
+      return Math.min(nums[mid], fm(nums, low, mid - 1));
+    } else if (nums[mid] > nums[high]) { // pivot here
+      return Math.min(nums[high], fm(nums, mid, high - 1));
+    } else { // pivot unknown
+      int ret = nums[mid];
+      ret = Math.min(ret, fm(nums, low, mid - 1));
+      ret = Math.min(ret, fm(nums, mid + 1, high));
+      return ret;
+    }
+  }
+
+  public int findMin(int[] nums) {
+    return fm(nums, 0, nums.length - 1);
+  }
+}
