@@ -41,3 +41,38 @@ public class Solution {
     return ret[0];
   }
 }
+-----------------
+public class Solution {
+  private boolean check(int stack[], int row) {
+    for (int i = 0; i < row; i++) {
+      if (stack[i] == stack[row]) {
+        return false;
+      }
+      if (stack[i] + i == stack[row] + row) {
+        return false;
+      }
+      if (stack[i] - i == stack[row] - row) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private int dfs(int stack[], int row) {
+    if (row == stack.length) {
+      return 1;
+    }
+    int ret = 0;
+    for (int i = 0; i < stack.length; i++) {
+      stack[row] = i;
+      if (check(stack, row)) {
+        ret += dfs(stack, row + 1);
+      }
+    }
+    return ret;
+  }
+
+  public int totalNQueens(int n) {
+    return dfs(new int[n], 0);
+  }
+}
