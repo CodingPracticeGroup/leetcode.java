@@ -31,3 +31,36 @@ public class Solution {
     }
   }
 }
+-------------
+public class Solution {
+  public void connect(TreeLinkNode root) {
+    TreeLinkNode currentLevel = root;
+    while (currentLevel != null) {
+      TreeLinkNode nextLevel = null;
+
+      TreeLinkNode levelLast = null;
+      for (TreeLinkNode tln = currentLevel; tln != null; tln = tln.next) {
+        if (tln.left != null) {
+          if (nextLevel == null) {
+            nextLevel = tln.left;
+          }
+          if (levelLast != null) {
+            levelLast.next = tln.left;
+          }
+          levelLast = tln.left;
+        }
+        if (tln.right != null) {
+          if (nextLevel == null) {
+            nextLevel = tln.right;
+          }
+          if (levelLast != null) {
+            levelLast.next = tln.right;
+          }
+          levelLast = tln.right;
+        }
+      }
+
+      currentLevel = nextLevel;
+    }
+  }
+}
