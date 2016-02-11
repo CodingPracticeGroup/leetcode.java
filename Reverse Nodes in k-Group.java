@@ -41,3 +41,31 @@ public class Solution {
     return myHead.next;
   }
 }
+-----------------
+public class Solution {
+  public ListNode reverseKGroup(ListNode head, int k) {
+    int count = 0;
+    for (ListNode p = head; p != null; p = p.next) {
+      count++;
+      if (count >= k) {
+        ListNode r = reverseKGroup(p.next, k);
+
+        ListNode myhead1 = new ListNode(0);
+        myhead1.next = head;
+        ListNode myhead2 = new ListNode(0);
+        while (myhead1.next != p) {
+          ListNode t = myhead1.next;
+          myhead1.next = t.next;
+
+          t.next = myhead2.next;
+          myhead2.next = t;
+        }
+        p.next = myhead2.next;
+
+        head.next = r;
+        return p;
+      }
+    }
+    return head;
+  }
+}
