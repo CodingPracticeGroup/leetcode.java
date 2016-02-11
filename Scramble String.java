@@ -45,3 +45,28 @@ public class Solution {
     return isScramble_dfs(s1, 0, s1.length(), s2, 0, s2.length());
   }
 }
+----------------
+public class Solution {
+  public boolean isScramble(String s1, String s2) {
+    if (!s1.chars().boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .equals(s2.chars().boxed()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))) {
+      return false;
+    } // prune
+    if (s1.equals(s2)) {
+      return true;
+    } // termination
+    for (int len = 1; len <= s1.length() - 1; len++) {
+      if (isScramble(s1.substring(0, len), s2.substring(s2.length() - len, s2.length()))
+          && isScramble(s1.substring(len, s1.length()), s2.substring(0, s1.length() - len))) {
+        return true;
+      } // swap
+      if (isScramble(s1.substring(0, len), s2.substring(0, len))
+          && isScramble(s1.substring(len, s1.length()), s2.substring(len, s1.length()))) {
+        return true;
+      } // keep
+    } // recursion
+    return false;
+  }
+}
