@@ -32,3 +32,28 @@ public class Solution {
     return ret;
   }
 }
+-----------------------
+public class Solution {
+  public RandomListNode copyRandomList(RandomListNode head) {
+    for (RandomListNode p = head; p != null; p = p.next.next) {
+      RandomListNode t = new RandomListNode(p.label);
+      t.next = p.next;
+      p.next = t;
+    } // duplicate
+    for (RandomListNode p = head; p != null; p = p.next.next) {
+      if (p.random != null) {
+        p.next.random = p.random.next;
+      }
+    } // random link
+    RandomListNode myhead = new RandomListNode(0);
+    RandomListNode mytail = myhead;
+    for (RandomListNode p = head; p != null; p = p.next) {
+      RandomListNode t = p.next;
+      p.next = t.next;
+
+      mytail.next = t;
+      mytail = t;
+    }
+    return myhead.next;
+  }
+}
