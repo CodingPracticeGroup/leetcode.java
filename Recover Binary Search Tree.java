@@ -45,3 +45,34 @@ public class Solution {
     rightWrong[0].val = tmp;
   }
 }
+-----------------
+public class Solution {
+  LinkedList<TreeNode> nodes = new LinkedList<>();
+
+  private void in(TreeNode root, LinkedList<TreeNode> inOrderHistory) {
+    if (root != null) {
+      in(root.left, inOrderHistory);
+
+      inOrderHistory.offerLast(root);
+      if (inOrderHistory.size() == 2) {
+        if (inOrderHistory.peekFirst().val > inOrderHistory.peekLast().val) {
+          nodes.addAll(inOrderHistory);
+        }
+        inOrderHistory.pollFirst();
+      }
+
+      in(root.right, inOrderHistory);
+    }
+  }
+
+  private void swap(TreeNode tn1, TreeNode tn2) {
+    int t = tn1.val;
+    tn1.val = tn2.val;
+    tn2.val = t;
+  }
+
+  public void recoverTree(TreeNode root) {
+    in(root, new LinkedList<TreeNode>());
+    swap(nodes.peekFirst(), nodes.peekLast());
+  }
+}
