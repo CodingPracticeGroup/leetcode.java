@@ -67,3 +67,57 @@ public class Solution {
     solveSudoku_(board, 0, 0);
   }
 }
+--------------------
+public class Solution {
+  private boolean check(char[][] board, int i, int j, char c) {
+    for (int k = 0; k < 9; k++) {
+      if (board[i][k] == c) {
+        return false;
+      }
+    }
+
+    for (int k = 0; k < 9; k++) {
+      if (board[k][j] == c) {
+        return false;
+      }
+    }
+
+    i = (i / 3) * 3;
+    j = (j / 3) * 3;
+    for (int p = 0; p < 3; p++) {
+      for (int q = 0; q < 3; q++) {
+        int x = i + p;
+        int y = j + q;
+        if (board[x][y] == c) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  private boolean dfs(char[][] board) {
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (board[i][j] == '.') {
+          for (char k = '1'; k <= '9'; k++) {
+            if (check(board, i, j, k)) {
+              board[i][j] = k;
+              if (dfs(board)) {
+                return true; // termination
+              }
+              board[i][j] = '.';
+            }
+          }
+          return false; // prune
+        }
+      }
+    }
+    return true; // termination
+  }
+
+  public void solveSudoku(char[][] board) {
+    dfs(board);
+  }
+}
