@@ -23,3 +23,26 @@ public class Solution {
     return intervals;
   }
 }
+---------------
+public class Solution {
+  public List<Interval> merge(List<Interval> intervals) {
+    List<Interval> sorted =
+        intervals.stream().sorted((x, y) -> x.start - y.start).collect(Collectors.toList());
+    LinkedList<Interval> ret = new LinkedList<>();
+    if (sorted.size() == 0) {
+      return ret;
+    }
+    Interval current = new Interval(sorted.get(0).start, sorted.get(0).end);
+    for (int i = 1; i < sorted.size(); i++) {
+      Interval interval = sorted.get(i);
+      if (current.end < interval.start) {
+        ret.offerLast(current);
+        current = new Interval(interval.start, interval.end);
+      } else {
+        current.end = Math.max(current.end, interval.end);
+      }
+    }
+    ret.offerLast(current);
+    return ret;
+  }
+}
