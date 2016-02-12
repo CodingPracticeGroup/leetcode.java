@@ -15,3 +15,19 @@ public class Solution {
     return count;
   }
 }
+--------------
+public class Solution {
+  public int jump(int[] nums) {
+    int ret = 0;
+    int whereIAm = 0;
+    for (int canReach = whereIAm + nums[whereIAm]; whereIAm < nums.length - 1; ret++) {
+      int nextCanReach = canReach;
+      for (int i = whereIAm + 1; i <= canReach && i < nums.length; i++) {
+        nextCanReach = Math.max(nextCanReach, nums[i] + i);
+      }
+      whereIAm = canReach;
+      canReach = nextCanReach;
+    }
+    return ret;
+  }
+}
