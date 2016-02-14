@@ -22,3 +22,31 @@ public class Solution {
         .reduce(0, Integer::sum);
   }
 }
+--------------
+public class Solution {
+  public int candy(int[] ratings) {
+    int lr[] = new int[ratings.length];
+    lr[0] = 1;
+    for (int i = 1; i < ratings.length; i++) {
+      if (ratings[i] > ratings[i - 1]) {
+        lr[i] = lr[i - 1] + 1;
+      } else {
+        lr[i] = 1;
+      }
+    }
+    int rl[] = new int[ratings.length];
+    rl[ratings.length - 1] = 1;
+    for (int i = ratings.length - 2; i >= 0; i--) {
+      if (ratings[i] > ratings[i + 1]) {
+        rl[i] = rl[i + 1] + 1;
+      } else {
+        rl[i] = 1;
+      }
+    }
+    int ret = 0;
+    for (int i = 0; i < ratings.length; i++) {
+      ret += Math.max(lr[i], rl[i]);
+    }
+    return ret;
+  }
+}
