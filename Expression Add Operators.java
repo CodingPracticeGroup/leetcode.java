@@ -109,3 +109,43 @@ public class Solution {
     return ret;
   }
 }
+---------------
+public class Solution {
+  private void dfs(String num, long target, int start, String stack, List<String> ret, long total,
+      long last) { // total and last to calc during dfs
+    if (start == num.length()) {
+      if (total == target)
+        ret.add(stack.toString());
+      return;
+    }
+    if (num.charAt(start) == '0') {
+      dfs(num, target, start + 1, stack + "+0", ret, total + 0, 0);
+      dfs(num, target, start + 1, stack + "-0", ret, total + (-0), 0);
+      dfs(num, target, start + 1, stack + "*0", ret, total - last + (last * 0), last * 0);
+    } else {
+      for (int end = start + 1; end <= num.length(); end++) {
+        long n = Long.parseLong(num.substring(start, end));
+        dfs(num, target, end, stack + "+" + n, ret, total + n, n);
+        dfs(num, target, end, stack + "-" + n, ret, total + (-n), -n); // - => +
+        dfs(num, target, end, stack + "*" + n, ret, total - last + (last * n), last * n); // * => +
+      }
+    }
+  }
+
+  public List<String> addOperators(String num, int target) {
+    List<String> ret = new ArrayList<>();
+    if (num.length() == 0) {
+      return ret;
+    }
+    if (num.charAt(0) == '0') {
+      dfs(num, target, 1, "0", ret, 0, 0);
+    } else {
+      for (int len = 1; len <= num.length(); len++) {
+        String s = num.substring(0, len);
+        long n = Long.parseLong(s);
+        dfs(num, target, len, s, ret, n, n);
+      }
+    }
+    return ret;
+  }
+}
