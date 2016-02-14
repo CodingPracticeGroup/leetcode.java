@@ -45,3 +45,59 @@ public class Solution {
     return max;
   }
 }
+----------------
+public class Solution {
+  public int maximalRectangle(char[][] matrix) {
+    int m = matrix.length;
+    if (m == 0)
+      return 0;
+    int n = matrix[0].length;
+    if (n == 0)
+      return 0;
+
+    int height[] = new int[n];
+    Arrays.fill(height, 0);
+    int left[] = new int[n]; // left boundary for height[i], inclusive
+    Arrays.fill(left, 0);
+    int right[] = new int[n]; // right boundary for height[i], inclusive
+    Arrays.fill(right, n - 1);
+
+    int ret = 0;
+
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        if (matrix[i][j] == '1') {
+          height[j] = height[j] + 1;
+        } else {
+          height[j] = 0;
+        }
+      }
+
+      int last = 0;
+      for (int j = 0; j < n; j++) {
+        if (matrix[i][j] == '1') {
+          left[j] = Math.max(left[j], last);
+        } else {
+          last = j + 1;
+          left[j] = 0;
+        }
+      }
+
+      last = n - 1;
+      for (int j = n - 1; j >= 0; j--) {
+        if (matrix[i][j] == '1') {
+          right[j] = Math.min(right[j], last);
+        } else {
+          last = j - 1;
+          right[j] = n - 1;
+        }
+      }
+
+      for (int j = 0; j < n; j++) {
+        ret = Math.max(ret, height[j] * (right[j] - left[j] + 1));
+      }
+    }
+
+    return ret;
+  }
+}
