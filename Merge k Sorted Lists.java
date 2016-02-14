@@ -28,3 +28,26 @@ public class Solution {
     return head.next;
   }
 }
+---------------
+public class Solution {
+  public ListNode mergeKLists(ListNode[] lists) {
+    ListNode myhead = new ListNode(0);
+    ListNode mytail = myhead;
+    PriorityQueue<ListNode> minheap = new PriorityQueue<>((x, y) -> x.val - y.val);
+    // minheap.addAll(Arrays.asList(lists));
+    for (int i = 0; i < lists.length; i++) {
+      if (lists[i] != null) { // cannot add null
+        minheap.offer(lists[i]);
+      }
+    }
+    while (!minheap.isEmpty()) {
+      ListNode ln = minheap.poll();
+      if (ln.next != null) {
+        minheap.offer(ln.next);
+      }
+      mytail.next = ln;
+      mytail = ln;
+    }
+    return myhead.next;
+  }
+}
