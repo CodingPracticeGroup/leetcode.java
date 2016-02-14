@@ -28,3 +28,32 @@ public class Solution {
     return nums.length + 1;
   }
 }
+--------------------
+public class Solution {
+  public int firstMissingPositive(int[] nums) {
+    if (nums.length == 0) {
+      return 1;
+    }
+    boolean len = false;
+    for (int i = 0; i < nums.length; i++) { // i=0 trigger
+      int t = nums[i];
+      while (t > 0 && t < nums.length && t != nums[t]) { // t=nums[t] absorb
+        int tmp = nums[t]; // ji
+        nums[t] = t;
+        t = tmp;
+      }
+      if (t == nums.length) { // corner case
+        len = true;
+      }
+      if (nums[i] != i) { // mark
+        nums[i] = -1;
+      }
+    }
+    for (int i = 1; i < nums.length; i++) {
+      if (nums[i] < 0) {
+        return i;
+      }
+    }
+    return len ? nums.length + 1 : nums.length;
+  }
+}
