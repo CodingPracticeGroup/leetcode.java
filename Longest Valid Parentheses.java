@@ -34,3 +34,74 @@ public class Solution {
     return max;
   }
 }
+------------
+public class Solution {
+  public int longestValidParentheses(String s) {
+    Set<Integer> tabu = new HashSet<>();
+    Deque<Character> stack = new ArrayDeque<>();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      if (c == '(') {
+        stack.push(c);
+      } else { // ')'
+        if (!stack.isEmpty() && stack.peek() == '(') {
+          stack.pop();
+        } else { // invalid
+          tabu.add(i);
+          stack.clear();
+        }
+      }
+    }
+    stack.clear();
+    for (int i = s.length() - 1; i >= 0; i--) {
+      char c = s.charAt(i);
+      if (c == ')') {
+        stack.push(c);
+      } else { // '('
+        if (!stack.isEmpty() && stack.peek() == ')') {
+          stack.pop();
+        } else { // invalid
+          tabu.add(i);
+          stack.clear();
+        }
+      }
+    }
+
+    int ret = 0;
+    int start = 0;
+    for (int i = 0; i < s.length(); i++) {
+      if (tabu.contains(i)) {
+        ret = Math.max(ret, i - start);
+        start = i + 1;
+      }
+    }
+    ret = Math.max(ret, s.length() - start);
+    return ret;
+  }
+}
+-------------
+public class Solution {
+  public int longestValidParentheses(String s) {
+    LinkedList<Integer> tabuStack = new LinkedList<>();
+    for (int i = 0; i < s.length(); i++) {
+      if (s.charAt(i) == '(') {
+        tabuStack.offerLast(i);
+      } else { // ')'
+        if (!tabuStack.isEmpty() && s.charAt(tabuStack.peekLast()) == '(') {
+          tabuStack.pollLast();
+        } else {
+          tabuStack.offerLast(i);
+        }
+      }
+    }
+    int ret = 0;
+    int last = 0;
+    while (!tabuStack.isEmpty()) {
+      int idx = tabuStack.pollFirst();
+      ret = Math.max(ret, idx - last);
+      last = idx + 1;
+    }
+    ret = Math.max(ret, s.length() - last);
+    return ret;
+  }
+}
