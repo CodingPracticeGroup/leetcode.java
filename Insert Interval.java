@@ -35,12 +35,38 @@ public class Solution {
         }
       }
       // merge end
-      while (insert_pos < intervals.size() && newInterval.end >= intervals.get(insert_pos).start) {
+      while (insert_pos < intervals.size() && newInterval.end >= intervals.get(insert_pos).start) { // worst case still O(n), should use double binary search
         newInterval.end = Math.max(newInterval.end, intervals.get(insert_pos).end);
         intervals.remove(insert_pos);
       }
     }
     intervals.add(insert_pos, newInterval);
     return intervals;
+  }
+}
+---------------
+public class Solution {
+  public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+    LinkedList<Interval> ret = new LinkedList<>();
+    for (Interval i : intervals) {
+      if (newInterval != null) {
+        if (i.end < newInterval.start) {
+          ret.offerLast(i);
+        } else if (newInterval.end < i.start) {
+          ret.offerLast(newInterval);
+          newInterval = null;
+          ret.offerLast(i);
+        } else {
+          newInterval.start = Math.min(newInterval.start, i.start);
+          newInterval.end = Math.max(newInterval.end, i.end);
+        }
+      } else {
+        ret.offerLast(i);
+      }
+    }
+    if (newInterval != null) {
+      ret.offerLast(newInterval);
+    }
+    return ret;
   }
 }
