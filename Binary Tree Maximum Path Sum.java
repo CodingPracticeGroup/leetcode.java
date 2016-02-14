@@ -27,3 +27,32 @@ public class Solution {
     return info[1];
   }
 }
+---------------
+public class Solution {
+  private int g_max = Integer.MIN_VALUE;
+
+  private int r(TreeNode root) {
+    if (root == null) {
+      return 0;
+    }
+
+    int left = r(root.left);
+    int right = r(root.right);
+
+    // g_max = Math.max(g_max, root.val);
+    g_max = Math.max(g_max, root.val + left);
+    g_max = Math.max(g_max, root.val + right);
+    g_max = Math.max(g_max, root.val + left + right);
+
+    int ret = Math.max(0, root.val);
+    // int ret = root.val;
+    ret = Math.max(ret, root.val + left);
+    ret = Math.max(ret, root.val + right);
+    return ret;
+  }
+
+  public int maxPathSum(TreeNode root) {
+    r(root);
+    return g_max;
+  }
+}
