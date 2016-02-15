@@ -37,3 +37,46 @@ class MedianFinder {
     }
   }
 }
+---------------------
+public class MedianFinder {
+  Integer tmp = null;
+  PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder()); // max heap
+  PriorityQueue<Integer> large = new PriorityQueue<>(); // default min heap
+
+  // Adds a number into the data structure.
+  public void addNum(int num) {
+    if (tmp == null) {
+      if (small.isEmpty() && large.isEmpty()) {
+        tmp = num;
+      } else {
+        if (num < small.peek()) {
+          tmp = small.poll();
+          small.offer(num);
+        } else if (num > large.peek()) {
+          tmp = large.poll();
+          large.offer(num);
+        } else {
+          tmp = num;
+        }
+      }
+    } else {
+      if (num < tmp) {
+        small.offer(num);
+        large.offer(tmp);
+      } else {
+        small.offer(tmp);
+        large.offer(num);
+      }
+      tmp = null;
+    }
+  }
+
+  // Returns the median of current data stream
+  public double findMedian() {
+    if (tmp != null) {
+      return tmp;
+    } else {
+      return (small.peek() + large.peek()) / 2.0;
+    }
+  }
+}
