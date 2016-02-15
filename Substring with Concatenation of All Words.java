@@ -53,3 +53,35 @@ public class Solution {
     return ret;
   }
 }
+------------
+public class Solution {
+  public List<Integer> findSubstring(String s, String[] words) {
+    List<Integer> ret = new ArrayList<>();
+    int wordLen = words[0].length();
+    int windowLen = wordLen * words.length;
+    Map<String, Long> m = Arrays.stream(words)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    for (int i = 0; i < wordLen && i + windowLen <= s.length(); i++) { // rotation loop starting point
+      Map<String, Long> mm = new HashMap<>();
+      for (int j = 0; j < words.length; j++) {
+        String ss = s.substring(i + j * wordLen, i + j * wordLen + wordLen);
+        mm.put(ss, mm.getOrDefault(ss, 0L) + 1);
+      }
+      if (mm.equals(m)) {
+        ret.add(i);
+      }
+      for (int j = i + wordLen; j + windowLen <= s.length(); j += wordLen) { // rotation loop, re-use mm
+        String ss = s.substring(j - wordLen, j);
+        mm.put(ss, mm.get(ss) - 1);
+        if (mm.get(ss) == 0)
+          mm.remove(ss);
+        ss = s.substring(j + windowLen - wordLen, j + windowLen);
+        mm.put(ss, mm.getOrDefault(ss, 0L) + 1);
+        if (mm.equals(m)) {
+          ret.add(j);
+        }
+      }
+    }
+    return ret;
+  }
+}
