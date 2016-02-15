@@ -68,3 +68,97 @@ public class Solution {
     return ret;
   }
 }
+------------------
+public class Solution {
+  public List<int[]> getSkyline(int[][] buildings) {
+    TreeMap<Integer, Integer> activeHeightCount = new TreeMap<>();
+    TreeMap<Integer, List<Integer>> idxAction = new TreeMap<>();
+    for (int[] b : buildings) {
+      if (!idxAction.containsKey(b[0])) {
+        idxAction.put(b[0], new ArrayList<Integer>());
+      }
+      idxAction.get(b[0]).add(b[2]);
+      if (!idxAction.containsKey(b[1])) {
+        idxAction.put(b[1], new ArrayList<Integer>());
+      }
+      idxAction.get(b[1]).add(-b[2]);
+    }
+    LinkedList<int[]> ret = new LinkedList<>();
+    for (Integer idx : idxAction.keySet()) {
+      List<Integer> actions = idxAction.get(idx);
+      actions.sort((x, y) -> x - y);
+      for (Integer a : actions) {
+        if (a < 0) {
+          activeHeightCount.put(-a, activeHeightCount.get(-a) - 1);
+          if (activeHeightCount.get(-a) == 0) {
+            activeHeightCount.remove(-a);
+          }
+        } else {
+          if (!activeHeightCount.containsKey(a)) {
+            activeHeightCount.put(a, 0);
+          }
+          activeHeightCount.put(a, activeHeightCount.get(a) + 1);
+        }
+      }
+      if (ret.isEmpty()) {
+        if (!activeHeightCount.isEmpty()) {
+          ret.offerLast(new int[] {idx, activeHeightCount.lastKey()});
+        }
+      } else {
+        if (activeHeightCount.isEmpty()) {
+          ret.offerLast(new int[] {idx, 0});
+        } else {
+          if (ret.peekLast()[1] != activeHeightCount.lastKey()) {
+            ret.offerLast(new int[] {idx, activeHeightCount.lastKey()});
+          }
+        }
+      }
+    }
+    return ret;
+  }
+}
+----------------
+public class Solution {
+  public List<int[]> getSkyline(int[][] buildings) {
+    List<int[]> result = new ArrayList<>(); // ret
+    List<int[]> height = new ArrayList<>(); // sort input array
+    for (int[] b : buildings) {
+      height.add(new int[] {b[0], -b[2]}); // start point has negative height value
+      height.add(new int[] {b[1], b[2]}); // end point has normal height value
+    }
+
+    // sort $height, based on the first value, if necessary, use the second to break ties
+    Collections.sort(height, (a, b) -> {
+      if (a[0] != b[0])
+        return a[0] - b[0];
+      return a[1] - b[1];
+    });
+
+    // Use a maxHeap to store possible heights
+    Queue<Integer> pq = new PriorityQueue<>((a, b) -> (b - a));
+
+    // Provide a initial value to make it more consistent
+    pq.offer(0);
+
+    // Before starting, the previous max height is 0;
+    int prev = 0;
+
+    // visit all points in order
+    for (int[] h : height) {
+      if (h[1] < 0) { // a start point, add height
+        pq.offer(-h[1]);
+      } else { // a end point, remove height
+        pq.remove(h[1]);
+      }
+      int cur = pq.peek(); // current max height;
+
+      // compare current max height with previous max height, update result and previous max height
+      // if necessary
+      if (prev != cur) {
+        result.add(new int[] {h[0], cur});
+        prev = cur;
+      }
+    }
+    return result;
+  }
+}
