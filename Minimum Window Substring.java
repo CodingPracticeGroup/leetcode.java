@@ -88,3 +88,38 @@ public class Solution {
     return ret;
   }
 }
+------------
+public class Solution {
+  public String minWindow(String s, String t) {
+    Map<Integer, Long> m = t.chars().boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    String ret = null;
+    int last = 0;
+    for (int i = 0; i < s.length(); i++) {
+      int c = s.charAt(i);
+      if (m.containsKey(c)) {
+        m.put(c, m.get(c) - 1); // offer
+        if (m.get(c) <= 0 && m.values().stream().filter(x -> x > 0).count() == 0) { // find complete window
+          while (last < s.length()
+              && (!m.containsKey((int) s.charAt(last)) || m.get((int) s.charAt(last)) + 1 <= 0)) { // shrink
+            if (m.containsKey((int) s.charAt(last))) {
+              int d = s.charAt(last);
+              m.put(d, m.get(d) + 1); // poll
+            }
+            last++;
+          }
+          if (ret != null) { // compare
+            if ((i + 1) - last < ret.length()) {
+              ret = s.substring(last, i + 1);
+            }
+          } else {
+            ret = s.substring(last, i + 1);
+          }
+        }
+      }
+    }
+    if (ret == null)
+      return "";
+    return ret;
+  }
+}
