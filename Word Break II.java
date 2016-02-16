@@ -39,3 +39,38 @@ public class Solution {
       return new ArrayList<>();
   }
 }
+----------------
+public class Solution {
+  Map<Integer, Set<String>> m = new HashMap<>();
+
+  private Set<String> dfs(String s, Set<String> dict, int startPos) {
+    if (m.containsKey(startPos))
+      return m.get(startPos);
+    Set<String> ret = new HashSet<>();
+    if (startPos == s.length()) {
+      ret.add("");
+      m.put(startPos, ret);
+      return ret;
+    }
+    for (int len = startPos + 1; len <= s.length(); len++) {
+      String w = s.substring(startPos, len);
+      if (dict.contains(w)) {
+        Set<String> r = dfs(s, dict, len);
+        for (String ss : r) {
+          ret.add(w + " " + ss);
+        }
+      }
+    }
+    m.put(startPos, ret);
+    return ret;
+  }
+
+  public List<String> wordBreak(String s, Set<String> wordDict) {
+    Set<String> r = dfs(s, wordDict, 0);
+    List<String> ret = new ArrayList<>();
+    for (String ss : r) {
+      ret.add(ss.trim());
+    }
+    return ret;
+  }
+}
