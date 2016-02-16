@@ -59,3 +59,60 @@ public class Solution {
     return new ArrayList<String>(ret);
   }
 }
+--------------
+public class Solution {
+  Map<Character, Object> root = new HashMap<>(); // one char per link
+
+  private void addWord(String w) {
+    Map<Character, Object> p = root;
+    for (int i = 0; i < w.length(); i++) {
+      p.computeIfAbsent(w.charAt(i), k -> new HashMap<Character, Object>());
+      p = (Map<Character, Object>) p.get(w.charAt(i));
+    }
+    p.computeIfAbsent('$', k -> root);
+  }
+
+  int[][] dirs = new int[][] {{-1, 0}, {+1, 0}, {0, -1}, {0, +1}};
+
+  private void dfs(char[][] board, Map<Character, Object> root, int i, int j, Set<String> ret,
+      StringBuilder path) {
+    char c = board[i][j];
+    if (root.containsKey(c)) {
+      path.append(c);
+      board[i][j] = '#'; // stack
+
+      Map<Character, Object> next = (Map<Character, Object>) root.get(c);
+      if (next.containsKey('$')) { // found
+        ret.add(path.toString());
+      }
+
+      for (int[] dir : dirs) { // explore
+        int x = i + dir[0];
+        int y = j + dir[1];
+        if (x >= 0 && y >= 0 && x < board.length && y < board[0].length && board[x][y] != '#') {
+          dfs(board, next, x, y, ret, path);
+        }
+      }
+
+      board[i][j] = c; // stack
+      path.setLength(path.length() - 1);
+    }
+  }
+
+  public List<String> findWords(char[][] board, String[] words) {
+    for (String w : words) {
+      addWord(w);
+    }
+    Set<String> ret = new HashSet<>();
+    int m = board.length;
+    int n = board[0].length;
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < m; i++) {
+      for (int j = 0; j < n; j++) {
+        sb.setLength(0);
+        dfs(board, root, i, j, ret, sb);
+      }
+    }
+    return new ArrayList<String>(ret);
+  }
+}
