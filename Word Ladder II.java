@@ -82,3 +82,60 @@ public class Solution {
     return ret;
   }
 }
+-------------------------
+public class Solution {
+  public List<List<String>> findLadders(String beginWord, String endWord, Set<String> wordList) {
+    Map<String, Set<String>> parent = new HashMap<>();
+    Set<String> visited = new HashSet<>();
+    Set<String> queue = new HashSet<>();
+
+    int count = 0;
+    parent.put(beginWord, new HashSet<String>());
+    queue.add(beginWord);
+    visited.addAll(queue);
+    while (!queue.isEmpty()) { // bfs level
+      Set<String> next = new HashSet<>();
+      for (String s : queue) {
+        char[] n = s.toCharArray(); // string->char array
+        for (int j = 0; j < n.length; j++) {
+          char old = n[j];
+          for (char c = 'a'; c <= 'z'; c++) {
+            if (c != old) {
+              n[j] = c;
+              String nn = new String(n);
+              if (wordList.contains(nn) && !visited.contains(nn)) {
+                parent.computeIfAbsent(nn, k -> new HashSet<String>()).add(s);
+                next.add(nn);
+              }
+            }
+          }
+          n[j] = old;
+        }
+      }
+      if (next.contains(endWord))
+        break;
+      queue = next;
+      visited.addAll(queue);
+      count++;
+    }
+
+    List<List<String>> ret = new ArrayList<>();
+    if (!parent.containsKey(endWord))
+      return ret;
+    LinkedList<String> one = new LinkedList<>();
+    one.offerFirst(endWord);
+    ret.add(one);
+    for (int i = 0; i <= count; i++) { // link parent
+      List<List<String>> ret2 = new ArrayList<>();
+      for (List<String> l : ret) {
+        for (String w : parent.get(l.get(0))) {
+          LinkedList<String> ll = new LinkedList<>(l);
+          ll.offerFirst(w);
+          ret2.add(ll);
+        }
+      }
+      ret = ret2;
+    }
+    return ret;
+  }
+}
