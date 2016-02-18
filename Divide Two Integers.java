@@ -44,3 +44,31 @@ public class Solution {
     }
   }
 }
+----------------
+public class Solution {
+  public int divide(int dividend, int divisor) {
+    long d1 = Math.abs((long) dividend);
+    long d2 = Math.abs((long) divisor);
+
+    long ret = 0;
+    while (d1 >= d2) {
+      long r = 1;
+      long d2_ = d2;
+      while ((d2_ << 1) < d1) {
+        d2_ = d2_ << 1;
+        r += r;
+      }
+
+      ret += r;
+      d1 -= d2_;
+    }
+
+    if (dividend > 0 && divisor < 0)
+      ret = -ret;
+    if (dividend < 0 && divisor > 0)
+      ret = -ret;
+    if (ret > Integer.MAX_VALUE)
+      return Integer.MAX_VALUE;
+    return (int) ret;
+  }
+}
