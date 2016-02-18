@@ -54,3 +54,60 @@ public class Solution {
     return ret;
   }
 }
+-------------
+public class Solution {
+  private StringBuilder fj(LinkedList<String> line, int maxWidth, int wc) {
+    StringBuilder sb = new StringBuilder(line.pollFirst());
+    if (!line.isEmpty()) {
+      int space1 = (maxWidth - wc) / line.size();
+      int space2 = space1 + 1;
+      int count2 = (maxWidth - wc) - space1 * line.size();
+      int count1 = line.size() - count2;
+      while (!line.isEmpty()) {
+        if (count2 > 0) {
+          for (int i = 0; i < space2; i++) {
+            sb.append(' ');
+          }
+          count2--;
+        } else {
+          for (int i = 0; i < space1; i++) {
+            sb.append(' ');
+          }
+        }
+        sb.append(line.pollFirst());
+      }
+    } else {
+      while (sb.length() < maxWidth) {
+        sb.append(' ');
+      }
+    }
+    return sb;
+  }
+
+  public List<String> fullJustify(String[] words, int maxWidth) {
+    List<String> ret = new ArrayList<>();
+    LinkedList<String> line = new LinkedList<>();
+
+    for (String w : words) {
+      int wc = line.stream().mapToInt(x -> x.length()).sum();
+      if (!line.isEmpty() && !(wc + line.size() + w.length() <= maxWidth)) {
+        StringBuilder sb = fj(line, maxWidth, wc);
+        ret.add(sb.toString());
+        line.clear();
+      }
+      line.offerLast(w);
+    }
+
+    StringBuilder sb = new StringBuilder(line.pollFirst());
+    while (!line.isEmpty()) {
+      sb.append(' ');
+      sb.append(line.pollFirst());
+    }
+    while (sb.length() < maxWidth) {
+      sb.append(' ');
+    }
+    ret.add(sb.toString());
+
+    return ret;
+  }
+}
