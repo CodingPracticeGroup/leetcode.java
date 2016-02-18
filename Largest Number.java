@@ -33,3 +33,35 @@ public class Solution {
       return sb.substring(idx);
   }
 }
+------------
+public class Solution {
+  private int c(String x, String y) {
+    int i = 0;
+    int j = 0;
+    while (i < x.length() && j < y.length()) {
+      if (x.charAt(i) != y.charAt(j)) {
+        return -(x.charAt(i) - y.charAt(j));
+      }
+      i++;
+      j++;
+    }
+    if (i < x.length()) {
+      return c(x.substring(y.length()), y);
+    }
+    if (j < y.length()) {
+      return c(x, y.substring(x.length()));
+    }
+    return 0;
+  }
+
+  public String largestNumber(int[] nums) {
+    StringBuilder ret =
+        new StringBuilder(Arrays.stream(nums).mapToObj(x -> String.valueOf(x)).sorted((x, y) -> {
+          return c(x, y);
+        }).reduce("", (x, y) -> x + y));
+    while (ret.length() > 1 && ret.charAt(0) == '0') {
+      ret.deleteCharAt(0);
+    }
+    return ret.toString();
+  }
+}
