@@ -77,3 +77,37 @@ public class Solution {
     }
   }
 }
+---------------
+public class Solution {
+  private int findKth(int[] nums1, int start1, int[] nums2, int start2, int k) { // starts with 1
+    if (start1 >= nums1.length)
+      return nums2[start2 + k - 1];
+    if (start2 >= nums2.length)
+      return nums1[start1 + k - 1];
+    if (k == 1)
+      return Math.min(nums1[start1], nums2[start2]);
+
+    int amid = Integer.MAX_VALUE;
+    int bmid = Integer.MAX_VALUE;
+    if (start1 + k / 2 - 1 < nums1.length)
+      amid = nums1[start1 + k / 2 - 1];
+    if (start2 + k / 2 - 1 < nums2.length)
+      bmid = nums2[start2 + k / 2 - 1];
+
+    if (amid < bmid) { // remove a head
+      return findKth(nums1, start1 + k / 2, nums2, start2, k - k / 2);
+    } else { // remove b head
+      return findKth(nums1, start1, nums2, start2 + k / 2, k - k / 2);
+    }
+  }
+
+  public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    int i = findKth(nums1, 0, nums2, 0, (nums1.length + nums2.length + 1) / 2);
+    if ((nums1.length + nums2.length) % 2 == 0) {
+      int j = findKth(nums1, 0, nums2, 0, (nums1.length + nums2.length + 2) / 2);
+      return (i * 1.0 + j) / 2;
+    } else {
+      return i;
+    }
+  }
+}
