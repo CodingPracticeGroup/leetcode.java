@@ -50,3 +50,20 @@ public class Solution {
     return false;
   }
 }
+---------------
+public class Solution {
+  public boolean increasingTriplet(int[] nums) {
+    int first = Integer.MAX_VALUE;
+    int second = Integer.MAX_VALUE;
+    for (int i : nums) {
+      if (i <= first) { // i<first<second
+        first = i;
+      } else if (i <= second) { // first<i<second
+        second = i;
+      } else { // second<i
+        return true;
+      }
+    }
+    return false;
+  }
+}
