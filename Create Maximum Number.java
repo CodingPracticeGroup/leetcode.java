@@ -185,3 +185,76 @@ public class Solution {
     return ret;
   }
 }
+-------------
+public class Solution {
+  private int[] pick(int[] nums, int k) {
+    int[] ret = new int[k];
+    int idx = 0;
+    for (int i = 0; i < k; i++) {
+      int rest = k - (i + 1); // how many left to be filled
+      int end = nums.length - rest; // how many should not be touched
+      int maxidx = idx;
+      for (int j = idx + 1; j < end; j++) { // pick one in this range
+        if (nums[j] > nums[maxidx]) {
+          maxidx = j;
+        }
+      }
+      ret[i] = nums[maxidx];
+      idx = maxidx + 1;
+    }
+    return ret;
+  }
+
+  private int[] merge(int[] nums1, int[] nums2) {
+    if (nums1.length == 0)
+      return nums2;
+    if (nums2.length == 0)
+      return nums1;
+    int[] ret = new int[nums1.length + nums2.length];
+    int i = 0;
+    int j = 0;
+    while (i < nums1.length || j < nums2.length) {
+      if (compare(nums1, i, nums2, j) < 0) {
+        ret[i + j] = nums2[j];
+        j++;
+      } else if (compare(nums1, i, nums2, j) > 0) {
+        ret[i + j] = nums1[i];
+        i++;
+      } else { // pick either
+        ret[i + j] = nums2[j];
+        j++;
+      }
+    }
+    return ret;
+  }
+
+  private int compare(int[] nums1, int i, int[] nums2, int j) {
+    while (i < nums1.length && j < nums2.length && nums1[i] == nums2[j]) {
+      i++;
+      j++;
+    }
+    if (i < nums1.length && j < nums2.length) { // pick larger
+      return nums1[i] > nums2[j] ? 1 : -1;
+    } else if (i < nums1.length) { // pick 1
+      return 1;
+    } else if (j < nums2.length) { // pick 2
+      return -1;
+    } else { // either
+      return 1;
+    }
+  }
+
+  public int[] maxNumber(int[] nums1, int[] nums2, int k) {
+    int[] ret = new int[k];
+    Arrays.fill(ret, Integer.MIN_VALUE);
+    for (int i = 0; i <= k; i++) {
+      if (i <= nums1.length && k - i <= nums2.length) {
+        int[] r1 = pick(nums1, i);
+        int[] r2 = pick(nums2, k - i);
+        int[] r3 = merge(r1, r2);
+        ret = compare(ret, 0, r3, 0) > 0 ? ret : r3;
+      }
+    }
+    return ret;
+  }
+}

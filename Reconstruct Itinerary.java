@@ -47,3 +47,27 @@ public class Solution {
     return ret;
   }
 }
+-----------------
+public class Solution {
+  public List<String> findItinerary(String[][] tickets) {
+    Map<String, PriorityQueue<String>> m = new HashMap<>();
+    for (String[] s : tickets) {
+      m.computeIfAbsent(s[0], k -> new PriorityQueue<String>()).offer(s[1]);
+    }
+    LinkedList<String> ret = new LinkedList<>(); // stack
+    ret.offerLast("JFK");
+    while (ret.size() <= tickets.length) {
+      LinkedList<String> tmp = new LinkedList<>(); // cache
+      while (m.get(ret.peekLast()) == null || m.get(ret.peekLast()).size() == 0) {
+        tmp.offerFirst(ret.pollLast());
+      }
+      while (m.get(ret.peekLast()) != null && m.get(ret.peekLast()).size() > 0) { // list or cycle
+        ret.offerLast(m.get(ret.peekLast()).poll());
+      }
+      while (!tmp.isEmpty()) {
+        ret.offerLast(tmp.pollFirst());
+      }
+    }
+    return ret;
+  }
+}

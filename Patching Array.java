@@ -22,3 +22,24 @@ public class Solution {
     return ret;
   }
 }
+----------------
+public class Solution {
+  public int minPatches(int[] nums, int n) {
+    int ret = 0;
+    long reach = 0;
+    for (int i : nums) {
+      while (reach < n && reach + 1 < i) {
+        ret++;
+        reach += reach + 1; // patch
+      }
+      if (reach >= n) // check
+        return ret;
+      reach += i;
+    }
+    while (reach < n) {
+      ret++;
+      reach += reach + 1; // patch
+    }
+    return ret;
+  }
+}

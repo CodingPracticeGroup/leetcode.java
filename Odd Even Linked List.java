@@ -23,3 +23,32 @@ public class Solution {
     return head;
   }
 }
+-----------------
+public class Solution {
+  public ListNode oddEvenList(ListNode head) {
+    if (head == null)
+      return null;
+
+    ListNode myhead = new ListNode(0);
+    ListNode mytail = myhead;
+
+    ListNode p = head;
+    while (p != null && p.next != null) {
+      ListNode n = p.next;
+      p.next = p.next.next; // delete
+
+      n.next = mytail.next; // insert
+      mytail.next = n;
+
+      mytail = mytail.next; // next
+      if (p.next == null) {
+        break;
+      } else {
+        p = p.next;
+      }
+    }
+    p.next = myhead.next;
+
+    return head;
+  }
+}

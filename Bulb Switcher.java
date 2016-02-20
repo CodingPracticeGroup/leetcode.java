@@ -8,3 +8,9 @@ public class Solution {
     return (int) Math.sqrt(n);
   }
 }
+------------------
+public class Solution {
+  public int bulbSwitch(int n) {
+    return (int) Math.sqrt(n);
+  }
+}

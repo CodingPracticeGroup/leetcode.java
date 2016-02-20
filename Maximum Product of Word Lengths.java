@@ -85,3 +85,24 @@ public class Solution {
     return ret;
   }
 }
+---------------
+public class Solution {
+  public int maxProduct(String[] words) {
+    int[] e = new int[words.length];
+    for (int i = 0; i < words.length; i++) {
+      int[] idx = words[i].chars().map(x -> x - 'a').distinct().toArray();
+      for (int j : idx) {
+        e[i] |= 1 << j;
+      }
+    }
+    int ret = 0;
+    for (int i = 0; i < words.length; i++) {
+      for (int j = i + 1; j < words.length; j++) {
+        if ((e[i] & e[j]) == 0) {
+          ret = Math.max(ret, words[i].length() * words[j].length());
+        }
+      }
+    }
+    return ret;
+  }
+}

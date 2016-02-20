@@ -15,3 +15,21 @@ public class Solution {
     return idx == -1; // check
   }
 }
+--------------
+public class Solution {
+  public boolean isValidSerialization(String preorder) {
+    String[] strs = preorder.split(","); // stack
+    int idx = 0;
+    for (int i = 0; i < strs.length; i++) {
+      if (strs[i].equals("#")) { // pop
+        idx--;
+      } else {
+        if (idx < 0) // check
+          return false;
+        strs[idx] = strs[i]; // push
+        idx++;
+      }
+    }
+    return idx == -1;
+  }
+}
