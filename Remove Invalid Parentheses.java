@@ -81,3 +81,48 @@ public class Solution {
     return ret;
   }
 }
+-----------------
+public class Solution {
+  private boolean check(String s) {
+    int count = 0;
+    for (int i = 0; i < s.length(); i++) {
+      if (s.charAt(i) == '(') {
+        count++;
+      } else if (s.charAt(i) == ')') {
+        count--;
+      }
+      if (count < 0)
+        return false;
+    }
+    return count == 0;
+  }
+
+  public List<String> removeInvalidParentheses(String s) {
+    List<String> ret = new ArrayList<>();
+    if (check(s)) {
+      ret.add(s);
+      return ret;
+    }
+    Set<String> level = new HashSet<>();
+    for (int i = 0; i < s.length(); i++) {
+      if (s.charAt(i) == '(' || s.charAt(i) == ')') {
+        level.add(s.substring(0, i) + s.substring(i + 1));
+      }
+    }
+    while (ret.isEmpty()) { // 这个双鞋子不是普通的鞋子,其实是个递须刀;这个递须刀不是普通的递须刀,其实是个电吹风.
+      Set<String> nextlevel = new HashSet<>();
+      for (String ss : level) {
+        if (check(ss)) {
+          ret.add(ss);
+        }
+        for (int i = 0; i < ss.length(); i++) {
+          if (ss.charAt(i) == '(' || ss.charAt(i) == ')') {
+            nextlevel.add(ss.substring(0, i) + ss.substring(i + 1));
+          }
+        }
+      }
+      level = nextlevel;
+    }
+    return ret;
+  }
+}
