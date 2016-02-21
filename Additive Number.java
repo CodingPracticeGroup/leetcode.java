@@ -71,3 +71,32 @@ public class Solution {
     return false;
   }
 }
+-------------------
+public class Solution {
+  private boolean ia(String n, long i, long j) {
+    if (n.equals(""))
+      return true;
+    if (i + j != 0 && n.charAt(0) == '0')
+      return false; // prune '0'
+    String k = String.valueOf(i + j);
+    if (!n.startsWith(k))
+      return false;
+    return ia(n.substring(k.length()), j, i + j);
+  }
+
+  public boolean isAdditiveNumber(String num) {
+    for (int len1 = 1; len1 < num.length(); len1++) {
+      if (!(num.charAt(0) == '0' && len1 - 0 > 1)) { // prune '0'
+        long i = Long.parseLong(num.substring(0, len1));
+        for (int len2 = len1 + 1; len2 < num.length(); len2++) {
+          if (!(num.charAt(len1) == '0' && len2 - len1 > 1)) { // prune '0'
+            long j = Long.parseLong(num.substring(len1, len2));
+            if (ia(num.substring(len2), i, j))
+              return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+}

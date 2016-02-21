@@ -37,3 +37,29 @@ public class Solution {
     return Math.max(aftersell[prices.length], aftercooldown[prices.length]); // 因为cooldown可以停，不必进入buy，buy比cooldown少，所以只考虑sell和cooldown
   }
 }
+-------------------
+public class Solution {
+  public int maxProfit(int[] prices) {
+    if (prices.length == 0)
+      return 0;
+
+    int s1[] = new int[prices.length + 1];
+    int s2[] = new int[prices.length + 1];
+    int s3[] = new int[prices.length + 1];
+    s1[0] = 0;
+    s2[0] = -prices[0];
+    s3[0] = 0;
+
+    for (int i = 0; i < prices.length; i++) {
+      s1[i + 1] = Math.max(s3[i], s1[i]);
+      s2[i + 1] = Math.max(s1[i] - prices[i], s2[i]);
+      s3[i + 1] = s2[i] + prices[i];
+    }
+
+    int ret = 0;
+    ret = Math.max(ret, s1[prices.length]);
+    ret = Math.max(ret, s2[prices.length]);
+    ret = Math.max(ret, s3[prices.length]);
+    return ret;
+  }
+}

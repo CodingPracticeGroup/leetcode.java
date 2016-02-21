@@ -89,3 +89,41 @@ public class NumArray {
     return sumj - sumi1;
   }
 }
+----------------
+public class NumArray {
+
+  int bit[] = null;
+  int n[] = null;
+
+  public NumArray(int[] nums) {
+    bit = new int[nums.length + 1];
+    n = new int[nums.length]; // default 0
+    for (int i = 0; i < nums.length; i++) {
+      update(i, nums[i]);
+    }
+  }
+
+  void update(int i, int val) {
+    int delta = val - n[i];
+    n[i] = val;
+
+    i++;
+    for (int j = i; j < bit.length; j += Integer.lowestOneBit(j)) {
+      bit[j] += delta;
+    }
+  }
+
+  private int sum(int i) {
+    i++;
+
+    int ret = 0;
+    for (int j = i; j > 0; j -= Integer.lowestOneBit(j)) {
+      ret += bit[j];
+    }
+    return ret;
+  }
+
+  public int sumRange(int i, int j) {
+    return sum(j) - sum(i - 1);
+  }
+}
