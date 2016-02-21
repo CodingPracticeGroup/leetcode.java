@@ -49,3 +49,23 @@ public class Solution {
     return dp[n - 1];
   }
 }
+-----------------
+public class Solution {
+  public int nthSuperUglyNumber(int n, int[] primes) {
+    int dp[] = new int[n];
+    dp[0] = 1;
+    int idx[] = new int[primes.length];
+    Arrays.fill(idx, 0);
+    for (int i = 1; i < n; i++) { // construct from base case
+      int u = Integer.MAX_VALUE;
+      for (int j = 0; j < idx.length; j++) {
+        while (primes[j] * dp[idx[j]] <= dp[i - 1]) {
+          idx[j]++;
+        }
+        u = Math.min(u, primes[j] * dp[idx[j]]);
+      }
+      dp[i] = u;
+    }
+    return dp[n - 1];
+  }
+}

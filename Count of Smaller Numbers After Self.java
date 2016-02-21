@@ -73,3 +73,34 @@ public class Solution {
     return ret;
   }
 }
+-----------------------
+public class Solution {
+  private void add(int[] b, int idx, int delta) {
+    idx++;
+    for (int i = idx; i < b.length; i += Integer.lowestOneBit(i)) {
+      b[i] += delta;
+    }
+  }
+
+  private int sum(int[] b, int idx) {
+    idx++;
+    int ret = 0;
+    for (int i = idx; i > 0; i -= Integer.lowestOneBit(i)) {
+      ret += b[i];
+    }
+    return ret;
+  }
+
+  public List<Integer> countSmaller(int[] nums) {
+    int[] d = Arrays.stream(nums).distinct().sorted().toArray(); // logic idx
+    int[] b = new int[d.length + 1];
+    LinkedList<Integer> ret = new LinkedList<>();
+    for (int i = nums.length - 1; i >= 0; i--) {
+      int j = Arrays.binarySearch(d, nums[i]); // always found
+      ret.offerFirst(j - 1 >= 0 ? sum(b, j - 1) : 0);
+      //
+      add(b, j, 1);
+    }
+    return ret;
+  }
+}

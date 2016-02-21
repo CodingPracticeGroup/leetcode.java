@@ -58,3 +58,28 @@ public class Solution {
     return mc(nums, 0, nums.length - 1, mem);
   }
 }
+----------------
+public class Solution {
+  private int mc(int[] nums, int l_idx, int r_idx, int[][] mem) {
+    if (l_idx >= 0 && r_idx >= 0 && l_idx < nums.length && r_idx < nums.length
+        && mem[l_idx][r_idx] > 0)
+      return mem[l_idx][r_idx];
+    int max = 0;
+    for (int i = l_idx; i <= r_idx; i++) {
+      max =
+          Math.max(max,
+              mc(nums, l_idx, i - 1, mem)
+                  + (l_idx - 1 >= 0 ? nums[l_idx - 1] : 1) * nums[i]
+                      * (r_idx + 1 < nums.length ? nums[r_idx + 1] : 1)
+              + mc(nums, i + 1, r_idx, mem));
+    }
+    if (l_idx >= 0 && r_idx >= 0 && l_idx < nums.length && r_idx < nums.length)
+      mem[l_idx][r_idx] = max;
+    return max;
+  }
+
+  public int maxCoins(int[] nums) {
+    int mem[][] = new int[nums.length][nums.length]; // since last, no boundary
+    return mc(nums, 0, nums.length - 1, mem);
+  }
+}

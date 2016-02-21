@@ -77,3 +77,30 @@ public class Solution {
         + removeDuplicateLetters(s.substring(minIdx).replaceAll("" + s.charAt(minIdx), ""));
   }
 }
+----------------------
+public class Solution {
+  public String removeDuplicateLetters(String s) {
+    if (s.length() == 0)
+      return "";
+
+    boolean lastidxnotfound[] = new boolean[26]; // hit last idx
+    Arrays.fill(lastidxnotfound, true);
+    int last = s.length();
+    for (int i = s.length() - 1; i >= 0; i--) {
+      if (lastidxnotfound[s.charAt(i) - 'a']) {
+        lastidxnotfound[s.charAt(i) - 'a'] = false;
+        last = i;
+      }
+    }
+
+    int idx = last; // find smallest before the first last idx
+    for (int i = last; i >= 0; i--) {
+      if (s.charAt(i) <= s.charAt(idx)) {
+        idx = i;
+      }
+    }
+
+    return s.charAt(idx)
+        + removeDuplicateLetters(s.substring(idx + 1).replaceAll("" + s.charAt(idx), ""));
+  }
+}

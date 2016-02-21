@@ -59,3 +59,38 @@ public class Solution {
     return new ArrayList<Integer>(adj.keySet());
   }
 }
+--------------------
+public class Solution {
+  public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+    Map<Integer, Set<Integer>> adj = new HashMap<>();
+    for (int i = 0; i < n; i++) {
+      adj.put(i, new HashSet<Integer>());
+    }
+    Set<Integer> leaf = new HashSet<>(); // 标准的bfs砍枝
+    for (int[] e : edges) {
+      adj.get(e[0]).add(e[1]);
+      adj.get(e[1]).add(e[0]);
+      if (adj.get(e[0]).size() == 1)
+        leaf.add(e[0]);
+      else
+        leaf.remove(e[0]);
+      if (adj.get(e[1]).size() == 1)
+        leaf.add(e[1]);
+      else
+        leaf.remove(e[1]);
+    }
+    while (adj.size() > 2) {
+      Set<Integer> nextLeaf = new HashSet<>();
+      for (Integer l : leaf) {
+        for (Integer p : adj.get(l)) {
+          adj.get(p).remove(l);
+          if (adj.get(p).size() == 1)
+            nextLeaf.add(p);
+        }
+        adj.remove(l);
+      }
+      leaf = nextLeaf;
+    }
+    return new ArrayList<Integer>(adj.keySet());
+  }
+}
