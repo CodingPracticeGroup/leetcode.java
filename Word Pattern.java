@@ -37,3 +37,26 @@ public class Solution {
     return m.values().stream().distinct().count() == m.size();
   }
 }
+----------------
+public class Solution {
+  public boolean wordPattern(String pattern, String str) {
+    String strs[] = str.split(" ");
+    if (strs.length != pattern.length())
+      return false;
+    Map<Character, String> m = new HashMap<>();
+    Set<String> check = new HashSet<>();
+    for (int i = 0; i < pattern.length(); i++) {
+      char c = pattern.charAt(i);
+      if (m.containsKey(c)) {
+        if (!strs[i].equals(m.get(c)))
+          return false;
+      } else {
+        if (check.contains(strs[i]))
+          return false;
+        m.put(c, strs[i]);
+        check.add(strs[i]);
+      }
+    }
+    return true; // default true process, add false check in the last step during programing
+  }
+}
