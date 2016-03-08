@@ -80,3 +80,45 @@ public class MedianFinder {
     }
   }
 }
+-------------------
+class MedianFinder {
+  Queue<Integer> maxheap = new PriorityQueue<>(Collections.reverseOrder());
+  Queue<Integer> minheap = new PriorityQueue<>();
+  Integer temp = null;
+
+  // Adds a number into the data structure.
+  public void addNum(int num) {
+    if (temp != null) {
+      if (num < temp) {
+        maxheap.offer(num);
+        minheap.offer(temp);
+      } else {
+        maxheap.offer(temp);
+        minheap.offer(num);
+      }
+      temp = null;
+      return;
+    }
+    if (maxheap.isEmpty() && minheap.isEmpty()) {
+      temp = num;
+      return;
+    }
+    if (num < maxheap.peek()) {
+      temp = maxheap.poll();
+      maxheap.offer(num);
+    } else if (num > minheap.peek()) {
+      temp = minheap.poll();
+      minheap.offer(num);
+    } else {
+      temp = num;
+    }
+  }
+
+  // Returns the median of current data stream
+  public double findMedian() {
+    if (temp != null) {
+      return temp;
+    }
+    return (minheap.peek() + maxheap.peek()) / 2.0;
+  }
+}
