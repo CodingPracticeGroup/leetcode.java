@@ -102,3 +102,59 @@ public class Codec {
     return ret;
   }
 }
+-----------------------
+public class Codec {
+  // leftLen,left,root,rightLen,right
+  // 网络包也是这样，一个包头，后面接内容，这里一个strlen，后面接str
+
+  // Encodes a tree to a single string.
+  public String serialize(TreeNode root) {
+    StringBuilder sb = new StringBuilder();
+    if (root == null) {
+      return sb.toString();
+    }
+    String left = serialize(root.left);
+    String right = serialize(root.right);
+    sb.append(left.length());
+    sb.append(",");
+    sb.append(left);
+    sb.append(",");
+    sb.append(root.val);
+    sb.append(",");
+    sb.append(right.length());
+    sb.append(",");
+    sb.append(right);
+    return sb.toString();
+  }
+
+  // Decodes your encoded data to tree.
+  public TreeNode deserialize(String data) {
+    if (data.equals(""))
+      return null;
+    int lastidx = 0;
+
+    int nextidx = data.indexOf(",", lastidx);
+    int leftLen = Integer.parseInt(data.substring(lastidx, nextidx));
+    lastidx = nextidx + 1;
+
+    nextidx = lastidx + leftLen;
+    String left = data.substring(lastidx, nextidx);
+    lastidx = nextidx + 1;
+
+    nextidx = data.indexOf(",", lastidx);
+    int val = Integer.parseInt(data.substring(lastidx, nextidx));
+    lastidx = nextidx + 1;
+
+    nextidx = data.indexOf(",", lastidx);
+    int rightLen = Integer.parseInt(data.substring(lastidx, nextidx));
+    lastidx = nextidx + 1;
+
+    nextidx = lastidx + rightLen;
+    String right = data.substring(lastidx, nextidx);
+
+    TreeNode ret = new TreeNode(val);
+    ret.left = deserialize(left);
+    ret.right = deserialize(right);
+    return ret;
+  }
+}
