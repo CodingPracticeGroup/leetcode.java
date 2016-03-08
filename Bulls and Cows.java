@@ -82,3 +82,26 @@ public class Solution {
     return A.size() + "A" + cow + "B";
   }
 }
+-----------------
+public class Solution {
+  public String getHint(String secret, String guess) {
+    Map<Integer, Long> ss = secret.chars().map(x -> x - '0').boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    Map<Integer, Long> gg = guess.chars().map(x -> x - '0').boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    int cows = 0;
+    for (int i = 0; i <= 9; i++) {
+      if (ss.containsKey(i) && gg.containsKey(i)) {
+        cows += Math.min(ss.get(i), gg.get(i));
+      }
+    }
+    int bull = 0;
+    for (int i = 0; i < secret.length(); i++) {
+      if (secret.charAt(i) == guess.charAt(i)) {
+        cows--;
+        bull++;
+      }
+    }
+    return "" + bull + "A" + cows + "B";
+  }
+}
