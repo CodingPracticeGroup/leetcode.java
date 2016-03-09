@@ -44,3 +44,37 @@ public class Solution {
     return new ArrayList<List<Integer>>(p(nums, 0, nums.length));
   }
 }
+--------------
+public class Solution {
+  void swap(int[] nums, int i, int j) {
+    int tmp = nums[i];
+    nums[i] = nums[j];
+    nums[j] = tmp;
+  }
+
+  List<List<Integer>> p(int[] nums, int startPos) {
+    List<List<Integer>> ret = new ArrayList<>(); // return
+
+    if (startPos == nums.length) { // termination
+      List<Integer> l = new ArrayList<>(); // termination item
+      ret.add(l);
+      return ret;
+    }
+
+    for (int i = startPos; i < nums.length; i++) { // branch
+      swap(nums, startPos, i); // freeze [0-startPos], the rest are candidate pool
+      List<List<Integer>> r = p(nums, startPos + 1); // dfs recursion children
+      for (List<Integer> l : r) { // iteration children result
+        l.add(0, nums[startPos]); // construct
+        ret.add(l); // add to current node result set
+      }
+      swap(nums, startPos, i); // restore
+    }
+
+    return ret; // default termination
+  }
+
+  public List<List<Integer>> permute(int[] nums) {
+    return p(nums, 0);
+  }
+}

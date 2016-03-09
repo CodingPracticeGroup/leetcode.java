@@ -65,3 +65,33 @@ public class Solution {
     return new ArrayList<List<Integer>>(c(candidates, target, 0));
   }
 }
+--------------
+public class Solution {
+  List<List<Integer>> c(int[] candidates, int startPos, int target) {
+    List<List<Integer>> ret = new ArrayList<>(); // return
+
+    if (target == 0) { // termination item
+      List<Integer> l = new ArrayList<>();
+      ret.add(l);
+      return ret;
+    }
+    if (startPos == candidates.length) { // termination only
+      return ret;
+    }
+
+    for (int i = startPos; i < candidates.length && candidates[i] <= target; i++) { // branch and prune
+      List<List<Integer>> r = c(candidates, i, target - candidates[i]); // cut head recursion
+      for (List<Integer> l : r) { // iterate children result
+        l.add(0, candidates[i]); // construct
+        ret.add(l); // add to current node
+      }
+    }
+
+    return ret;
+  }
+
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    candidates = Arrays.stream(candidates).sorted().distinct().toArray();
+    return c(candidates, 0, target);
+  }
+}

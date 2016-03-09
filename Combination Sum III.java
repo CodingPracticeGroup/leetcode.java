@@ -50,3 +50,28 @@ public class Solution {
         return c (k, n ,1);
     }
 }
+----------------------
+public class Solution {
+    List<List<Integer>> c(int k, int startPos, int n) {
+        List<List<Integer>> ret = new ArrayList<>(); // return
+        
+        if (n==0 && k==0) { // termination 
+            List<Integer> l = new ArrayList<>(); // termination item
+            ret.add(l);
+            return ret;
+        }
+
+        for (int i=startPos; i<=9 && i<=n; i++) { // explore & prune
+            List<List<Integer>> r = c(k-1, i+1, n-i); // dfs recursion
+            for (List<Integer> l : r) { // iteration children result
+                l.add(0, i); // construct
+                ret.add(l); // add to current node result set
+            }
+        }
+        
+        return ret; // default termination result
+    }
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        return c(k, 1, n);
+    }
+}

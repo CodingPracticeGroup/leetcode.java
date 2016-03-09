@@ -60,3 +60,41 @@ public class Solution {
     return new ArrayList<List<Integer>>(p(m));
   }
 }
+--------------------------------
+public class Solution {
+  void swap(int[] nums, int i, int j) {
+    int t = nums[i];
+    nums[i] = nums[j];
+    nums[j] = t;
+  }
+
+  Set<List<Integer>> p(int[] nums, int startPos) {
+    Set<List<Integer>> ret = new HashSet<>(); // return
+
+    if (startPos == nums.length) { // termination
+      List<Integer> l = new ArrayList<>(); // item
+      ret.add(l);
+      return ret;
+    }
+
+    Set<Integer> tabu = new HashSet<>();
+    for (int i = startPos; i < nums.length; i++) { // branch
+      swap(nums, startPos, i); // freeze [0-startPos], the rest are candidates
+      if (!tabu.contains(nums[startPos])) { // prune
+        tabu.add(nums[startPos]);
+        Set<List<Integer>> r = p(nums, startPos + 1); // dfs recursion children
+        for (List<Integer> l : r) { // iterate children
+          l.add(0, nums[startPos]); // construct
+          ret.add(l); // add to current node
+        }
+      }
+      swap(nums, startPos, i); // restore for next branch
+    }
+
+    return ret; // default termination
+  }
+
+  public List<List<Integer>> permuteUnique(int[] nums) {
+    return new ArrayList<List<Integer>>(p(nums, 0));
+  }
+}
