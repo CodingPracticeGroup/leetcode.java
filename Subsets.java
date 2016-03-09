@@ -53,3 +53,36 @@ public class Solution {
     return new ArrayList<List<Integer>>(s(nums, 0));
   }
 }
+--------------------
+public class Solution {
+  // startPos/head: only process the head of the rest/current list
+  List<List<Integer>> s(int[] nums, int startPos) {
+    List<List<Integer>> ret = new ArrayList<>(); // return
+
+    if (startPos == nums.length) { // termination
+      List<Integer> l = new ArrayList<>(); // termination item
+      ret.add(l);
+      return ret;
+    }
+
+    // the recursion does not have branches
+    // because the input parameters are too simple to generate variations
+    List<List<Integer>> r = s(nums, startPos + 1);
+
+    // two cases to construct the result or process the current position
+    for (List<Integer> l : r) { // explore case 1: pick
+      List<Integer> l2 = new ArrayList<>(l);
+      l2.add(0, nums[startPos]);
+      ret.add(l2);
+    }
+    ret.addAll(r); // explore case 2: not pick
+
+    return ret;
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    Arrays.sort(nums);
+    // sorted distinct list and 0/1 for each item, thus no duplicates
+    return s(nums, 0);
+  }
+}
