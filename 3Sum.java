@@ -60,3 +60,30 @@ public class Solution {
     return new ArrayList<List<Integer>>(ret);
   }
 }
+--------------
+public class Solution {
+  public List<List<Integer>> threeSum(int[] nums) {
+    Set<List<Integer>> ret = new HashSet<>();
+    Arrays.sort(nums);
+    for (int i = 0; i < nums.length; i++) {
+      int j = i + 1;
+      int k = nums.length - 1;
+      while (j < k) {
+        if (nums[i] + nums[j] + nums[k] < 0) {
+          j++;
+        } else if (nums[i] + nums[j] + nums[k] > 0) {
+          k--;
+        } else {
+          List<Integer> l = new ArrayList<>();
+          l.add(nums[i]);
+          l.add(nums[j]);
+          l.add(nums[k]);
+          ret.add(l);
+          j++;
+          k--;
+        }
+      }
+    }
+    return new ArrayList<List<Integer>>(ret);
+  }
+}
