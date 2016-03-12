@@ -140,3 +140,79 @@ public class LRUCache {
     }
   }
 }
+-------------
+public class LRUCache {
+  class node {
+    int key;
+    int val;
+    node prev;
+    node next;
+  }
+
+  int capacity;
+  node head = new node();
+  node toremove = head;
+  Map<Integer, node> m = new HashMap<>();
+
+  public LRUCache(int capacity) {
+    this.capacity = capacity;
+  }
+
+  void move2head(node n) {
+    if (n == toremove) {
+      if (m.size() > 1) {
+        toremove = n.prev;
+      }
+    }
+
+    n.prev.next = n.next;
+    if (n.next != null) {
+      n.next.prev = n.prev;
+    }
+
+    n.prev = head;
+    n.next = head.next;
+
+    n.prev.next = n;
+    if (n.next != null) {
+      n.next.prev = n;
+    }
+  }
+
+  public int get(int key) {
+    int ret = -1;
+    if (m.containsKey(key)) {
+      ret = m.get(key).val;
+      move2head(m.get(key));
+    }
+    return ret;
+  }
+
+  public void set(int key, int value) {
+    if (m.containsKey(key)) {
+      m.get(key).val = value;
+      move2head(m.get(key));
+    } else {
+      node n = new node();
+      n.key = key;
+      n.val = value;
+      n.prev = head;
+      n.next = head.next;
+      n.prev.next = n;
+      if (n.next != null) {
+        n.next.prev = n;
+      }
+
+      m.put(key, n);
+      if (m.size() == 1) {
+        toremove = n;
+      }
+
+      if (m.size() > capacity) {
+        m.remove(toremove.key);
+        toremove = toremove.prev;
+        toremove.next = null;
+      }
+    }
+  }
+}
