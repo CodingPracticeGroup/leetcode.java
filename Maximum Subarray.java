@@ -29,3 +29,18 @@ public class Solution {
     return ret;
   }
 }
+-------------------
+public class Solution {
+  public int maxSubArray(int[] nums) {
+    int ret = Integer.MIN_VALUE;
+    int sum = 0;
+    for (int i = 0; i < nums.length; i++) {
+      sum += nums[i];
+      ret = Math.max(ret, sum);
+      if (sum < 0) { // remove the [0, i] impact on the future items
+        sum = 0;
+      }
+    }
+    return ret;
+  }
+}
