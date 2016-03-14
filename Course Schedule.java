@@ -153,3 +153,30 @@ public class Solution {
     return true;
   }
 }
+------------------
+public class Solution {
+  public boolean canFinish(int numCourses, int[][] prerequisites) {
+    int[] inDegree = new int[numCourses]; // 入度为0的就是叶子；这个数组才是关键，因为adj是单向的，被这个数组一卡，就能截出叶子
+    Map<Integer, Set<Integer>> adj = new HashMap<>();
+    for (int[] e : prerequisites) {
+      if (adj.computeIfAbsent(e[0], x -> new HashSet<Integer>()).add(e[1])) { // 去重复
+        inDegree[e[1]]++;
+      }
+    }
+    LinkedList<Integer> leaf = new LinkedList<>(IntStream.range(0, numCourses)
+        .filter(x -> inDegree[x] == 0).boxed().collect(Collectors.toList()));
+    while (!leaf.isEmpty()) {
+      int i = leaf.poll();
+      if (adj.containsKey(i)) { // 因为adj不一定包含所有的点，所以要判断一下；或者前面adj做成包含所有点的，这里就不用判断
+        for (Integer peer : adj.get(i)) {
+          inDegree[peer]--;
+          if (inDegree[peer] == 0) { // 找下一个叶子
+            leaf.offer(peer);
+          }
+        }
+        adj.remove(i); // 去掉叶子
+      }
+    }
+    return adj.isEmpty();
+  }
+}

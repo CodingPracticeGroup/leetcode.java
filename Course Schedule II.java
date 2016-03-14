@@ -86,3 +86,45 @@ public class Solution {
     return ret;
   }
 }
+--------------------------
+public class Solution {
+  public int[] findOrder(int numCourses, int[][] prerequisites) {
+    int[] ret = new int[numCourses];
+    int idx = numCourses - 1;
+
+    int inDegree[] = new int[numCourses];
+    Map<Integer, Set<Integer>> adj = new HashMap<>();
+    for (int[] e : prerequisites) {
+      if (adj.computeIfAbsent(e[0], x -> new HashSet<Integer>()).add(e[1])) {
+        inDegree[e[1]]++;
+      }
+    }
+
+    Set<Integer> islands = IntStream.range(0, numCourses).boxed().collect(Collectors.toSet());
+    LinkedList<Integer> leaf = new LinkedList<>(IntStream.range(0, numCourses)
+        .filter(x -> inDegree[x] == 0).boxed().collect(Collectors.toList()));
+    while (!leaf.isEmpty()) {
+      int node = leaf.poll();
+      ret[idx--] = node; // 写结果
+      islands.remove(node); // 找孤岛
+      if (adj.containsKey(node)) {
+        for (Integer peer : adj.get(node)) { // 找更多叶子
+          inDegree[peer]--;
+          if (inDegree[peer] == 0) {
+            leaf.offer(peer);
+          }
+        }
+        adj.remove(node); // 剪掉叶子
+      }
+    }
+
+    if (adj.isEmpty()) { // 有环
+      for (Integer i : islands) {
+        ret[idx--] = i;
+      }
+      return ret;
+    } else {
+      return new int[0];
+    }
+  }
+}
