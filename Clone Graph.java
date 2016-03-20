@@ -43,3 +43,25 @@ public class Solution {
     return visited.get(node);
   }
 }
+--------------------------
+public class Solution {
+  public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+    if (node == null)
+      return null;
+    Deque<UndirectedGraphNode> q = new ArrayDeque<>();
+    Map<UndirectedGraphNode, UndirectedGraphNode> visited = new HashMap<>();
+    q.offer(node);
+    visited.put(node, new UndirectedGraphNode(node.label)); // create when offer
+    while (!q.isEmpty()) {
+      UndirectedGraphNode n = q.poll();
+      for (UndirectedGraphNode u : n.neighbors) {
+        if (!visited.containsKey(u)) {
+          q.offer(u);
+          visited.put(u, new UndirectedGraphNode(u.label)); // create when offer
+        }
+        visited.get(n).neighbors.add(visited.get(u)); // link when poll
+      }
+    }
+    return visited.get(node);
+  }
+}
