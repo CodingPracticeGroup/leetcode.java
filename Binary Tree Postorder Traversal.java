@@ -60,3 +60,22 @@ public class Solution {
     return ret;
   }
 }
+-------------------
+public class Solution {
+  public List<Integer> postorderTraversal(TreeNode root) {
+    LinkedList<Integer> ret = new LinkedList<>();
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    for (TreeNode tn = root; tn != null; tn = tn.right) {
+      stack.push(tn);
+      ret.offerFirst(tn.val);
+    }
+    while (!stack.isEmpty()) {
+      TreeNode tn = stack.pop();
+      for (TreeNode tn2 = tn.left; tn2 != null; tn2 = tn2.right) {
+        stack.push(tn2);
+        ret.offerFirst(tn2.val);
+      }
+    }
+    return ret;
+  }
+}

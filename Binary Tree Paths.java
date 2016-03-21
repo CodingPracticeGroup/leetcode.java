@@ -39,7 +39,7 @@ public class Solution {
     }
     if (root.left != null) {
       List<String> left = binaryTreePaths(root.left);
-      for (String s : left) {
+      for (String s : left) { // process after pop，构造法
         ret.add(root.val + "->" + s);
       }
     }
@@ -49,6 +49,31 @@ public class Solution {
         ret.add(root.val + "->" + s);
       }
     }
+    return ret;
+  }
+}
+-----------------
+public class Solution {
+  void btp(TreeNode root, LinkedList<TreeNode> stack, List<String> ret) {
+    if (root != null) {
+      stack.offerLast(root);
+      if (root.left == null && root.right == null) {
+        StringBuilder sb = new StringBuilder();
+        for (TreeNode tn : stack) {
+          sb.append(tn.val + "->");
+        }
+        sb.setLength(sb.length() - 2);
+        ret.add(sb.toString());
+      }
+      btp(root.left, stack, ret);
+      btp(root.right, stack, ret);
+      stack.pollLast();
+    }
+  }
+
+  public List<String> binaryTreePaths(TreeNode root) {
+    List<String> ret = new ArrayList<>();
+    btp(root, new LinkedList<TreeNode>(), ret);
     return ret;
   }
 }

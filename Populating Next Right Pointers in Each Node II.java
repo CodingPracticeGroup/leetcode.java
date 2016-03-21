@@ -64,3 +64,34 @@ public class Solution {
     }
   }
 }
+------------------
+public class Solution {
+  public void connect(TreeLinkNode root) {
+    TreeLinkNode tln1 = null;
+    for (TreeLinkNode tln = root; tln != null; tln = tln1) {
+      tln1 = null;
+
+      TreeLinkNode lastInsideLevel = null;
+      for (TreeLinkNode tln2 = tln; tln2 != null; tln2 = tln2.next) {
+        if (tln2.left != null) {
+          if (tln1 == null) {
+            tln1 = tln2.left;
+          }
+          if (lastInsideLevel != null) {
+            lastInsideLevel.next = tln2.left;
+          }
+          lastInsideLevel = tln2.left;
+        }
+        if (tln2.right != null) {
+          if (tln1 == null) {
+            tln1 = tln2.right;
+          }
+          if (lastInsideLevel != null) {
+            lastInsideLevel.next = tln2.right;
+          }
+          lastInsideLevel = tln2.right;
+        }
+      }
+    }
+  }
+}

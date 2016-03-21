@@ -24,3 +24,29 @@ public class Solution {
     return ret;
   }
 }
+------------------
+public class Solution {
+  public List<List<Integer>> levelOrderBottom(TreeNode root) {
+    LinkedList<List<Integer>> ret = new LinkedList<>();
+    if (root == null)
+      return ret;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+      List<Integer> list = new ArrayList<>();
+      int count = queue.size();
+      for (int i = 0; i < count; i++) {
+        TreeNode tn = queue.poll();
+        list.add(tn.val);
+        if (tn.left != null) {
+          queue.offer(tn.left);
+        }
+        if (tn.right != null) {
+          queue.offer(tn.right);
+        }
+      }
+      ret.offerFirst(list);
+    }
+    return ret;
+  }
+}

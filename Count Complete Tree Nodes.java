@@ -54,3 +54,31 @@ public class Solution {
     return cn(root, -1, -1);
   }
 }
+--------------
+public class Solution {
+  int cn(TreeNode root, int left, int right) { // left, right from parent, is not the key
+    if (root == null)
+      return 0;
+    if (left < 0) {
+      left = 0;
+      for (TreeNode tn = root; tn != null; tn = tn.left) {
+        left++;
+      }
+    }
+    if (right < 0) {
+      right = 0;
+      for (TreeNode tn = root; tn != null; tn = tn.right) {
+        right++;
+      }
+    }
+    if (left == right) {
+      return (1 << left) - 1; // key
+    } else {
+      return 1 + cn(root.left, left - 1, -1) + cn(root.right, -1, right - 1);
+    }
+  }
+
+  public int countNodes(TreeNode root) {
+    return cn(root, -1, -1);
+  }
+}

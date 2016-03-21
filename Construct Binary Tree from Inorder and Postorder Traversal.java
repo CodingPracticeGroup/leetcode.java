@@ -45,3 +45,24 @@ public class Solution {
     return b(inorder, 0, inorder.length, postorder, 0, postorder.length);
   }
 }
+--------------------------
+public class Solution {
+  TreeNode bt(int[] inorder, int instart, int inend, int[] postorder, int poststart, int postend) {
+    if (instart == inend)
+      return null; // poststart==postend
+    int inorderrootidx = instart;
+    while (inorder[inorderrootidx] != postorder[postend - 1]) {
+      inorderrootidx++;
+    }
+    TreeNode ret = new TreeNode(inorder[inorderrootidx]);
+    ret.left = bt(inorder, instart, inorderrootidx, postorder, poststart,
+        poststart + (inorderrootidx - instart));
+    ret.right = bt(inorder, inorderrootidx + 1, inend, postorder,
+        postend - 1 - (inend - inorderrootidx - 1), postend - 1);
+    return ret;
+  }
+
+  public TreeNode buildTree(int[] inorder, int[] postorder) {
+    return bt(inorder, 0, inorder.length, postorder, 0, postorder.length);
+  }
+}

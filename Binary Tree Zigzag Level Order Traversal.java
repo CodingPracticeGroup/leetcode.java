@@ -62,3 +62,35 @@ public class Solution {
     return ret;
   }
 }
+-------------------
+public class Solution {
+  public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    List<List<Integer>> ret = new ArrayList<>();
+    if (root == null)
+      return ret;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    boolean order = true;
+    while (!queue.isEmpty()) {
+      LinkedList<Integer> list = new LinkedList<>();
+      int count = queue.size();
+      for (int i = 0; i < count; i++) {
+        TreeNode tn = queue.poll();
+        if (order) {
+          list.offerLast(tn.val);
+        } else {
+          list.offerFirst(tn.val);
+        }
+        if (tn.left != null) {
+          queue.offer(tn.left);
+        }
+        if (tn.right != null) {
+          queue.offer(tn.right);
+        }
+      }
+      order = !order;
+      ret.add(list);
+    }
+    return ret;
+  }
+}

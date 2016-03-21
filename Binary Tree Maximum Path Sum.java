@@ -56,3 +56,21 @@ public class Solution {
     return g_max;
   }
 }
+-------------
+public class Solution {
+  int max = Integer.MIN_VALUE;
+
+  int mps(TreeNode root) {
+    if (root == null)
+      return 0;
+    int left = mps(root.left);
+    int right = mps(root.right);
+    max = Math.max(max, root.val + left + right);
+    return Math.max(0, Math.max(left, right) + root.val);
+  }
+
+  public int maxPathSum(TreeNode root) {
+    mps(root);
+    return max;
+  }
+}

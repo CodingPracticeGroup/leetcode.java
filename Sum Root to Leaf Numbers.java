@@ -60,3 +60,32 @@ public class Solution {
     return ret[0];
   }
 }
+--------------
+public class Solution {
+  void sn(TreeNode root, int[] ret, LinkedList<TreeNode> stack) {
+    stack.offerLast(root);
+    if (root.left == null && root.right == null) {
+      StringBuilder sb = new StringBuilder();
+      for (TreeNode tn : stack) {
+        sb.append(tn.val);
+      }
+      ret[0] += Integer.valueOf(sb.toString());
+    } else {
+      if (root.left != null) {
+        sn(root.left, ret, stack);
+      }
+      if (root.right != null) {
+        sn(root.right, ret, stack);
+      }
+    }
+    stack.pollLast();
+  }
+
+  public int sumNumbers(TreeNode root) {
+    int ret[] = new int[1];
+    if (root != null) {
+      sn(root, ret, new LinkedList<TreeNode>());
+    }
+    return ret[0];
+  }
+}

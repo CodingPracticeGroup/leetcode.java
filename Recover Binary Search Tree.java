@@ -49,7 +49,7 @@ public class Solution {
 public class Solution {
   LinkedList<TreeNode> nodes = new LinkedList<>();
 
-  private void in(TreeNode root, LinkedList<TreeNode> inOrderHistory) {
+  private void in(TreeNode root, LinkedList<TreeNode> inOrderHistory) { // 一遍scan就可以
     if (root != null) {
       in(root.left, inOrderHistory);
 
@@ -74,5 +74,45 @@ public class Solution {
   public void recoverTree(TreeNode root) {
     in(root, new LinkedList<TreeNode>());
     swap(nodes.peekFirst(), nodes.peekLast());
+  }
+}
+-----------------
+public class Solution {
+  TreeNode lastLeft = null;
+  TreeNode lastRight = null;
+
+  TreeNode leftright[] = new TreeNode[2];
+  TreeNode rightleft[] = new TreeNode[2];
+
+  void leftRight(TreeNode root) {
+    if (root != null) {
+      leftRight(root.left);
+      if (lastLeft != null && lastLeft.val > root.val && leftright[0] == null) {
+        leftright[0] = lastLeft;
+        leftright[1] = root;
+      }
+      lastLeft = root;
+      leftRight(root.right);
+    }
+  }
+
+  void rightLeft(TreeNode root) {
+    if (root != null) {
+      rightLeft(root.right);
+      if (lastRight != null && lastRight.val < root.val && rightleft[0] == null) {
+        rightleft[1] = lastRight;
+        rightleft[0] = root;
+      }
+      lastRight = root;
+      rightLeft(root.left);
+    }
+  }
+
+  public void recoverTree(TreeNode root) {
+    leftRight(root);
+    rightLeft(root);
+    int tmp = leftright[0].val;
+    leftright[0].val = rightleft[1].val;
+    rightleft[1].val = tmp;
   }
 }

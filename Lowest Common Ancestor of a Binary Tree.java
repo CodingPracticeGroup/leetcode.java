@@ -65,3 +65,37 @@ public class Solution {
     return ret;
   }
 }
+------------------
+public class Solution {
+  LinkedList<TreeNode> lca(TreeNode root, TreeNode t) {
+    if (root == null)
+      return null;
+    if (root == t) {
+      LinkedList<TreeNode> ret = new LinkedList<>();
+      ret.offerLast(t);
+      return ret;
+    }
+    LinkedList<TreeNode> r = lca(root.left, t);
+    if (r != null) {
+      r.offerFirst(root);
+      return r;
+    }
+    r = lca(root.right, t);
+    if (r != null) {
+      r.offerFirst(root);
+      return r;
+    }
+    return null;
+  }
+
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    LinkedList<TreeNode> pp = lca(root, p);
+    LinkedList<TreeNode> qq = lca(root, q);
+    TreeNode ret = root;
+    while (!pp.isEmpty() && !qq.isEmpty() && pp.peekFirst() == qq.peekFirst()) {
+      ret = pp.pollFirst();
+      qq.pollFirst();
+    }
+    return ret;
+  }
+}

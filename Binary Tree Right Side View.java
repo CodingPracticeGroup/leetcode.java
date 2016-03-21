@@ -37,3 +37,23 @@ public class Solution {
     return ret;
   }
 }
+------------------------
+public class Solution {
+  void dfs(TreeNode root, List<Integer> ret, LinkedList<TreeNode> stack) {
+    if (root != null) {
+      stack.offerLast(root);
+      if (stack.size() > ret.size()) {
+        ret.add(root.val);
+      }
+      dfs(root.right, ret, stack);
+      dfs(root.left, ret, stack);
+      stack.pollLast();
+    }
+  }
+
+  public List<Integer> rightSideView(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    dfs(root, ret, new LinkedList<TreeNode>());
+    return ret;
+  }
+}

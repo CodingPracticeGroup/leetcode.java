@@ -21,3 +21,21 @@ public class Solution {
     return ret[0];
   }
 }
+----------------
+public class Solution {
+  int[] dfs(TreeNode root) { // [balanced, depth]
+    if (root == null) {
+      return new int[] {1, 0};
+    }
+    int[] l = dfs(root.left);
+    int[] r = dfs(root.right);
+    int balanced = l[0] == 1 && r[0] == 1 && Math.abs(l[1] - r[1]) <= 1 ? 1 : 0;
+    int depth = 1 + Math.max(l[1], r[1]);
+    return new int[] {balanced, depth};
+  }
+
+  public boolean isBalanced(TreeNode root) {
+    int[] ret = dfs(root);
+    return ret[0] == 1;
+  }
+}

@@ -44,3 +44,23 @@ public class Solution {
     return b(preorder, 0, preorder.length, inorder, 0, inorder.length);
   }
 }
+---------------
+public class Solution {
+  TreeNode bt(int[] preorder, int prestart, int preend, int[] inorder, int instart, int inend) {
+    if (prestart == preend || instart == inend)
+      return null;
+    int rootidx = instart;
+    while (inorder[rootidx] != preorder[prestart]) {
+      rootidx++;
+    }
+    TreeNode ret = new TreeNode(preorder[prestart]);
+    ret.left =
+        bt(preorder, prestart + 1, prestart + 1 + (rootidx - instart), inorder, instart, rootidx);
+    ret.right = bt(preorder, preend - (inend - rootidx - 1), preend, inorder, rootidx + 1, inend);
+    return ret;
+  }
+
+  public TreeNode buildTree(int[] preorder, int[] inorder) {
+    return bt(preorder, 0, preorder.length, inorder, 0, inorder.length);
+  }
+}

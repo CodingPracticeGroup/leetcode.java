@@ -55,3 +55,36 @@ public class Solution {
     }
   }
 }
+------------------
+public class Solution {
+  TreeNode preOrderFlatten(TreeNode root) {
+    if (root == null)
+      return null;
+
+    TreeNode oldL = root.left;
+    TreeNode oldR = root.right;
+    root.left = null;
+    root.right = null;
+
+    TreeNode Lret = preOrderFlatten(oldL);
+    TreeNode Rret = preOrderFlatten(oldR);
+
+    if (Lret != null && Rret != null) {
+      root.right = oldL;
+      Lret.right = oldR;
+      return Rret;
+    } else if (Lret == null && Rret != null) {
+      root.right = oldR;
+      return Rret;
+    } else if (Lret != null && Rret == null) {
+      root.right = oldL;
+      return Lret;
+    } else { // if (Lret==null && Rret ==null) {
+      return root;
+    }
+  }
+
+  public void flatten(TreeNode root) {
+    preOrderFlatten(root);
+  }
+}

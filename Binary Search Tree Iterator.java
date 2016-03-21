@@ -50,3 +50,27 @@ public class BSTIterator {
     return p.val;
   }
 }
+--------------------
+public class BSTIterator {
+  Deque<TreeNode> stack = new ArrayDeque<>();
+
+  public BSTIterator(TreeNode root) {
+    for (TreeNode tn = root; tn != null; tn = tn.left) {
+      stack.push(tn);
+    }
+  }
+
+  /** @return whether we have a next smallest number */
+  public boolean hasNext() {
+    return !stack.isEmpty();
+  }
+
+  /** @return the next smallest number */
+  public int next() {
+    TreeNode tn = stack.pop();
+    for (TreeNode tn2 = tn.right; tn2 != null; tn2 = tn2.left) {
+      stack.push(tn2);
+    }
+    return tn.val;
+  }
+}

@@ -71,3 +71,43 @@ public class Solution {
     return g(1, n);
   }
 }
+-----------------
+public class Solution {
+  List<TreeNode> gt(int start, int end) {
+    List<TreeNode> ret = new ArrayList<>();
+    for (int root = start; root < end; root++) {
+      List<TreeNode> left = gt(start, root);
+      List<TreeNode> right = gt(root + 1, end);
+      if (left.isEmpty() && right.isEmpty()) {
+        TreeNode tn = new TreeNode(root);
+        ret.add(tn);
+      } else if (left.isEmpty()) {
+        for (TreeNode r : right) {
+          TreeNode tn = new TreeNode(root);
+          tn.right = r;
+          ret.add(tn);
+        }
+      } else if (right.isEmpty()) {
+        for (TreeNode l : left) {
+          TreeNode tn = new TreeNode(root);
+          tn.left = l;
+          ret.add(tn);
+        }
+      } else {
+        for (TreeNode l : left) {
+          for (TreeNode r : right) {
+            TreeNode tn = new TreeNode(root);
+            tn.left = l;
+            tn.right = r;
+            ret.add(tn);
+          }
+        }
+      }
+    }
+    return ret;
+  }
+
+  public List<TreeNode> generateTrees(int n) {
+    return gt(1, n + 1);
+  }
+}

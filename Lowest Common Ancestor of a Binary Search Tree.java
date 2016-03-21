@@ -25,3 +25,30 @@ public class Solution {
     return ret;
   }
 }
+----------------
+public class Solution {
+  LinkedList<TreeNode> path(TreeNode root, TreeNode t) {
+    LinkedList<TreeNode> ret = new LinkedList<>();
+    while (root.val != t.val) {
+      ret.offerLast(root);
+      if (root.val < t.val) {
+        root = root.right;
+      } else if (root.val > t.val) {
+        root = root.left;
+      }
+    }
+    ret.offer(t);
+    return ret;
+  }
+
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    LinkedList<TreeNode> pp = path(root, p);
+    LinkedList<TreeNode> qq = path(root, q);
+    TreeNode ret = root;
+    while (!pp.isEmpty() && !qq.isEmpty() && pp.peekFirst() == qq.peekFirst()) {
+      ret = pp.pollFirst();
+      qq.pollFirst();
+    }
+    return ret;
+  }
+}

@@ -14,3 +14,20 @@ public class Solution {
     return build(nums, 0, nums.length);
   }
 }
+---------------
+public class Solution {
+  TreeNode satb(int[] nums, int start, int end) {
+    if (start == end) {
+      return null;
+    }
+    int root = (start + end) / 2;
+    TreeNode ret = new TreeNode(nums[root]);
+    ret.left = satb(nums, start, root);
+    ret.right = satb(nums, root + 1, end);
+    return ret;
+  }
+
+  public TreeNode sortedArrayToBST(int[] nums) {
+    return satb(nums, 0, nums.length);
+  }
+}

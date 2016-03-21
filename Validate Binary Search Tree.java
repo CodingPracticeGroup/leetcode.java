@@ -29,3 +29,18 @@ public class Solution {
     return iv(root, Integer.MIN_VALUE - 1L, Integer.MAX_VALUE + 1L);
   }
 }
+-----------------
+public class Solution {
+  boolean ivb(TreeNode root, long left, long right) {
+    if (root == null)
+      return true;
+    if (left >= root.val || root.val >= right) {
+      return false;
+    }
+    return ivb(root.left, left, root.val) && ivb(root.right, root.val, right);
+  }
+
+  public boolean isValidBST(TreeNode root) {
+    return ivb(root, Integer.MIN_VALUE - 1L, Integer.MAX_VALUE + 1L);
+  }
+}
