@@ -9,7 +9,7 @@ public class Solution {
   }
 
   public TreeNode sortedListToBST(ListNode head) {
-    List<TreeNode> arr = new ArrayList<>();
+    List<TreeNode> arr = new ArrayList<>(); // 这个不错，因为最终还是要创这么多的TreeNode
     while (head != null) {
       TreeNode tn = new TreeNode(head.val);
       arr.add(tn);
@@ -43,6 +43,32 @@ public class Solution {
     TreeNode ret = new TreeNode(root.val);
     ret.left = sortedListToBST(head);
     ret.right = sortedListToBST(s2);
+    return ret;
+  }
+}
+-----------------------
+public class Solution {
+  public TreeNode sortedListToBST(ListNode head) {
+    if (head == null)
+      return null;
+    if (head.next == null)
+      return new TreeNode(head.val);
+
+    ListNode first = head;
+    ListNode second = head.next;
+    while (second != null && second.next != null && second.next.next != null) {
+      first = first.next;
+      second = second.next.next;
+    }
+
+    ListNode root = first.next;
+    first.next = null;
+    first = root.next;
+    root.next = null;
+
+    TreeNode ret = new TreeNode(root.val);
+    ret.left = sortedListToBST(head);
+    ret.right = sortedListToBST(first);
     return ret;
   }
 }
