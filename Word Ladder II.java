@@ -26,7 +26,7 @@ public class Solution {
             String newstr = newstrsb.toString();
             if (wordList.contains(newstr)) { // visited prune
               newqueue.add(newstr); // enqueue
-              findLadders_parents(parentmap, newstr, str);
+              findLadders_parents(parentmap, newstr, str); // parent.computeIfAbsent(nn, k -> new HashSet<String>()).add(s);
             }
           }
         }
@@ -132,6 +132,66 @@ public class Solution {
           LinkedList<String> ll = new LinkedList<>(l);
           ll.offerFirst(w);
           ret2.add(ll);
+        }
+      }
+      ret = ret2;
+    }
+    return ret;
+  }
+}
+-------------------
+public class Solution {
+  public List<List<String>> findLadders(String beginWord, String endWord, Set<String> wordList) {
+    Map<String, Set<String>> parents = new HashMap<>();
+    Set<String> tabu = new HashSet<>();
+    Set<String> queue = new HashSet<>();
+    tabu.add(beginWord);
+    queue.add(beginWord);
+    boolean found = false;
+    while (!queue.isEmpty()) {
+      Set<String> nextQueue = new HashSet<>();
+      for (String sss : queue) {
+        char[] arr = sss.toCharArray();
+        for (int j = 0; j < arr.length; j++) {
+          char c = arr[j];
+          for (char cc = 'a'; cc <= 'z'; cc++) { // push
+            if (cc != c) {
+              arr[j] = cc;
+              String s = new String(arr);
+              if (wordList.contains(s) && !tabu.contains(s)) {
+                if (s.equals(endWord))
+                  found = true;
+                nextQueue.add(s);
+                parents.computeIfAbsent(s, k -> new HashSet<String>()).add(sss);
+              }
+            }
+          }
+          arr[j] = c; // pop
+        }
+      }
+      queue = nextQueue;
+      tabu.addAll(queue);
+      if (found)
+        break;
+    }
+    List<List<String>> ret = new ArrayList<>();
+    if (!found)
+      return ret;
+    LinkedList<String> l = new LinkedList<>();
+    l.offerFirst(endWord);
+    ret.add(l);
+    boolean built = false;
+    while (!built) {
+      List<List<String>> ret2 = new ArrayList<>();
+      for (List<String> ll : ret) {
+        if (parents.containsKey(ll.get(0))) {
+          for (String ss : parents.get(ll.get(0))) {
+            if (ss.equals(beginWord))
+              built = true;
+            LinkedList<String> ll2 = new LinkedList<>(ll);
+            ll2.offerFirst(ss);
+            ret2.add(ll2);
+          }
         }
       }
       ret = ret2;
