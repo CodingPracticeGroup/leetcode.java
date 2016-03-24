@@ -85,3 +85,33 @@ public class Solution {
     return stack.poll();
   }
 }
+--------------
+public class Solution {
+  public int evalRPN(String[] tokens) {
+    LinkedList<Integer> stack = new LinkedList<>();
+    for (String str : tokens) {
+      int a, b;
+      switch (str) {
+        case "+":
+          stack.push(stack.pop() + stack.pop());
+          break;
+        case "-":
+          b = stack.pop();
+          a = stack.pop();
+          stack.push(a - b);
+          break;
+        case "*":
+          stack.push(stack.pop() * stack.pop());
+          break;
+        case "/":
+          b = stack.pop();
+          a = stack.pop();
+          stack.push(a / b);
+          break;
+        default:
+          stack.push(Integer.parseInt(str));
+      }
+    }
+    return stack.pop();
+  }
+}

@@ -56,7 +56,7 @@ public class Solution {
 public class Solution {
   public String simplifyPath(String path) {
     Deque<String> stack = new LinkedList<>();
-    Set<String> skip = new HashSet<>(Arrays.asList(".", "")); // hit/miss
+    Set<String> skip = new HashSet<>(Arrays.asList(".", "")); // hit/miss；这个太nb了
     for (String dir : path.split("/")) {
       if (dir.equals("..") && !stack.isEmpty())
         stack.pop();
@@ -67,5 +67,35 @@ public class Solution {
     for (String dir : stack)
       res = "/" + dir + res;
     return res.isEmpty() ? "/" : res;
+  }
+}
+-----------------
+public class Solution {
+  public String simplifyPath(String path) {
+    path = path.replaceAll("/+", "/");
+    path = path.replaceAll("^/", "");
+    path = path.replaceAll("/$", "");
+    if (path.isEmpty())
+      return "/";
+    String p[] = path.split("/");
+    LinkedList<String> stack = new LinkedList<>();
+    for (String s : p) {
+      if (s.equals("..")) {
+        if (!stack.isEmpty())
+          stack.pollLast();
+      } else if (s.equals(".")) {
+        // nop
+      } else {
+        stack.offerLast(s);
+      }
+    }
+    if (stack.isEmpty())
+      return "/";
+    StringBuilder sb = new StringBuilder();
+    for (String s : stack) {
+      sb.append("/");
+      sb.append(s);
+    }
+    return sb.toString();
   }
 }
