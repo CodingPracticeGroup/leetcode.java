@@ -13,3 +13,20 @@ public class Solution {
     }
   }
 }
+-------------
+public class Solution {
+  public boolean isHappy(int n) {
+    Set<Integer> s = new HashSet<>();
+    while (n != 1) {
+      if (!s.add(n))
+        return false;
+      int sum = 0;
+      for (int i : String.valueOf(n).toCharArray()) {
+        i -= '0';
+        sum += i * i;
+      }
+      n = sum;
+    }
+    return true;
+  }
+}

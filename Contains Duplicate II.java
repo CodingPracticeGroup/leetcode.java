@@ -35,3 +35,17 @@ public class Solution {
     return false;
   }
 }
+---------------------
+public class Solution {
+  public boolean containsNearbyDuplicate(int[] nums, int k) {
+    Set<Integer> window = new HashSet<>();
+    for (int i = 0; i < nums.length; i++) {
+      if (i > k) { // 双idx拉window一遍scan不停
+        window.remove(nums[i - k - 1]);
+      }
+      if (!window.add(nums[i]))
+        return true;
+    }
+    return false;
+  }
+}
