@@ -76,3 +76,24 @@ public class Solution {
     return dp[s.length() - 1];
   }
 }
+-----------------------
+public class Solution {
+  public int numDecodings(String s) {
+    if (s.length() == 0 || s.charAt(0) == '0')
+      return 0;
+    int dp[] = new int[s.length() + 1];
+    dp[0] = 1;
+    for (int len = 1; len <= s.length(); len++) {
+      dp[len] = 0;
+      if (s.charAt(len - 1) != '0')
+        dp[len] += dp[len - 1];
+      if (len - 2 >= 0) {
+        int t = Integer.parseInt(s.substring(len - 2, len));
+        if (t >= 10 && t <= 26) {
+          dp[len] += dp[len - 2];
+        }
+      }
+    }
+    return dp[s.length()];
+  }
+}
